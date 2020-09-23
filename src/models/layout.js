@@ -4,6 +4,8 @@ import CONST from "../config/const";
 import route_map from "../config/route_map";
 import { routerRedux } from "dva/router";
 import MessageManager from "../util/message";
+import getData from "../service/getData";
+import API from "../util/api";
 
 export default {
   namespace: "layout",
@@ -28,6 +30,7 @@ export default {
       sites: [],
     },
     messageManager: null,
+    domain: "main",
   },
 
   subscriptions: {
@@ -131,7 +134,8 @@ export default {
       const address = helper.createAddress(keys.publicKey);
 
       // 保存加密后密码，12词，秘钥
-      let accounts = yield select((state) => state.layout.accounts);
+      let store = yield select((state) => state.layout.store);
+      let accounts = store.accounts;
       const data = {
         address,
         username:
@@ -151,11 +155,22 @@ export default {
         type: "save",
         payload: {
           store: {
+            ...store,
             accounts,
             account_index: accounts.length - 1,
             password: password,
           },
         },
+      });
+    },
+    /**
+     * commReq
+     */
+    *commReq({ payload, url, method }, { call, select }) {
+      const domain = yield select((state) => state.layout.main);
+      return yield call(getData(API.domain[domain] + url), {
+        payload,
+        method,
       });
     },
   },

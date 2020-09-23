@@ -3,13 +3,50 @@ import store from "./store";
 import CONST from "../../src/util/const";
 import util from "../../src/util/util";
 import querystring from "query-string";
+import request from "../../src/util/request";
+import API from "../../src/util/api";
 
 export default class MessageManager {
   constructor(opts) {
     // 存储sign请求，直到用户通过或拒绝
     this.signmsgs = {};
-    this.port = opts.port;
+    //this.port = opts.port;
     this.openPopup = opts.openPopup;
+    this.popupIsOpen = opts.popupIsOpen;
+    this.setpopupIsOpen = opts.setpopupIsOpen;
+
+    this.port = new Map();
+    extension.runtime.onConnect.addListener((port) => {
+      if (port.name == "popup") {
+        this.popupIsOpen = true;
+        this.setpopupIsOpen(this.popupIsOpen);
+      }
+      this.port.set(port.sender.tab.id, port);
+      port.onMessage.addListener(this.msglistener(port));
+      console.log(this.port);
+      //messages.update("port", ports);
+      //messages.update("popupIsOpen", popupIsOpen);
+      port.onDisconnect.addListener((res) => {
+        this.port.delete(res.sender.tab.id);
+        let haspopup = false;
+        this.port.forEach((item) => {
+          if (item.name == "popup") {
+            haspopup = true;
+          }
+        });
+        this.popupIsOpen = haspopup;
+        this.setpopupIsOpen(this.popupIsOpen);
+        console.log(this.port);
+        console.log(this.popupIsOpen);
+        // messages.update("port", ports);
+        // messages.update("popupIsOpen", haspopup);
+      });
+    });
+  }
+  msglistener(port) {
+    return (msg) => {
+      return this.handleMsg(msg, port);
+    };
   }
   update(k, v) {
     this[k] = v;
@@ -37,6 +74,9 @@ export default class MessageManager {
     if (!msg) {
       return;
     }
+    if (!this.port.has(port.sender.tab.id)) {
+      return;
+    }
     let obj = {};
     try {
       obj = JSON.parse(msg);
@@ -62,7 +102,7 @@ export default class MessageManager {
         obj.from == CONST.MESSAGE_FROM_POPU
       ) {
         const data = await store.get();
-        this.sendMsgToPopup({ ...obj, data: data });
+        this.sendMsgToPopup({ ...obj, data: data }, port);
       }
       // get_account
       if (
@@ -83,11 +123,7 @@ export default class MessageManager {
         obj.type == CONST.METHOD_SIGN &&
         obj.from == CONST.MESSAGE_FROM_POPUP
       ) {
-        if (this.signmsgs && obj.id && this.signmsgs[obj.id]) {
-          delete this.signmsgs[obj.id];
-        }
-        store.set({ signmsgs: this.signmsgs });
-        this.sendMsgToPage(obj);
+        this.sign_result(obj, port);
       }
       // 页面发送 connect请求
       if (
@@ -101,7 +137,7 @@ export default class MessageManager {
         obj.type == CONST.MEHTOD_CONNECT &&
         obj.from == CONST.MESSAGE_FROM_POPUP
       ) {
-        this.sendMsgToPage(obj);
+        this.sendMsgToPage(obj, port);
       }
     }
   }
@@ -117,42 +153,51 @@ export default class MessageManager {
     const datas = await store.get();
     // todo 无账户
     if (datas.accounts.length == 0) {
-      this.sendMsgToPage({
-        id: obj.id,
-        type,
-        data: {
-          msg: "No account in wallet",
-          code: 400,
+      this.sendMsgToPage(
+        {
+          id: obj.id,
+          type,
+          data: {
+            msg: "No account in wallet",
+            code: 400,
+          },
         },
-      });
+        port
+      );
       return false;
     }
-    // todo 未登录
-    if (datas.account_index == -1) {
-      this.sendMsgToPage({
-        id: obj.id,
-        type,
-        data: {
-          msg: "Not logged in",
-          code: 400,
-        },
-      });
-      return false;
-    }
-
     const orign = port.sender.url || "";
     const sites = datas.sites || [];
     const index = sites.findIndex((item) => orign.indexOf(item) > -1);
     // todo 未链接钱包
     if (index == -1 && type !== CONST.MEHTOD_CONNECT) {
-      this.sendMsgToPage({
-        id: obj.id,
-        type,
-        data: {
-          msg: "HBC_wallet not connected",
-          code: 400,
+      this.sendMsgToPage(
+        {
+          id: obj.id,
+          type,
+          data: {
+            msg: "HBC_wallet not connected",
+            code: 400,
+          },
         },
-      });
+        port
+      );
+      return false;
+    }
+
+    // todo 未登录
+    if (datas.account_index == -1 || !datas.password) {
+      this.sendMsgToPage(
+        {
+          id: obj.id,
+          type,
+          data: {
+            msg: "Not logged in",
+            code: 400,
+          },
+        },
+        port
+      );
       return false;
     }
 
@@ -164,14 +209,17 @@ export default class MessageManager {
     if (from && type == CONST.METHOD_SIGN) {
       const index = datas.accounts.findIndex((item) => item.address == from);
       if (index == -1) {
-        this.sendMsgToPage({
-          id: obj.id,
-          type,
-          data: {
-            msg: `${from} address does not exist`,
-            code: 400,
+        this.sendMsgToPage(
+          {
+            id: obj.id,
+            type,
+            data: {
+              msg: `${from} address does not exist`,
+              code: 400,
+            },
           },
-        });
+          port
+        );
         return false;
       }
     }
@@ -191,20 +239,26 @@ export default class MessageManager {
       console.log(sites, origin);
       // 已授权过
       if (index > -1) {
-        this.sendMsgToPage({
-          id: obj.id,
-          type: obj.type,
-          data: {
-            code: 200,
-            msg: "OK",
+        this.sendMsgToPage(
+          {
+            id: obj.id,
+            type: obj.type,
+            data: {
+              code: 200,
+              msg: "OK",
+            },
           },
-        });
+          port
+        );
       } else {
-        this.sendMsgToPopup({
-          id: obj.id,
-          type: obj.type,
-          data: { ...obj.data, tab: port.sender.tab, origin },
-        });
+        this.sendMsgToPopup(
+          {
+            id: obj.id,
+            type: obj.type,
+            data: { ...obj.data, tab: port.sender.tab, origin },
+          },
+          port
+        );
       }
     }
   }
@@ -222,34 +276,62 @@ export default class MessageManager {
         datas.account_index > -1 && datas.accounts
           ? datas.accounts[datas.account_index]
           : { address: "" };
-      this.sendMsgToPage({
-        id: obj.id,
-        type: CONST.METHOD_GET_ACCOUNT,
-        data: {
-          code: 200,
-          msg: "OK",
+      this.sendMsgToPage(
+        {
+          id: obj.id,
+          type: CONST.METHOD_GET_ACCOUNT,
           data: {
-            address: account.address,
+            code: 200,
+            msg: "OK",
+            data: {
+              address: account.address,
+            },
           },
         },
-      });
+        port
+      );
     }
   }
   /**
-   * sign 消息签名
+   * sign to popup 消息发送popup，等待签名
    * @param {*} obj
    */
   async sign(obj, port) {
     const res = await this.account_logined(obj, CONST.METHOD_SIGN, port);
     // 发送消息到popup
     if (res) {
+      // 获取sequence
+      const { sequence } = await request(
+        API.domain.main + API.cus + "/" + obj.data.msgs[0].value.from_address
+      );
+      obj.data.sequence = sequence;
+      console.log(sequence);
       this.signmsgs[obj.id] = obj;
       store.set({ signmsgs: this.signmsgs });
-      this.sendMsgToPopup(obj);
+      this.sendMsgToPopup(obj, port);
     }
   }
+  /**
+   * sign result to page 签名结果发送server, 并发消息到page
+   * @param {*} obj
+   * @param {*} port
+   */
+  async sign_result(obj, port) {
+    const result = await request(API.domain.main + API.txs, {
+      body: {
+        tx: obj.data,
+        mode: "sync",
+      },
+      method: "post",
+    });
+    if (this.signmsgs && obj.id && this.signmsgs[obj.id]) {
+      delete this.signmsgs[obj.id];
+    }
+    store.set({ signmsgs: this.signmsgs });
+    this.sendMsgToPage(obj, port);
+  }
   // 发消息到page
-  async sendMsgToPage(obj) {
+  async sendMsgToPage(obj, port) {
     let msg = util.packmsg({
       from: CONST.MESSAGE_FROM_BACKGROUND,
       to: CONST.MESSAGE_FROM_PAGE,
@@ -268,11 +350,11 @@ export default class MessageManager {
     return;
   }
   // 发送数据到popup
-  async sendMsgToPopup(data) {
-    await this.openPopup();
-    // if (!this.popupIsOpen) {
-    //   await this.openPopup();
-    // }
+  async sendMsgToPopup(data, port) {
+    //await this.openPopup();
+    if (!this.popupIsOpen) {
+      await this.openPopup();
+    }
     setTimeout(() => {
       this.port.forEach((item) => {
         try {

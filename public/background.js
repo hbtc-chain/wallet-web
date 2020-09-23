@@ -10,14 +10,15 @@ let notificationIsOpen = false;
 const notificationManager = new NotificationManager();
 const platform = new ExtensionPlatform();
 
+//let ports = new Map();
+
 async function triggerUi() {
   const tabs = await platform.getActiveTabs();
   const currentlyActiveTab = Boolean(tabs.find((tab) => openTabsIDs[tab.id]));
-  if (!popupIsOpen && !currentlyActiveTab) {
-    await notificationManager.showPopup();
-  }
+  // if (!popupIsOpen) {
+  await notificationManager.showPopup();
+  // }
 }
-
 /**
  * Opens the browser popup for user confirmation of watchAsset
  * then it waits until user interact with the UI
@@ -34,23 +35,38 @@ async function openPopup() {
   });
 }
 
+function setpopupIsOpen(r) {
+  popupIsOpen = r;
+}
 // 接收popup的消息
-let ports = new Map();
 const messages = new MessageManager({
   openPopup,
   popupIsOpen,
+  setpopupIsOpen,
 });
-extension.runtime.onConnect.addListener((port) => {
-  popupIsOpen = false;
-  ports.set(port.sender.tab.id, port);
-  console.log(ports);
-  messages.update("port", ports);
-  messages.update("popupIsOpen", popupIsOpen);
-  port.onDisconnect.addListener(() => {
-    //messages.update("port", null);
-    ports.clear(port.sender.tab.id);
-  });
-});
+// extension.runtime.onConnect.addListener((port) => {
+//   if (port.name == "popup") {
+//     popupIsOpen = true;
+//   }
+//   ports.set(port.sender.tab.id, port);
+//   console.log(ports);
+//   messages.update("port", ports);
+//   messages.update("popupIsOpen", popupIsOpen);
+//   port.onDisconnect.addListener((res) => {
+//     ports.delete(res.sender.tab.id);
+//     let haspopup = false;
+//     ports.forEach((item) => {
+//       if (item.name == "popup") {
+//         haspopup = true;
+//       }
+//     });
+//     popupIsOpen = haspopup;
+//     console.log(ports);
+//     console.log(haspopup);
+//     messages.update("port", ports);
+//     messages.update("popupIsOpen", haspopup);
+//   });
+// });
 
 // On first install, open a new tab with
 extension.runtime.onInstalled.addListener(({ reason }) => {

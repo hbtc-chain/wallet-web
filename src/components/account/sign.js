@@ -26,6 +26,8 @@ import querystring from "query-string";
 import Store from "../../util/store";
 import util from "../../util/util";
 import CONST from "../../util/const";
+import API from "../../util/api";
+import message from "../public/message";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -33,6 +35,7 @@ class IndexRC extends React.Component {
     this.state = {
       tab: 0,
       trade: {},
+      loading: false,
     };
   }
   componentDidMount() {
@@ -55,7 +58,22 @@ class IndexRC extends React.Component {
     } else {
     }
   };
-  reject = () => {};
+  reject = async () => {
+    // 发送到网页
+    const msg = {
+      id: this.state.id,
+      tabId: this.state.tabId,
+      type: CONST.METHOD_SIGN,
+      data: {
+        code: 400,
+        msg: "User rejected",
+      },
+    };
+    if (this.props.messageManager) {
+      await this.props.messageManager.sendMessage(msg);
+    }
+    window.close();
+  };
   sign = async () => {
     let obj = helper.jsonSort(this.state.trade);
     let account = this.props.store.accounts[this.props.store.account_index];
@@ -65,22 +83,43 @@ class IndexRC extends React.Component {
     privateKey = helper.aes_decrypt(privateKey, this.props.store.password);
     publicKey = helper.aes_decrypt(publicKey, this.props.store.password);
 
+    // 获取sequence
+    // const { sequence } = await this.props.dispatch({
+    //   type: "layout/commReq",
+    //   payload: {},
+    //   url: API.cus + "/" + obj.msgs[0].value.from_address,
+    // });
+    // obj.sequence = sequence;
     const sign = helper.sign(obj, privateKey, publicKey);
+
+    let data = {
+      ...obj,
+      signatures: {
+        signature: sign,
+        pub_key: {
+          type: "tendermint/PubKeySecp256k1",
+          value: publicKey,
+        },
+      },
+    };
+
+    // 发送请求
+    // const result = await this.props.dispatch({
+    //   type: "layout/commReq",
+    //   url: API.txs,
+    //   method: "post",
+    //   payload: {
+    //     tx: data,
+    //     mode: "sync",
+    //   },
+    // });
+
     // 发送到网页
     const msg = {
       id: this.state.id,
       tabId: this.state.tabId,
       type: CONST.METHOD_SIGN,
-      data: {
-        req: obj,
-        signature: {
-          signature: sign,
-          pub_key: {
-            type: "tendermint/PubKeySecp256k1",
-            value: publicKey,
-          },
-        },
-      },
+      data,
     };
     if (this.props.messageManager) {
       await this.props.messageManager.sendMessage(msg);

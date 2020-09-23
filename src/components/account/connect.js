@@ -70,7 +70,7 @@ class IndexRC extends React.Component {
     if (this.props.messageManager) {
       await this.props.messageManager.sendMessage(msg);
     }
-    //window.close();
+    window.close();
   };
   reject = async (reson) => {
     // 发送到网页

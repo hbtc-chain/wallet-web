@@ -48,6 +48,7 @@ class MessageManager {
         } else {
           d.error && d.error(obj.data);
         }
+        this.msgs.delete(id);
       }
     }
   }
