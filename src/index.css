@@ -1,0 +1,99 @@
+html,
+body,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+img,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+form,
+table,
+tr,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+img {
+  border: 0;
+}
+ol,
+ul {
+  list-style: none;
+}
+i,
+b,
+em,
+strong {
+  font-style: normal;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+a,
+img {
+  -webkit-touch-callout: none;
+  text-decoration: none;
+}
+
+html {
+  -webkit-text-size-adjust: 100%; /* 防止页面resize之后，字体未重新渲染的bug */
+}
+
+* {
+  box-sizing: border-box;
+}
+html {
+  min-height: 100%;
+  -webkit-font-smoothing: auto !important;
+  min-width: 360px;
+}
+body {
+  min-height: 100vh;
+  min-width: 360px;
+}
+#root {
+  min-height: 100vh;
+  min-width: 360px;
+}
+html,
+body {
+  font-size: 14px;
+  font-family: "roboto", "Open Sans", "Helvetica Neue", BlinkMacSystemFont,
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+}
+/* #root {
+  min-height: 100%;
+  min-height: 100vh;
+  display: table-cell;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+}*/
+
+.g_content {
+  max-width: 700px;
+  margin: 0 auto;
+}
