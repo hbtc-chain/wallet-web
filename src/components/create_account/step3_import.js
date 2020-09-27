@@ -41,14 +41,14 @@ class IndexRC extends React.Component {
       checked: !this.state.checked,
     });
   };
-  submit = () => {
+  submit = async () => {
     const password = this.state.password;
     const confirmpwd = this.state.confirmpwd;
     const checked = this.state.checked;
     const seed = this.state.seed
+      .replace(/\s{2,}/, " ")
       .replace(/^\s/g, "")
       .replace(/\s$/g, "")
-      .replace(/\s{2,}/, "")
       .split(" ");
     if (seed.length != 12) {
       this.setState({
@@ -68,6 +68,21 @@ class IndexRC extends React.Component {
       });
       return;
     }
+    await this.props.dispatch({
+      type: "layout/create_account",
+      payload: {
+        password: this.state.password,
+        mnemonic: seed.join(" "),
+      },
+    });
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.create_account_done,
+        state: {
+          password: password,
+        },
+      })
+    );
   };
   verif = () => {
     let r = true;

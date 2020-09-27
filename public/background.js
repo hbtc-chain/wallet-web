@@ -1,7 +1,7 @@
 import StoreCenter from "./scripts/store";
 import extension from "extensionizer";
 import MessageManager from "./scripts/message";
-import ExtensionPlatform from "./scripts/extension";
+import ExtensionPlatform from "./scripts/platform";
 import NotificationManager from "./scripts/notification-manager";
 
 const openTabsIDs = {};
@@ -15,9 +15,9 @@ const platform = new ExtensionPlatform();
 async function triggerUi() {
   const tabs = await platform.getActiveTabs();
   const currentlyActiveTab = Boolean(tabs.find((tab) => openTabsIDs[tab.id]));
-  // if (!popupIsOpen) {
-  await notificationManager.showPopup();
-  // }
+  if (!popupIsOpen) {
+    await notificationManager.showPopup();
+  }
 }
 /**
  * Opens the browser popup for user confirmation of watchAsset
@@ -44,29 +44,6 @@ const messages = new MessageManager({
   popupIsOpen,
   setpopupIsOpen,
 });
-// extension.runtime.onConnect.addListener((port) => {
-//   if (port.name == "popup") {
-//     popupIsOpen = true;
-//   }
-//   ports.set(port.sender.tab.id, port);
-//   console.log(ports);
-//   messages.update("port", ports);
-//   messages.update("popupIsOpen", popupIsOpen);
-//   port.onDisconnect.addListener((res) => {
-//     ports.delete(res.sender.tab.id);
-//     let haspopup = false;
-//     ports.forEach((item) => {
-//       if (item.name == "popup") {
-//         haspopup = true;
-//       }
-//     });
-//     popupIsOpen = haspopup;
-//     console.log(ports);
-//     console.log(haspopup);
-//     messages.update("port", ports);
-//     messages.update("popupIsOpen", haspopup);
-//   });
-// });
 
 // On first install, open a new tab with
 extension.runtime.onInstalled.addListener(({ reason }) => {

@@ -10,4 +10,5 @@ export default {
   tokens: `/api/v1/tokens`,
   domain: DOMAIN,
   txs: `/api/v1/txs`,
+  tokenprices: `/api/v1/tokenprices`,
 };

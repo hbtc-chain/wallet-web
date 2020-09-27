@@ -6,6 +6,7 @@ import HeaderRC from "../components/header";
 import IndexRC from "../components/create_account/seed";
 import withRoot from "../withRoot";
 import route_map from "../config/route_map";
+import LoginRC from "../components/account/login";
 
 function IndexPage({ layout, dispatch, location, match }) {
   return (
@@ -18,13 +19,23 @@ function IndexPage({ layout, dispatch, location, match }) {
         location
       />
       <div className="g_content">
-        <IndexRC
-          {...layout}
-          dispatch={dispatch}
-          location={location}
-          match
-          location
-        />
+        {layout.store.password ? (
+          <IndexRC
+            {...layout}
+            dispatch={dispatch}
+            location={location}
+            match
+            location
+          />
+        ) : (
+          <LoginRC
+            {...layout}
+            dispatch={dispatch}
+            location={location}
+            match
+            location
+          />
+        )}
       </div>
     </LayoutRC>
   );

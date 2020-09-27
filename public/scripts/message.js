@@ -3,17 +3,22 @@ import store from "./store";
 import CONST from "../../src/util/const";
 import util from "../../src/util/util";
 import querystring from "query-string";
-import request from "../../src/util/request";
+import request from "./request";
 import API from "../../src/util/api";
 
 export default class MessageManager {
   constructor(opts) {
     // 存储sign请求，直到用户通过或拒绝
     this.signmsgs = {};
+    // 存储balance
+    this.balance = new Map();
     //this.port = opts.port;
     this.openPopup = opts.openPopup;
     this.popupIsOpen = opts.popupIsOpen;
     this.setpopupIsOpen = opts.setpopupIsOpen;
+
+    // 启动资产查询loop
+    this.get_balance_loop();
 
     this.port = new Map();
     extension.runtime.onConnect.addListener((port) => {
@@ -21,13 +26,13 @@ export default class MessageManager {
         this.popupIsOpen = true;
         this.setpopupIsOpen(this.popupIsOpen);
       }
-      this.port.set(port.sender.tab.id, port);
+      this.port.set(
+        port.sender.tab ? port.sender.tab.id : port.sender.id,
+        port
+      );
       port.onMessage.addListener(this.msglistener(port));
-      console.log(this.port);
-      //messages.update("port", ports);
-      //messages.update("popupIsOpen", popupIsOpen);
       port.onDisconnect.addListener((res) => {
-        this.port.delete(res.sender.tab.id);
+        this.port.delete(res.sender.tab ? res.sender.tab.id : res.sender.id);
         let haspopup = false;
         this.port.forEach((item) => {
           if (item.name == "popup") {
@@ -36,10 +41,6 @@ export default class MessageManager {
         });
         this.popupIsOpen = haspopup;
         this.setpopupIsOpen(this.popupIsOpen);
-        console.log(this.port);
-        console.log(this.popupIsOpen);
-        // messages.update("port", ports);
-        // messages.update("popupIsOpen", haspopup);
       });
     });
   }
@@ -47,16 +48,6 @@ export default class MessageManager {
     return (msg) => {
       return this.handleMsg(msg, port);
     };
-  }
-  update(k, v) {
-    this[k] = v;
-    if (k == "port" && v) {
-      this.port.forEach((item) => {
-        item.onMessage.addListener((msg) => {
-          this.handleMsg(msg, item);
-        });
-      });
-    }
   }
   /**
    * @param {object} msg
@@ -74,7 +65,7 @@ export default class MessageManager {
     if (!msg) {
       return;
     }
-    if (!this.port.has(port.sender.tab.id)) {
+    if (!this.port.has(port.sender.tab ? port.sender.tab.id : port.sender.id)) {
       return;
     }
     let obj = {};
@@ -139,6 +130,11 @@ export default class MessageManager {
       ) {
         this.sendMsgToPage(obj, port);
       }
+
+      // request get_balance
+      if (obj.type == CONST.METHOD_GET_BALANCE) {
+        this.get_balance(obj, port);
+      }
     }
   }
 
@@ -170,7 +166,11 @@ export default class MessageManager {
     const sites = datas.sites || [];
     const index = sites.findIndex((item) => orign.indexOf(item) > -1);
     // todo 未链接钱包
-    if (index == -1 && type !== CONST.MEHTOD_CONNECT) {
+    if (
+      index == -1 &&
+      type !== CONST.MEHTOD_CONNECT &&
+      obj.from == CONST.MESSAGE_FROM_PAGE
+    ) {
       this.sendMsgToPage(
         {
           id: obj.id,
@@ -201,12 +201,15 @@ export default class MessageManager {
       return false;
     }
 
-    // type == sign 签名中地址不在当前账户列表
+    // type == sign , get_balance 地址不在当前账户列表
     const from =
       obj.data && obj.data.msgs && obj.data.msgs[0] && obj.data.msgs[0].value
         ? obj.data.msgs[0].value.from_address
         : "";
-    if (from && type == CONST.METHOD_SIGN) {
+    if (
+      from &&
+      (type == CONST.METHOD_SIGN || type == CONST.METHOD_GET_ACCOUNT)
+    ) {
       const index = datas.accounts.findIndex((item) => item.address == from);
       if (index == -1) {
         this.sendMsgToPage(
@@ -293,6 +296,47 @@ export default class MessageManager {
     }
   }
   /**
+   * get_balance
+   * @param {object} obj
+   * @param {object} port
+   */
+  async get_balance(obj, port) {
+    const res = await this.account_logined(obj, CONST.METHOD_GET_BALANCE, port);
+    if (res) {
+      const datas = await store.get();
+      const account = datas.accounts[datas.account_index];
+      const address = account.address;
+      const data = this.balance.get(address) || {};
+      console.log(port.name);
+      // popup and popup is open
+      if (port.name == "popup") {
+        if (this.popupIsOpen) {
+          this.sendMsgToPopup({ ...obj, data }, port);
+        }
+      } else {
+        this.sendMsgToPage({ ...obj, data }, port);
+      }
+    }
+  }
+  /**
+   * get_balance_loop 后台轮询获取资产
+   */
+  async get_balance_loop() {
+    const datas = await store.get();
+    if (datas.accounts.length && datas.account_index > -1 && datas.password) {
+      const account = datas.accounts[datas.account_index];
+      const address = account.address;
+      try {
+        const result = await request(API.domain.main + API.cus + "/" + address);
+        if (result.code == 200) {
+          this.balance.set(address, result.data);
+        }
+      } catch (e) {}
+    }
+    await util.delay(2000);
+    this.get_balance_loop();
+  }
+  /**
    * sign to popup 消息发送popup，等待签名
    * @param {*} obj
    */
@@ -300,15 +344,54 @@ export default class MessageManager {
     const res = await this.account_logined(obj, CONST.METHOD_SIGN, port);
     // 发送消息到popup
     if (res) {
+      // 验证数据正确性
+      let d = { ...obj.data };
+      if (
+        !d.chain_id ||
+        !d.msgs ||
+        !d.msgs[0] ||
+        !d.msgs[0].value ||
+        !d.msgs[0].value.from_address ||
+        !d.msgs[0].value.to_address ||
+        !d.msgs[0].value.amount ||
+        !d.msgs[0].value.amount[0] ||
+        !d.msgs[0].value.amount[0].denom ||
+        !d.msgs[0].value.amount[0].amount ||
+        !d.fee ||
+        !d.fee.gas ||
+        !d.fee.amount ||
+        !d.fee.amount[0] ||
+        !d.fee.amount[0].denom ||
+        !d.fee.amount[0].amount
+      ) {
+        this.sendMsgToPage(
+          { ...obj, data: { code: 400, msg: "Missing parameters" } },
+          port
+        );
+        return;
+      }
       // 获取sequence
-      const { sequence } = await request(
-        API.domain.main + API.cus + "/" + obj.data.msgs[0].value.from_address
-      );
-      obj.data.sequence = sequence;
-      console.log(sequence);
-      this.signmsgs[obj.id] = obj;
-      store.set({ signmsgs: this.signmsgs });
-      this.sendMsgToPopup(obj, port);
+      try {
+        const result = await request(
+          API.domain.main + API.cus + "/" + obj.data.msgs[0].value.from_address
+        );
+        if (result.code == 200) {
+          obj.data.sequence = result.data.sequence;
+          this.signmsgs[obj.id] = obj;
+          store.set({ signmsgs: this.signmsgs });
+          this.sendMsgToPopup(obj, port);
+        } else {
+          this.sendMsgToPage(
+            { ...obj, data: { code: 400, msg: result.msg } },
+            port
+          );
+        }
+      } catch (e) {
+        this.sendMsgToPage(
+          { ...obj, data: { code: 400, msg: e.message } },
+          port
+        );
+      }
     }
   }
   /**
@@ -317,18 +400,37 @@ export default class MessageManager {
    * @param {*} port
    */
   async sign_result(obj, port) {
-    const result = await request(API.domain.main + API.txs, {
-      body: {
-        tx: obj.data,
-        mode: "sync",
-      },
-      method: "post",
-    });
     if (this.signmsgs && obj.id && this.signmsgs[obj.id]) {
       delete this.signmsgs[obj.id];
     }
     store.set({ signmsgs: this.signmsgs });
-    this.sendMsgToPage(obj, port);
+    // 用户拒绝
+    if (obj.data && obj.data.code == 400) {
+      this.sendMsgToPage(obj, port);
+      return;
+    }
+    // 用户确认
+    try {
+      let d = {
+        fee: obj.data.fee,
+        memo: obj.data.meno,
+        msg: obj.data.msgs,
+        signatures: obj.data.signatures,
+      };
+      const result = await request(API.domain.main + API.txs, {
+        body: JSON.stringify({
+          tx: d,
+          mode: "sync",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+      this.sendMsgToPage({ ...obj, data: result }, port);
+    } catch (e) {
+      this.sendMsgToPage({ ...obj, data: { code: 400, msg: e.message } }, port);
+    }
   }
   // 发消息到page
   async sendMsgToPage(obj, port) {
@@ -351,7 +453,6 @@ export default class MessageManager {
   }
   // 发送数据到popup
   async sendMsgToPopup(data, port) {
-    //await this.openPopup();
     if (!this.popupIsOpen) {
       await this.openPopup();
     }

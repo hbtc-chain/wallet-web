@@ -8,6 +8,7 @@ import ripemd160 from "ripemd160";
 import CONST from "../config/const";
 import BASE58 from "base-x";
 import secp256k1 from "secp256k1";
+import mathjs from "./mathjs";
 
 function checkForError() {
   const { lastError } = extension.runtime;
@@ -265,6 +266,28 @@ function jsonSort(obj) {
   }
   return obj;
 }
+function rates(v, t, unit, rates = {}) {
+  if (
+    v === "" ||
+    v === undefined ||
+    Number.isNaN(Number(v)) ||
+    !t ||
+    !rates[t]
+  ) {
+    return ["--", (unit || "").toUpperCase()];
+  }
+  let u = unit;
+  if (!rates[t][u]) {
+    u = "usd";
+  }
+
+  const d = mathjs
+    .chain(mathjs.bignumber(v))
+    .multiply(rates[t][u])
+    .format({ notation: "fixed", precision: 2 })
+    .done();
+  return [d, u.toUpperCase()];
+}
 
 export default {
   checkForError,
@@ -282,4 +305,6 @@ export default {
   hex_to_rgba,
   jsonSort,
   sign,
+  HexString2Bytes,
+  rates,
 };

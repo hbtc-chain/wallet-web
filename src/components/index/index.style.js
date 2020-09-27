@@ -1,6 +1,6 @@
 export default (theme) => ({
   indexpaper: {
-    height: "calc(100vh - 75px)",
+    //height: "calc(100vh - 75px)",
   },
   address_title: {
     borderBottom: `1px solid ${theme.palette.grey[100]}`,
@@ -72,5 +72,32 @@ export default (theme) => ({
     position: "absolute",
     right: 5,
     top: 5,
+  },
+  sites: {
+    width: 300,
+    "& em": {
+      color: theme.palette.grey[500],
+      padding: "20px 0",
+    },
+    "& p": {
+      maxWidth: 260,
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      textOverflow: "ellipsis",
+    },
+  },
+  site_item: {
+    padding: "10px 0",
+  },
+  private_key_tip: {
+    color: theme.palette.error.main,
+    padding: 10,
+    background: theme.palette.grey[100],
+  },
+  private_key: {
+    fontSize: 14,
+    wordBreak: "break-all",
+    padding: 10,
+    background: theme.palette.grey[100],
   },
 });

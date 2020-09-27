@@ -44,20 +44,7 @@ class IndexRC extends React.Component {
           }
         }),
       });
-    } else {
-      // 弹出密码层
-      // this.props.dispatch(
-      //   routerRedux.push({
-      //     pathname: route_map.login,
-      //   })
-      // );
     }
-    console.log(
-      this.props.store.accounts,
-      this.props.store.account_index,
-      account,
-      this.props.store.password
-    );
   }
   showword = () => {
     this.setState({

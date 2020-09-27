@@ -8,9 +8,9 @@ function injectScript() {
     scriptTag.setAttribute("async", "false");
     scriptTag.innerText = "{inpageContent}";
     container.insertBefore(scriptTag, container.children[0]);
-    //container.removeChild(scriptTag)
+    container.removeChild(scriptTag);
   } catch (e) {
-    console.error("MetaMask provider injection failed.", e);
+    console.error("HBC_wallet provider injection failed.", e);
   }
 }
 
@@ -142,14 +142,13 @@ port.onMessage.addListener((message) => {
   if (message) {
     try {
       let obj = JSON.parse(message);
-      if (obj.to) {
-        console.log("content-script get msg:" + message);
-      }
       if (
         obj.to == CONST.MESSAGE_FROM_PAGE &&
         (obj.from == CONST.MESSAGE_FROM_BACKGROUND ||
           obj.from == CONST.MESSAGE_FROM_POPUP)
       ) {
+        console.log("page get msg:");
+        console.log(obj);
         window.postMessage(message);
       }
     } catch (e) {
@@ -162,7 +161,6 @@ port.onMessage.addListener((message) => {
 // 监听网页 postmessage, 发送到backgrund
 window.onmessage = (e) => {
   let data = e.data;
-  console.log(data);
   // 发送消息到background
   try {
     data =
@@ -174,39 +172,10 @@ window.onmessage = (e) => {
         data.to == CONST.MESSAGE_FROM_POPUP) &&
       data.from == CONST.MESSAGE_FROM_PAGE
     ) {
-      console.log(
-        "content-script get msg and send background: " + JSON.stringify(data)
-      );
       port.postMessage(JSON.stringify(data));
-      // extension.runtime
-      //   .sendMessage(JSON.stringify(data))
-      //   .then((res) => console.log(res));
     }
   } catch (e) {
     console.warn(e.message);
     console.warn(data);
   }
 };
-
-// 监听 background， popup发送的消息,  发送到page
-// extension.runtime.onMessage.addListener((message, sender, res) => {
-//   if (message) {
-//     try {
-//       let obj = JSON.parse(message);
-//       if (obj.to) {
-//         console.log("content-script get msg:" + message);
-//       }
-//       if (
-//         obj.to == CONST.MESSAGE_FROM_PAGE &&
-//         (obj.from == CONST.MESSAGE_FROM_BACKGROUND ||
-//           obj.from == CONST.MESSAGE_FROM_POPUP)
-//       ) {
-//         window.postMessage(message);
-//       }
-//     } catch (e) {
-//       console.error(e.message);
-//       console.error(message);
-//     }
-//   }
-//   return Promise.reject({ response: "content script got msg" });
-// });

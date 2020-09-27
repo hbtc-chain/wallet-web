@@ -5,8 +5,6 @@ import IndexRC from "../components/account/connect";
 import LoginRC from "../components/account/login";
 import HeaderRC from "../components/header";
 import withRoot from "../withRoot";
-import route_map from "../config/route_map";
-import { routerRedux } from "dva/router";
 
 function IndexPage({ layout, dispatch, location, history }) {
   return (

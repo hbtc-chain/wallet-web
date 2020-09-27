@@ -23,6 +23,10 @@ import CheckIcon from "@material-ui/icons/Check";
 import RadioButtonCheckedIcon from "@material-ui/icons/RadioButtonChecked";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import SubtitlesIcon from "@material-ui/icons/Subtitles";
+import { routerRedux } from "dva/router";
+import route_map from "../config/route_map";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 
 class HeaderRC extends React.Component {
   constructor() {
@@ -30,6 +34,7 @@ class HeaderRC extends React.Component {
     this.state = {
       anchorEl: null,
       network: "HBC",
+      open: false,
     };
   }
   setanchorEl = (e) => {
@@ -58,70 +63,60 @@ class HeaderRC extends React.Component {
       },
     });
   };
+  logout = async () => {
+    await this.props.dispatch({
+      type: "layout/save",
+      payload: {
+        store: {
+          ...this.props.store,
+          password: "",
+          account_index: -1,
+        },
+      },
+    });
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.login,
+      })
+    );
+  };
+  changeUnit = (unit) => (e) => {
+    this.props.dispatch({
+      type: "layout/save",
+      payload: {
+        unit,
+      },
+    });
+    this.setState({
+      open: false,
+    });
+  };
   render() {
     const { classes } = this.props;
     return this.props.store.password ? (
       <div className={classes.g_header_box}>
         <div className={classes.g_header}>
-          <Grid container alignItems="center" className={classes.logo}>
+          <Grid container justify="space-between" alignItems="center">
             <Grid item>
-              <img src={require("../assets/logo.png")} />
+              <Grid container alignItems="center" className={classes.logo}>
+                <Grid item>
+                  <img src={require("../assets/logo.png")} />
+                </Grid>
+                <Grid item className={classes.logoname}>
+                  <h1>HBTC WALLET</h1>
+                </Grid>
+              </Grid>
             </Grid>
-            <Grid item className={classes.logoname}>
-              <h1>HBC WALLET</h1>
-            </Grid>
-          </Grid>
-          <Grid container alignItems="center" justify="flex-end">
             <Grid item>
-              <Select
-                variant="outlined"
-                value={this.state.network}
-                onChange={this.selectChange}
-                className={classes.network_select}
-                classes={{
-                  root: classes.network,
-                }}
-              >
-                <MenuItem value="HBC">
-                  <Grid container alignItems="center" spacing={1}>
-                    <Grid item>
-                      {this.state.network == "HBC" ? (
-                        <RadioButtonCheckedIcon
-                          className={classes.network_select_icon}
-                        />
-                      ) : (
-                        <RadioButtonUncheckedIcon />
-                      )}
-                    </Grid>
-                    <Grid item>HBC 主网</Grid>
-                  </Grid>
-                </MenuItem>
-                <MenuItem value="HBCTEST">
-                  <Grid container alignItems="center" spacing={1}>
-                    <Grid item>
-                      {this.state.network == "HBCTEST" ? (
-                        <RadioButtonCheckedIcon
-                          className={classes.network_select_icon}
-                        />
-                      ) : (
-                        <RadioButtonUncheckedIcon />
-                      )}
-                    </Grid>
-                    <Grid item>HBCT测试网</Grid>
-                  </Grid>
-                </MenuItem>
-              </Select>
-            </Grid>
-            {this.props.store.account_index == -1 ? (
-              ""
-            ) : (
-              <Grid item>
+              {this.props.store.account_index !== -1 ? (
                 <AccountCircleIcon
                   fontSize="large"
                   onClick={this.setanchorEl}
                 />
-              </Grid>
-            )}
+              ) : (
+                ""
+              )}
+            </Grid>
           </Grid>
         </div>
 
@@ -137,35 +132,56 @@ class HeaderRC extends React.Component {
                 <ClickAwayListener onClickAway={this.handleClose}>
                   <Paper>
                     <List component="nav">
-                      <ListItem className={classes.menuitem}>
+                      <ListItem
+                        className={classes.menuitem}
+                        onClick={() => {
+                          this.setState({
+                            open: !this.state.open,
+                          });
+                        }}
+                      >
                         <ListItemText>
-                          {this.props.intl.formatMessage({ id: "my account" })}
+                          {this.props.intl.formatMessage({ id: "rate" })}
                         </ListItemText>
+                        <ListItemText
+                          className={classes.grey500}
+                          style={{ textAlign: "right" }}
+                        >
+                          {this.props.unit.toUpperCase()}
+                        </ListItemText>
+                        {this.state.open ? (
+                          <ExpandLess className={classes.grey500} />
+                        ) : (
+                          <ExpandMore className={classes.grey500} />
+                        )}
                       </ListItem>
-                      {/* <Collapse in={true} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                          {this.props.store.accounts.map((item, i) => {
+                      <Collapse
+                        in={this.state.open}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <List component="div" className={classes.borderTop}>
+                          {this.props.units.map((item) => {
                             return (
                               <ListItem
                                 button
                                 className={classes.nested}
-                                onClick={this.choose(i)}
+                                onClick={this.changeUnit(item)}
+                                key={item + "a"}
                               >
-                                <ListItemIcon>
-                                  {this.props.store.account_index == i ? (
-                                    <CheckIcon />
-                                  ) : (
-                                    ""
-                                  )}
-                                </ListItemIcon>
-                                <ListItemText>{item.username}</ListItemText>
+                                <ListItemText className={classes.option_item}>
+                                  {item.toUpperCase()}
+                                </ListItemText>
                               </ListItem>
                             );
                           })}
                         </List>
-                      </Collapse> */}
-
-                      <ListItem button className={classes.menuitem}>
+                      </Collapse>
+                      <ListItem
+                        button
+                        className={classes.menuitem}
+                        onClick={this.logout}
+                      >
                         <ListItemText>
                           {this.props.intl.formatMessage({ id: "logout" })}
                         </ListItemText>
@@ -179,16 +195,7 @@ class HeaderRC extends React.Component {
         </Popper>
       </div>
     ) : (
-      <div className={classes.g_header}>
-        <Grid container alignItems="center">
-          <Grid item>
-            <img src={require("../assets/logo.png")} />
-          </Grid>
-          <Grid item>
-            <h1>HBC WALLET</h1>
-          </Grid>
-        </Grid>
-      </div>
+      <div></div>
     );
   }
 }

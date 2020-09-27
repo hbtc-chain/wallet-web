@@ -101,4 +101,13 @@ export default (theme) => ({
     padding: "30px 10px",
     borderBottom: `1px solid ${theme.palette.grey[100]}`,
   },
+  login_mnemonic: {
+    margin: "50px 0 0",
+    color: theme.palette.secondary.main,
+    cursor: "pointer",
+    display: "block",
+    fontSize: 14,
+    fontWeight: 500,
+    textAlign: "left",
+  },
 });

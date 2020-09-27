@@ -64,7 +64,6 @@ export default {
   "account info": "账户详情",
   "account link": "在链上查看",
   "connected site": "已链接网站",
-  "import private key": "导出私钥",
   "connected sites": "已链接网站",
   "seed index wrong": "助记词顺序不正确",
   "password request": "请输入密码",
@@ -74,4 +73,13 @@ export default {
   reject: "拒绝",
   "request for access": "申请授权",
   "requset for address": "获取地址及资产信息",
+  "enter password": "请输入密码",
+  "export private key": "导出私钥",
+  "password is required": "请输入密码",
+  "password is wrong": "密码错误",
+  "private key tip":
+    "注意：永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你帐户中的任何资产。",
+  "login mnemonic": "使用账号助记词登录",
+  "token has no decimals value": "token精度读取失败",
+  rate: "法币切换",
 };

@@ -24,7 +24,6 @@ class MessageManager {
     if (env != "local") {
       this.port = extension.runtime.connect({ name: "popup" });
       this.port.onMessage.addListener((msg) => {
-        console.log("popup get msg:" + msg);
         let obj = {};
         try {
           obj = JSON.parse(msg);
@@ -32,6 +31,8 @@ class MessageManager {
         if (Object.keys(obj).length == 0) {
           return;
         }
+        console.log("popup get msg:");
+        console.log(obj);
         this.handleMsg(obj);
       });
     }
@@ -57,20 +58,32 @@ class MessageManager {
         })
       );
     }
+    // get_balance
+    if (obj.type == CONST.METHOD_GET_BALANCE) {
+      if (obj.data && obj.data.address) {
+        this.dispatch({
+          type: "layout/get_balance",
+          payload: {
+            [obj.data.address]: obj.data,
+          },
+        });
+      }
+    }
   }
   /**
    * 发送消息到background
    * @param {*} obj
    */
-  sendMessage({ id, type, tabId, data }) {
+  sendMessage({ id, type, data }) {
     let obj = util.packmsg({
       from: CONST.MESSAGE_FROM_POPUP,
       to: CONST.MESSAGE_FROM_BACKGROUND,
       id,
       type,
-      tabId,
       data,
     });
+    console.log("send msg to bg:");
+    console.log(obj);
     this.port.postMessage(JSON.stringify(obj));
   }
 }

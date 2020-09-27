@@ -75,6 +75,14 @@ class IndexRC extends React.Component {
       }
     }
   };
+  goto = () => {
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.create_account_step3,
+        search: "type=import",
+      })
+    );
+  };
   render() {
     const { classes } = this.props;
     return (
@@ -109,6 +117,9 @@ class IndexRC extends React.Component {
             </Button>
           </Grid>
         </Grid>
+        <em className={classes.login_mnemonic} onClick={this.goto}>
+          {this.props.intl.formatMessage({ id: "login mnemonic" })}
+        </em>
       </div>
     );
   }

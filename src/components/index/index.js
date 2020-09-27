@@ -35,6 +35,11 @@ import EditIcon from "@material-ui/icons/Edit";
 import Qrcode from "qrcode";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import CloseIcon from "@material-ui/icons/Close";
+import helper from "../../util/helper";
+import CONST from "../../util/const";
+import { v4 } from "uuid";
+import util from "../../util/util";
+import API from "../../util/api";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -43,26 +48,103 @@ class IndexRC extends React.Component {
       copyed: false,
       anchorEl: false,
       info_dialog: false,
+      dialog_sites: false,
+      dialog_private_key: false,
+      password_msg: "",
+      password: "",
+      private_key: "",
       edit_username: false,
       username: "",
       i: 0,
       tab: "Assets",
-      tokenList: [
-        {
-          tokenId: "ETH",
-          tokenName: "ETH",
-          tokenUrl: require("../../assets/BTC.svg"),
-        },
-        {
-          tokenId: "BTC",
-          tokenName: "BTC",
-          tokenUrl: require("../../assets/BTC.svg"),
-        },
-      ],
+      tokens: [],
       trades: [],
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.get_tokens();
+    this.get_balance();
+  }
+  get_rates = async () => {
+    if (this.state.tokens.length) {
+      let tokens = [];
+      this.state.tokens.map((item) => tokens.push(item.symbol));
+      const result = await this.props.dispatch({
+        type: "layout/commReq",
+        payload: {
+          symbols: tokens.join(","),
+        },
+        url: API.tokenprices,
+      });
+      let rates = {};
+      if (result.code == 200 && result.data) {
+        result.data.map((item) => {
+          rates[item.token] = item.rates;
+        });
+      }
+      this.setState({
+        rates,
+      });
+    }
+    await util.delay(10000);
+    this.get_rates();
+  };
+  get_tokens = async () => {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: { page: 1, page_size: 100 },
+      url: API.tokens,
+    });
+    if (result.code == 200 && result.data) {
+      this.setState(
+        {
+          tokens: result.data.items,
+        },
+        () => {
+          this.get_rates();
+        }
+      );
+    }
+  };
+  get_balance = async () => {
+    if (this.props.messageManager && this.props.store.password) {
+      this.props.messageManager.sendMessage({
+        type: CONST.METHOD_GET_BALANCE,
+        data: {},
+        id: v4(),
+      });
+    }
+    await util.delay(2000);
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
+    const balances =
+      this.props.balance && address && this.props.balance[address]
+        ? this.props.balance[address]
+        : { assets: [] };
+    const balances_json = {};
+    balances.assets.map((item) => {
+      balances_json[item.symbol] = item.amount;
+    });
+    let tokens = [];
+    this.state.tokens.map((item) => {
+      tokens.push({
+        ...item,
+        amount: balances_json[item.symbol] ? balances_json[item.symbol] : 0,
+      });
+    });
+    tokens.sort((a, b) => {
+      if (a.amount == b.amount) {
+        return a.symbol.toUpperCase() >= b.symbol.toUpperCase() ? 1 : -1;
+      }
+      return a.amount - b.amount >= 0 ? -1 : 1;
+    });
+    this.setState({
+      tokens,
+    });
+    this.get_balance();
+  };
+  goto = () => {};
   copy = () => {
     this.setState(
       {
@@ -160,8 +242,97 @@ class IndexRC extends React.Component {
       info_dialog: false,
     });
   };
+  disconnect = (i) => (e) => {
+    let sites = [...this.props.store.sites];
+    sites.splice(i, 1);
+    this.props.dispatch({
+      type: "layout/save",
+      payload: {
+        store: {
+          ...this.props.store,
+          sites,
+        },
+      },
+    });
+  };
+  dialogChange = (key) => (e) => {
+    console.log("key", this.state[key]);
+    this.setState({
+      [key]: !this.state[key],
+      anchorEl: null,
+    });
+  };
+  handleChange = (key) => (e) => {
+    this.setState({
+      [key]: e.target.value,
+    });
+  };
+  exportkey = () => {
+    if (!this.state.password) {
+      this.setState({
+        password_msg: this.props.intl.formatMessage({
+          id: "password is required",
+        }),
+      });
+      return;
+    }
+    const pwd = helper.sha256(this.state.password);
+    const account =
+      this.props.store.accounts && this.props.store.account_index > -1
+        ? this.props.store.accounts[this.props.store.account_index]
+        : {};
+    if (pwd != account.password) {
+      this.setState({
+        password_msg: this.props.intl.formatMessage({
+          id: "password is wrong",
+        }),
+      });
+      return;
+    }
+    const private_key = helper.aes_decrypt(
+      account.privateKey,
+      this.state.password
+    );
+    this.setState({
+      private_key,
+    });
+  };
+  rates = (v, t) => {
+    if (this.state.tokens[this.state.i]) {
+      const d = helper.rates(v, t, this.props.unit, this.state.rates);
+      return d;
+    }
+    return ["", this.props.unit];
+  };
   render() {
     const { classes } = this.props;
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
+    const username = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["username"]
+      : "";
+
+    const balances =
+      this.props.balance && address && this.props.balance[address]
+        ? this.props.balance[address]
+        : { assets: [] };
+    let balance = { amount: "" };
+    balances.assets.map((item) => {
+      if (
+        this.state.tokens[this.state.i] &&
+        item.symbol == this.state.tokens[this.state.i]["symbol"]
+      ) {
+        balance = item;
+      }
+    });
+    const rates = this.state.tokens[this.state.i]
+      ? this.rates(
+          this.state.tokens[this.state.i].amount,
+          this.state.tokens[this.state.i]["symbol"]
+        )
+      : ["", ""];
+
     return (
       <div className={classes.index}>
         <Paper variant="outlined" className={classes.indexpaper}>
@@ -175,37 +346,10 @@ class IndexRC extends React.Component {
                 })}
               >
                 <div className={classes.address}>
-                  <CopyToClipboard
-                    text={
-                      this.props.store.accounts[this.props.store.account_index]
-                        ? this.props.store.accounts[
-                            this.props.store.account_index
-                          ]["address"]
-                        : ""
-                    }
-                    onCopy={this.copy}
-                  >
+                  <CopyToClipboard text={address} onCopy={this.copy}>
                     <div>
-                      <strong>
-                        {this.props.store.accounts[
-                          this.props.store.account_index
-                        ]
-                          ? this.props.store.accounts[
-                              this.props.store.account_index
-                            ]["username"]
-                          : ""}
-                      </strong>
-                      <em>
-                        {this.filteraddress(
-                          this.props.store.accounts[
-                            this.props.store.account_index
-                          ]
-                            ? this.props.store.accounts[
-                                this.props.store.account_index
-                              ]["address"]
-                            : ""
-                        )}
-                      </em>
+                      <strong>{username}</strong>
+                      <em>{this.filteraddress(address)}</em>
                     </div>
                   </CopyToClipboard>
                 </div>
@@ -221,19 +365,25 @@ class IndexRC extends React.Component {
             </Grid>
           </Grid>
           <div className={classes.token}>
-            {this.state.tokenList[this.state.i] &&
-            this.state.tokenList[this.state.i]["tokenUrl"] ? (
-              <img src={this.state.tokenList[this.state.i]["tokenUrl"]} />
+            {this.state.tokens[this.state.i] &&
+            this.state.tokens[this.state.i]["logo"] ? (
+              <img src={this.state.tokens[this.state.i]["logo"]} />
             ) : (
-              <img src={require("../../assets/default_token.svg")} />
+              <img src={require("../../assets/default_icon.png")} />
             )}
             <strong>
-              4.333{" "}
-              {this.state.tokenList[this.state.i]
-                ? this.state.tokenList[this.state.i]["tokenName"]
+              {this.state.tokens[this.state.i]
+                ? this.state.tokens[this.state.i].amount
+                : ""}{" "}
+              {this.state.tokens[this.state.i]
+                ? (
+                    this.state.tokens[this.state.i]["symbol"] || ""
+                  ).toUpperCase()
                 : ""}
             </strong>
-            <em>$12.3123 USD</em>
+            <em>
+              {rates[0]} {rates[1]}
+            </em>
             {/* <Button color="primary" variant="contained">
               BUY
             </Button> */}
@@ -252,20 +402,44 @@ class IndexRC extends React.Component {
           </Paper>
           {this.state.tab == "Assets" ? (
             <List component="nav">
-              {this.state.tokenList.map((item, i) => {
+              {this.state.tokens.map((item, i) => {
+                const rates2 = this.rates(
+                  1,
+                  item.symbol,
+                  this.props.unit,
+                  this.state.rates
+                );
+                const rates = this.rates(
+                  item.amount,
+                  item.symbol,
+                  this.props.unit,
+                  this.state.rates
+                );
                 return (
                   <ListItem
-                    key={item.tokenId}
+                    key={item.symbol}
                     onClick={this.choose(i)}
                     button
                     className={classes.listItem}
                   >
                     <ListItemIcon>
-                      <img src={item.tokenUrl} />
+                      <img
+                        src={
+                          item.logo || require("../../assets/default_icon.png")
+                        }
+                      />
                     </ListItemIcon>
                     <ListItemText>
-                      <strong>0.00 {item.tokenName}</strong>
-                      <em>$0.00 USD</em>
+                      <strong>{(item.symbol || "").toUpperCase()}</strong>
+                      <em>
+                        {rates2[0]} {rates2[1]}
+                      </em>
+                    </ListItemText>
+                    <ListItemText style={{ textAlign: "right" }}>
+                      <strong>{item.amount}</strong>
+                      <em>
+                        {rates[0]} {rates[1]}
+                      </em>
                     </ListItemText>
                     <ListItemSecondaryAction>
                       {i == this.state.i ? <CheckIcon /> : ""}
@@ -337,7 +511,11 @@ class IndexRC extends React.Component {
                           })}
                         </ListItemText>
                       </ListItem>
-                      <ListItem button className={classes.menuitem}>
+                      <ListItem
+                        button
+                        className={classes.menuitem}
+                        onClick={this.goto}
+                      >
                         <ListItemIcon>
                           <CallMadeIcon />
                         </ListItemIcon>
@@ -347,7 +525,11 @@ class IndexRC extends React.Component {
                           })}
                         </ListItemText>
                       </ListItem>
-                      {/* <ListItem button className={classes.menuitem}>
+                      <ListItem
+                        button
+                        className={classes.menuitem}
+                        onClick={this.dialogChange("dialog_sites")}
+                      >
                         <ListItemIcon>
                           <LinkIcon />
                         </ListItemIcon>
@@ -356,7 +538,7 @@ class IndexRC extends React.Component {
                             id: "connected site",
                           })}
                         </ListItemText>
-                      </ListItem> */}
+                      </ListItem>
                     </List>
                   </Paper>
                 </ClickAwayListener>
@@ -445,8 +627,12 @@ class IndexRC extends React.Component {
                   variant="contained"
                   fullWidth
                   className={classes.btn_large}
+                  onClick={() => {
+                    this.closeDialog();
+                    this.dialogChange("dialog_private_key")();
+                  }}
                 >
-                  {this.props.intl.formatMessage({ id: "import private key" })}
+                  {this.props.intl.formatMessage({ id: "export private key" })}
                 </Button>
               </Grid>
             </Grid>
@@ -455,21 +641,121 @@ class IndexRC extends React.Component {
             </IconButton>
           </DialogContent>
         </Dialog>
-        {/* <Dialog open={true}>
+        <Dialog
+          open={this.state.dialog_sites}
+          onClose={this.dialogChange("dialog_sites")}
+        >
           <DialogTitle>
             {this.props.intl.formatMessage({ id: "connected sites" })}
           </DialogTitle>
           <DialogContent>
-            <List>
-              <ListItem>
-                <ListItemText>www.hbc.com</ListItemText>
-                <ListItemSecondaryAction>
-                  <CloseIcon />
-                </ListItemSecondaryAction>
-              </ListItem>
+            <List className={classes.sites}>
+              {this.props.store.sites.map((item, i) => {
+                return (
+                  <ListItem key={item} className={classes.site_item}>
+                    <Grid container alignItems="center" justify="space-between">
+                      <Grid item>
+                        <p>{item}</p>
+                      </Grid>
+                      <Grid item>
+                        <CloseIcon onClick={this.disconnect(i)} />
+                      </Grid>
+                    </Grid>
+                  </ListItem>
+                );
+              })}
+              {this.props.store.sites.length == 0 ? (
+                <em>{this.props.intl.formatMessage({ id: "no data" })}</em>
+              ) : (
+                ""
+              )}
             </List>
           </DialogContent>
-        </Dialog> */}
+        </Dialog>
+        <Dialog open={this.state.dialog_private_key}>
+          <DialogContent style={{ width: 300, position: "relative" }}>
+            <Grid
+              container
+              alignItems="center"
+              justify="center"
+              style={{ height: 60 }}
+            >
+              <Grid item>
+                {
+                  this.props.store.accounts[this.props.store.account_index][
+                    "username"
+                  ]
+                }
+              </Grid>
+            </Grid>
+            <Grid container justify="center">
+              <Grid item xs={12} style={{ height: 100 }}>
+                <TextField
+                  value={
+                    this.props.store.accounts[this.props.store.account_index]
+                      ? this.props.store.accounts[
+                          this.props.store.account_index
+                        ]["address"]
+                      : ""
+                  }
+                  fullWidth
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12} style={{ height: 100, minHeight: 50 }}>
+                {this.state.private_key ? (
+                  <CopyToClipboard
+                    text={this.state.private_key}
+                    onCopy={this.copy}
+                  >
+                    <p className={classes.private_key}>
+                      {this.state.private_key}
+                    </p>
+                  </CopyToClipboard>
+                ) : (
+                  <TextField
+                    type="password"
+                    value={this.state.password}
+                    onChange={this.handleChange("password")}
+                    fullWidth
+                    variant="outlined"
+                    label={this.props.intl.formatMessage({
+                      id: "enter password",
+                    })}
+                    helperText={this.state.password_msg}
+                    error={Boolean(this.state.password_msg)}
+                  />
+                )}
+              </Grid>
+              <Grid item xs={12} style={{ height: 60 }}>
+                {this.state.private_key ? (
+                  <p className={classes.private_key_tip}>
+                    {this.props.intl.formatMessage({ id: "private key tip" })}
+                  </p>
+                ) : (
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    fullWidth
+                    className={classes.btn_large}
+                    disabled={!Boolean(this.state.password)}
+                    onClick={this.exportkey}
+                  >
+                    {this.props.intl.formatMessage({
+                      id: "export private key",
+                    })}
+                  </Button>
+                )}
+              </Grid>
+            </Grid>
+            <IconButton
+              className={classes.closebtn}
+              onClick={this.dialogChange("dialog_private_key")}
+            >
+              <HighlightOffIcon />
+            </IconButton>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }

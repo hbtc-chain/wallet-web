@@ -37,7 +37,6 @@ class MessageManager {
     if (Object.keys(obj).length == 0) {
       return;
     }
-    console.log(data, this.msgs);
     if (obj.to == CONST.MESSAGE_FROM_PAGE) {
       let id = obj.id;
       let d = this.msgs.get(id);
@@ -108,7 +107,6 @@ class MessageManager {
         orign: window.location.hostname,
       },
     });
-    console.log(success, error);
     this.msgs.set(msg.id, { ...msg, success, error });
     this.postMessage(msg);
     return msg.id;
@@ -124,6 +122,20 @@ class MessageManager {
       from: CONST.MESSAGE_FROM_PAGE,
       to: CONST.MESSAGE_FROM_BACKGROUND,
       type: CONST.METHOD_GET_ACCOUNT,
+    });
+    this.msgs.set(msg.id, { ...msg, success, error });
+    this.postMessage(msg);
+    return msg.id;
+  }
+  /**
+   * 资产查询
+   * @param {*} id
+   */
+  get_balance(data, success = () => {}, error = () => {}) {
+    let msg = util.packmsg({
+      from: CONST.MESSAGE_FROM_PAGE,
+      to: CONST.MESSAGE_FROM_BACKGROUND,
+      type: CONST.METHOD_GET_BALANCE,
     });
     this.msgs.set(msg.id, { ...msg, success, error });
     this.postMessage(msg);

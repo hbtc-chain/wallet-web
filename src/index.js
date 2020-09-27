@@ -89,7 +89,6 @@ function start(initstore) {
 }
 const initStore = async () => {
   const res = await Store.get();
-  console.log(res);
   start({
     layout: {
       store: res || {
@@ -99,6 +98,10 @@ const initStore = async () => {
         signmsgs: {},
         password: "",
       },
+      balance: {},
+      unit: "usd",
+      units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
+      messageManager: null,
     },
   });
 };

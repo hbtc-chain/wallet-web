@@ -29,6 +29,9 @@ export default {
       signmsgs: {},
       sites: [],
     },
+    balance: {},
+    unit: "usd",
+    units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
     messageManager: null,
     domain: "main",
   },
@@ -42,29 +45,12 @@ export default {
           messageManager,
         },
       });
-      history.listen((location) => {
-        const pathname = location.pathname;
-        // 判断是否登录
-        let r = false;
-        route_map.noLogin.map((item) => {
-          if (
-            (route_map[item] !== "/" &&
-              pathname.indexOf(route_map[item]) > -1) ||
-            (route_map[item] === "/" && pathname === "/")
-          ) {
-            r = true;
-          }
-        });
-        // 需登录才可访问的页面
-        if (!r) {
-          dispatch({
-            type: "init",
-            payload: {},
-            dispatch,
-          });
-          return;
-        }
+      dispatch({
+        type: "init",
+        payload: {},
+        dispatch,
       });
+      history.listen((location) => {});
     },
   },
 
@@ -72,31 +58,6 @@ export default {
     // 判断是否要登录
     *init({ dispatch }, { select }) {
       let layout = yield select((state) => state.layout);
-      // 无账户
-      if (
-        (!layout.store.accounts || !layout.store.accounts.length) &&
-        window.location.href.indexOf(route_map.welcome) == -1
-      ) {
-        dispatch(
-          routerRedux.push({
-            pathname: route_map.welcome,
-          })
-        );
-        return;
-      }
-      // 未登录
-      if (
-        layout.store.account_index == -1 &&
-        window.location.href.indexOf(route_map.login) == -1
-      ) {
-        dispatch(
-          routerRedux.push({
-            pathname: route_map.login,
-            search: "?redirect=" + encodeURIComponent(window.location.pathname),
-          })
-        );
-        return;
-      }
       // 已登录，有sign请求,跳转sign
       if (
         Object.keys(layout.store.signmsgs || {}).length != 0 &&
@@ -111,12 +72,12 @@ export default {
       }
     },
     // 创建账户
-    *create_account({ payload, dispatch }, { call, put, select }) {
+    *create_account({ payload }, { put, select }) {
       let password = payload.password;
       if (!password) {
         return;
       }
-      const mnemonic = helper.createMnemonic();
+      const mnemonic = payload.mnemonic || helper.createMnemonic();
       const encrypt_mnemonic = helper.aes_encrypt(mnemonic, password);
 
       // 生成公钥秘钥
@@ -150,7 +111,6 @@ export default {
       } else {
         accounts = [data];
       }
-      console.log(accounts, password);
       yield put({
         type: "save",
         payload: {
@@ -166,11 +126,24 @@ export default {
     /**
      * commReq
      */
-    *commReq({ payload, url, method }, { call, select }) {
+    *commReq({ payload, url, method = "GET" }, { call, select }) {
       const domain = yield select((state) => state.layout.main);
-      return yield call(getData(API.domain[domain] + url), {
+      return yield call(getData(API.domain.main + url), {
         payload,
         method,
+      });
+    },
+    *get_balance({ payload }, { put, select }) {
+      const balance = yield select((state) => state.layout.balance);
+      console.log(payload);
+      yield put({
+        type: "save",
+        payload: {
+          balance: {
+            ...balance,
+            ...payload,
+          },
+        },
       });
     },
   },

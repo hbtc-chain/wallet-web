@@ -28,6 +28,7 @@ import util from "../../util/util";
 import CONST from "../../util/const";
 import API from "../../util/api";
 import message from "../public/message";
+import math from "../../util/mathjs";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -36,26 +37,52 @@ class IndexRC extends React.Component {
       tab: 0,
       trade: {},
       loading: false,
+      getTokenError: "",
+      tokens: [],
     };
   }
   componentDidMount() {
-    // 1、验证收到的 from_address 是 accounts中的某个地址，不是的话，需要拒绝sign请求
-    // 2、是否登录
     this.init();
   }
   init = async () => {
     let params = querystring.parse(this.props.location.search);
     let id = params.id;
-    let tabId = params.tabId;
     let all_data = await Store.get();
     let datas = (all_data.signmsgs || {})[id];
     if (datas) {
+      // 获取币精度
+      let fee_token = datas.data.fee.amount[0].denom;
+      let fee_amount = datas.data.fee.amount[0].amount;
+      let msg_token = datas.data.msgs[0].value.amount[0].denom;
+      let msg_amount = datas.data.msgs[0].value.amount[0].amount;
+
+      await this.getToken(fee_token);
+      await this.getToken(msg_token);
+
       this.setState({
         trade: datas.data,
         id,
-        tabId,
+        fee_token,
+        msg_token,
+        fee_amount,
+        msg_amount,
+      });
+    }
+  };
+  getToken = async (token) => {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.tokens + "/" + token,
+    });
+    if (result.code == 200) {
+      this.setState({
+        [token]: result.data,
       });
     } else {
+      this.setState({
+        getTokenError: result.msg,
+      });
     }
   };
   reject = async () => {
@@ -75,7 +102,44 @@ class IndexRC extends React.Component {
     window.close();
   };
   sign = async () => {
-    let obj = helper.jsonSort(this.state.trade);
+    if (
+      !this.state.fee_token ||
+      !this.state.msg_token ||
+      !this.state[this.state.fee_token] ||
+      !this.state[this.state.msg_token] ||
+      this.state.getTokenError
+    ) {
+      message.error(
+        this.props.intl.formatMessage({ id: "token has no decimals value" })
+      );
+      return;
+    }
+    // 对amount进行精度处理
+    let d = {
+      chain_id: this.state.trade.chain_id,
+      fee: this.state.trade.fee,
+      memo: this.state.trade.memo,
+      msgs: this.state.trade.msgs,
+      sequence: this.state.trade.sequence,
+    };
+
+    d.fee.amount[0].amount = math
+      .chain(math.bignumber(this.state.fee_amount))
+      .multiply(Math.pow(10, this.state[this.state.fee_token]["decimals"]))
+      .format({ notation: "fixed", precision: 1 })
+      .done();
+
+    d.msgs[0].value.amount[0].amount = math
+      .chain(math.bignumber(this.state.msg_amount))
+      .multiply(Math.pow(10, this.state[this.state.msg_token]["decimals"]))
+      .format({ notation: "fixed", precision: 1 })
+      .done();
+
+    d.fee.amount[0].amount = `${d.fee.amount[0].amount}`.split(".")[0];
+    d.msgs[0].value.amount[0].amount = `${d.msgs[0].value.amount[0].amount}`.split(
+      "."
+    )[0];
+    let obj = helper.jsonSort(d);
     let account = this.props.store.accounts[this.props.store.account_index];
     let privateKey = account.privateKey;
     let publicKey = account.publicKey;
@@ -83,35 +147,22 @@ class IndexRC extends React.Component {
     privateKey = helper.aes_decrypt(privateKey, this.props.store.password);
     publicKey = helper.aes_decrypt(publicKey, this.props.store.password);
 
-    // 获取sequence
-    // const { sequence } = await this.props.dispatch({
-    //   type: "layout/commReq",
-    //   payload: {},
-    //   url: API.cus + "/" + obj.msgs[0].value.from_address,
-    // });
-    // obj.sequence = sequence;
     const sign = helper.sign(obj, privateKey, publicKey);
 
     let data = {
       ...obj,
-      signatures: {
-        signature: sign,
-        pub_key: {
-          type: "tendermint/PubKeySecp256k1",
-          value: publicKey,
+      signatures: [
+        {
+          signature: sign,
+          pub_key: {
+            type: "tendermint/PubKeySecp256k1",
+            value: Buffer.from(helper.HexString2Bytes(publicKey)).toString(
+              "base64"
+            ),
+          },
         },
-      },
+      ],
     };
-
-    // 发送请求
-    // const result = await this.props.dispatch({
-    //   type: "layout/commReq",
-    //   url: API.txs,
-    //   method: "post",
-    //   payload: {
-    //     tx: data,
-    //     mode: "sync",
-    //   },
     // });
 
     // 发送到网页
@@ -182,7 +233,6 @@ class IndexRC extends React.Component {
                 this.state.trade.msgs[0].value.amount[0].denom
               : ""}
           </h1>
-          <span>$---- USD</span>
         </div>
         <Paper square>
           <Tabs
@@ -210,7 +260,6 @@ class IndexRC extends React.Component {
                       this.state.trade.fee.amount[0].denom
                     : ""}
                 </strong>
-                <span>$--- USD</span>
               </Grid>
             </Grid>
             <Grid container justify="space-between" className={classes.item}>
@@ -226,7 +275,6 @@ class IndexRC extends React.Component {
                       this.state.trade.msgs[0].value.amount[0].denom
                     : ""}
                 </strong>
-                <span>$--- USD</span>
               </Grid>
             </Grid>
           </div>

@@ -7,4 +7,5 @@ export default {
   MEHTOD_CONNECT: "connect",
   METHOD_SET_STORE: "set_store",
   METHOD_GET_STORE: "get_store",
+  METHOD_GET_BALANCE: "get_balance",
 };

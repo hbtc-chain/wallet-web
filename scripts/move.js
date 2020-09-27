@@ -51,6 +51,10 @@ function inpage() {
   result = Buffer.from(result).toString();
   let inpage = fs.readFileSync(path.join(__dirname, "../build/inpage.js"));
   inpage = Buffer.from(inpage).toString();
+  inpage = inpage.replace(
+    /\/\*\! For license information please see inpage.js.LICENSE.txt \*\/\n/,
+    ""
+  );
 
   result = result.replace('"{inpageContent}"', "'" + inpage + "'");
   fs.writeFileSync(path.join(__dirname, "../build/content-script.js"), result);

@@ -17,28 +17,27 @@ function checkStatus(response, timer) {
  * @param  {object} [options] The options we want to pass to "fetch"
  * @return {object}           An object containing either "data" or "err"
  */
-export default function request(url, options = {}) {
+export default function request(url, options = { method: "GET" }) {
   const t_start = new Date().getTime();
-  const fheaders = new Headers();
-  fheaders.append("X-Requested-With", "XMLHttpRequest");
-  if (!options.upload) {
-    fheaders.append("Content-Type", "application/x-www-form-urlencoded");
-  }
-  //fheaders.append("Accept-Language", window.localStorage.lang);
-  if (options.headers) {
-    for (const key in options.headers) {
-      if ({}.hasOwnProperty.call(options.headers, key)) {
-        fheaders.append(key, options.headers[key]);
-      }
-    }
-  }
-
+  // const fheaders = new Headers();
+  // fheaders.append("X-Requested-With", "XMLHttpRequest");
+  // if (!options.upload) {
+  //   fheaders.append("Content-Type", "application/x-www-form-urlencoded");
+  // }
+  // //fheaders.append("Accept-Language", window.localStorage.lang);
+  // if (options.headers) {
+  //   for (const key in options.headers) {
+  //     if ({}.hasOwnProperty.call(options.headers, key)) {
+  //       fheaders.append(key, options.headers[key]);
+  //     }
+  //   }
+  // }
   options = Object.assign(
     {
-      credentials: options.credentials || "include", // 是否跨域访问cookie， omit默认，same-origin同域，include
+      //credentials: options.credentials || "include", // 是否跨域访问cookie， omit默认，same-origin同域，include
       method: options.method || "GET",
-      mode: options.mode || "no-cors", // 是否允许跨域请求，no-cors默认，same-origin同域，cors跨域
-      headers: fheaders,
+      mode: options.mode || "cors", // 是否允许跨域请求，no-cors默认，same-origin同域，cors跨域
+      //headers: fheaders,
     },
     options
   );
@@ -103,10 +102,14 @@ export default function request(url, options = {}) {
           if (res.status >= 200 && res.status < 300 && d) {
             let data = {};
             if (d && d.length) {
-              data = JSON.parse(d);
+              try {
+                data = JSON.parse(d);
+              } catch (e) {
+                console.error(e);
+              }
             }
             return {
-              code: "OK",
+              code: 200,
               data,
             };
           } else {

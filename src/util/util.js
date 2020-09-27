@@ -1,4 +1,5 @@
 import { v4 } from "uuid";
+
 /**
  * 对消息进行包装
  * @param {string} from page,background,popup
@@ -21,6 +22,13 @@ function packmsg({ from, to, id, tabId, type, data }) {
   };
 }
 
+function delay(timeout) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, timeout);
+  });
+}
+
 export default {
   packmsg,
+  delay,
 };
