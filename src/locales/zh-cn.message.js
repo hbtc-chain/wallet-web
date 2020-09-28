@@ -82,4 +82,9 @@ export default {
   "login mnemonic": "使用账号助记词登录",
   "token has no decimals value": "token精度读取失败",
   rate: "法币切换",
+  "hbtcchain/transfer/MsgSend": "转账",
+  to_address: "转入地址",
+  from_address: "转出地址",
+  memo: "备注",
+  confirmed: "网站已授权，点击返回",
 };

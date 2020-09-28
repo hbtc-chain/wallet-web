@@ -306,12 +306,16 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes } = this.props;
-    const address = this.props.store.accounts[this.props.store.account_index]
-      ? this.props.store.accounts[this.props.store.account_index]["address"]
-      : "";
-    const username = this.props.store.accounts[this.props.store.account_index]
-      ? this.props.store.accounts[this.props.store.account_index]["username"]
-      : "";
+    const address =
+      this.props.store.accounts[this.props.store.account_index] &&
+      this.props.store.account_index != -1
+        ? this.props.store.accounts[this.props.store.account_index]["address"]
+        : "";
+    const username =
+      this.props.store.accounts[this.props.store.account_index] &&
+      this.props.store.account_index != -1
+        ? this.props.store.accounts[this.props.store.account_index]["username"]
+        : "";
 
     const balances =
       this.props.balance && address && this.props.balance[address]
@@ -681,11 +685,11 @@ class IndexRC extends React.Component {
               style={{ height: 60 }}
             >
               <Grid item>
-                {
-                  this.props.store.accounts[this.props.store.account_index][
-                    "username"
-                  ]
-                }
+                {this.props.store.accounts[this.props.store.account_index]
+                  ? this.props.store.accounts[this.props.store.account_index][
+                      "username"
+                    ]
+                  : ""}
               </Grid>
             </Grid>
             <Grid container justify="center">

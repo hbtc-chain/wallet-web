@@ -22,7 +22,6 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {
     const state = this.props.location.state || { tab: {}, origin: "" };
-    console.log(state);
     const url = state.data && state.data.origin ? state.data.origin : "";
     if (!url) {
       this.reject("The url parameter is incorrect");
@@ -48,7 +47,6 @@ class IndexRC extends React.Component {
     if (index == -1 && this.state.url) {
       sites.push(this.state.url);
     }
-    console.log(sites, this.state.url, index);
     await this.props.dispatch({
       type: "layout/save",
       payload: {
@@ -89,6 +87,17 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes } = this.props;
+    const sites = [...(this.props.store.sites || [])];
+    let connected = false;
+    if (this.props.store.password) {
+      const index = sites.findIndex(
+        (item) => item.indexOf(this.state.url) > -1
+      );
+      if (index !== -1) {
+        connected = true;
+      }
+    }
+
     return (
       <div className={classes.connect}>
         {this.state.tab.favIconUrl ? (
@@ -99,33 +108,59 @@ class IndexRC extends React.Component {
         <p>{this.state.url}</p>
         <h1>{this.props.intl.formatMessage({ id: "request for access" })}</h1>
         <p>{this.props.intl.formatMessage({ id: "requset for address" })}</p>
-        <Grid container justify="space-around" className={classes.connect_btns}>
-          <Grid item xs={5}>
-            <Button
-              variant="contained"
-              fullWidth
-              className={classes.btn_large}
-              onClick={this.reject.bind(this, "User rejected")}
-            >
-              {this.props.intl.formatMessage({
-                id: "reject",
-              })}
-            </Button>
+        {connected ? (
+          <Grid
+            container
+            justify="space-around"
+            className={classes.connect_btns}
+          >
+            <Grid item xs={10}>
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                className={classes.btn_large}
+                onClick={this.confirm}
+              >
+                {this.props.intl.formatMessage({
+                  id: "confirmed",
+                })}
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={5}>
-            <Button
-              color="primary"
-              variant="contained"
-              fullWidth
-              className={classes.btn_large}
-              onClick={this.confirm}
-            >
-              {this.props.intl.formatMessage({
-                id: "confirm",
-              })}
-            </Button>
+        ) : (
+          <Grid
+            container
+            justify="space-around"
+            className={classes.connect_btns}
+          >
+            <Grid item xs={5}>
+              <Button
+                variant="contained"
+                fullWidth
+                className={classes.btn_large}
+                onClick={this.reject.bind(this, "User rejected")}
+              >
+                {this.props.intl.formatMessage({
+                  id: "reject",
+                })}
+              </Button>
+            </Grid>
+            <Grid item xs={5}>
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                className={classes.btn_large}
+                onClick={this.confirm}
+              >
+                {this.props.intl.formatMessage({
+                  id: "confirm",
+                })}
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </div>
     );
   }

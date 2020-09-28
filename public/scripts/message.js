@@ -5,6 +5,7 @@ import util from "../../src/util/util";
 import querystring from "query-string";
 import request from "./request";
 import API from "../../src/util/api";
+import Sign from "../../src/util/sign";
 
 export default class MessageManager {
   constructor(opts) {
@@ -16,6 +17,7 @@ export default class MessageManager {
     this.openPopup = opts.openPopup;
     this.popupIsOpen = opts.popupIsOpen;
     this.setpopupIsOpen = opts.setpopupIsOpen;
+    this.platform = opts.platform;
 
     // 启动资产查询loop
     this.get_balance_loop();
@@ -206,10 +208,7 @@ export default class MessageManager {
       obj.data && obj.data.msgs && obj.data.msgs[0] && obj.data.msgs[0].value
         ? obj.data.msgs[0].value.from_address
         : "";
-    if (
-      from &&
-      (type == CONST.METHOD_SIGN || type == CONST.METHOD_GET_ACCOUNT)
-    ) {
+    if (from && type == CONST.METHOD_SIGN) {
       const index = datas.accounts.findIndex((item) => item.address == from);
       if (index == -1) {
         this.sendMsgToPage(
@@ -233,36 +232,49 @@ export default class MessageManager {
    * @param {*} obj
    */
   async connect(obj, port) {
-    const res = await this.account_logined(obj, CONST.MEHTOD_CONNECT, port);
-    if (res) {
-      const origin = querystring.parseUrl(port.sender.origin || "").url;
-      const datas = await store.get();
-      const sites = datas.sites || [];
-      const index = sites.findIndex((item) => origin.indexOf(item) > -1);
-      console.log(sites, origin);
-      // 已授权过
-      if (index > -1) {
-        this.sendMsgToPage(
-          {
-            id: obj.id,
-            type: obj.type,
-            data: {
-              code: 200,
-              msg: "OK",
-            },
+    const datas = await store.get();
+    const accounts = datas.accounts;
+    // 未创建账户
+    if (accounts.length == 0) {
+      this.platform.openExtensionInBrowser("/welcome");
+      this.sendMsgToPage(
+        {
+          id: obj.id,
+          type,
+          data: {
+            msg: "No account in wallet",
+            code: 400,
           },
-          port
-        );
-      } else {
-        this.sendMsgToPopup(
-          {
-            id: obj.id,
-            type: obj.type,
-            data: { ...obj.data, tab: port.sender.tab, origin },
+        },
+        port
+      );
+      return;
+    }
+    const origin = querystring.parseUrl(port.sender.origin || "").url;
+    const sites = datas.sites || [];
+    const index = sites.findIndex((item) => origin.indexOf(item) > -1);
+    // 已授权过，已登录
+    if (index > -1 && datas.password) {
+      this.sendMsgToPage(
+        {
+          id: obj.id,
+          type: obj.type,
+          data: {
+            code: 200,
+            msg: "OK",
           },
-          port
-        );
-      }
+        },
+        port
+      );
+    } else {
+      this.sendMsgToPopup(
+        {
+          id: obj.id,
+          type: obj.type,
+          data: { ...obj.data, tab: port.sender.tab, origin },
+        },
+        port
+      );
     }
   }
   /**
@@ -307,7 +319,6 @@ export default class MessageManager {
       const account = datas.accounts[datas.account_index];
       const address = account.address;
       const data = this.balance.get(address) || {};
-      console.log(port.name);
       // popup and popup is open
       if (port.name == "popup") {
         if (this.popupIsOpen) {
@@ -346,49 +357,39 @@ export default class MessageManager {
     if (res) {
       // 验证数据正确性
       let d = { ...obj.data };
-      if (
-        !d.chain_id ||
-        !d.msgs ||
-        !d.msgs[0] ||
-        !d.msgs[0].value ||
-        !d.msgs[0].value.from_address ||
-        !d.msgs[0].value.to_address ||
-        !d.msgs[0].value.amount ||
-        !d.msgs[0].value.amount[0] ||
-        !d.msgs[0].value.amount[0].denom ||
-        !d.msgs[0].value.amount[0].amount ||
-        !d.fee ||
-        !d.fee.gas ||
-        !d.fee.amount ||
-        !d.fee.amount[0] ||
-        !d.fee.amount[0].denom ||
-        !d.fee.amount[0].amount
-      ) {
+      if (!d || !d.value) {
         this.sendMsgToPage(
           { ...obj, data: { code: 400, msg: "Missing parameters" } },
           port
         );
         return;
       }
+      let sign_obj = {
+        ...obj,
+        data: {
+          msgs: [d],
+        },
+      };
       // 获取sequence
       try {
+        let data = Sign.get_info_from_msgs(sign_obj.data.msgs[0]);
         const result = await request(
-          API.domain.main + API.cus + "/" + obj.data.msgs[0].value.from_address
+          API.domain.main + API.cus + "/" + data.address
         );
         if (result.code == 200) {
-          obj.data.sequence = result.data.sequence;
-          this.signmsgs[obj.id] = obj;
+          sign_obj.data.sequence = result.data.sequence;
+          this.signmsgs[obj.id] = sign_obj;
           store.set({ signmsgs: this.signmsgs });
-          this.sendMsgToPopup(obj, port);
+          this.sendMsgToPopup(sign_obj, port);
         } else {
           this.sendMsgToPage(
-            { ...obj, data: { code: 400, msg: result.msg } },
+            { ...sign_obj, data: { code: 400, msg: result.msg } },
             port
           );
         }
       } catch (e) {
         this.sendMsgToPage(
-          { ...obj, data: { code: 400, msg: e.message } },
+          { ...sign_obj, data: { code: 400, msg: e.message } },
           port
         );
       }

@@ -84,7 +84,9 @@ class MessageManager {
     });
     console.log("send msg to bg:");
     console.log(obj);
-    this.port.postMessage(JSON.stringify(obj));
+    if (window.location.hostname !== "localhost") {
+      this.port.postMessage(JSON.stringify(obj));
+    }
   }
 }
 

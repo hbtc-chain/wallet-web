@@ -43,14 +43,12 @@ const messages = new MessageManager({
   openPopup,
   popupIsOpen,
   setpopupIsOpen,
+  platform,
 });
 
 // On first install, open a new tab with
 extension.runtime.onInstalled.addListener(({ reason }) => {
-  if (
-    reason === "install" &&
-    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
-  ) {
+  if (reason === "install") {
     platform.openExtensionInBrowser("/welcome");
   }
 });

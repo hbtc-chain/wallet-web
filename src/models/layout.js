@@ -34,6 +34,7 @@ export default {
     units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
     messageManager: null,
     domain: "main",
+    chain_id: "HBTC",
   },
 
   subscriptions: {

@@ -74,7 +74,7 @@ export default (theme) => ({
     top: 5,
   },
   sites: {
-    width: 300,
+    width: 240,
     "& em": {
       color: theme.palette.grey[500],
       padding: "20px 0",

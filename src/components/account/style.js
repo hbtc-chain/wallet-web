@@ -76,8 +76,9 @@ export default (theme) => ({
     },
   },
   acount: {
-    padding: "50px 20px",
+    padding: 20,
     background: theme.palette.grey[50],
+    textAlign: "center",
     "& h1": {
       fontSize: 36,
     },
@@ -98,8 +99,13 @@ export default (theme) => ({
     },
   },
   item: {
-    padding: "30px 10px",
+    padding: "15px 10px",
     borderBottom: `1px solid ${theme.palette.grey[100]}`,
+    fontSize: 14,
+  },
+  item_content: {
+    wordBreak: "break-all",
+    textAlign: "right",
   },
   login_mnemonic: {
     margin: "50px 0 0",
@@ -109,5 +115,10 @@ export default (theme) => ({
     fontSize: 14,
     fontWeight: 500,
     textAlign: "left",
+  },
+  sign_title: {
+    textAlign: "center",
+    padding: "16px 10px",
+    fontSize: 20,
   },
 });

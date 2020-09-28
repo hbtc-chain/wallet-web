@@ -40,13 +40,10 @@ class MessageManager {
     if (obj.to == CONST.MESSAGE_FROM_PAGE) {
       let id = obj.id;
       let d = this.msgs.get(id);
+      console.log(d);
       if (d) {
         // 发送过的消息回调
-        if (obj.data.code == 200) {
-          d.success && d.success(obj.data);
-        } else {
-          d.error && d.error(obj.data);
-        }
+        d.cb && d.cb(obj.data);
         this.msgs.delete(id);
       }
     }
@@ -58,37 +55,37 @@ class MessageManager {
    * @param {function} obj.success 成功回调
    * @param {function} obj.error 失败回调
    */
-  callHandler(obj) {
-    const name = obj.name;
-    const data = obj.data || {};
-    if (!name) {
+  callHandler(name, _data, _cb) {
+    if (!name || Object.prototype.toString.call(name) != "[object String]") {
       return;
     }
     let id = "";
+    const data = !_cb && typeof _data == "function" ? {} : _data;
+    const cb = !_cb && typeof _data == "function" ? _data : _cb;
     try {
       if (this[name]) {
-        id = this[name](data, obj.success, obj.error);
+        id = this[name](data, cb);
+        console.log(name, data, cb);
       }
     } catch (e) {
-      obj.error && obj.error({ code: 400, msg: `no ${name} method` });
+      cb && cb({ code: 400, msg: `no ${name} method` });
     }
     return id;
   }
   /**
    * 签名请求
    * @param {object} data 待签名的json data
-   * @param {function} success 成功回调
-   * @param {function} error 失败回调
+   * @param {function} cb 回调
    * @return {string} msg.id
    */
-  sign(data, success = () => {}, error = () => {}) {
+  sign(data, cb = () => {}) {
     let msg = util.packmsg({
       from: CONST.MESSAGE_FROM_PAGE,
       to: CONST.MESSAGE_FROM_BACKGROUND,
       type: CONST.METHOD_SIGN,
       data,
     });
-    this.msgs.set(msg.id, { ...msg, success, error });
+    this.msgs.set(msg.id, { ...msg, cb });
     this.postMessage(msg);
     return msg.id;
   }
@@ -98,7 +95,7 @@ class MessageManager {
    * @param {function} error 失败回调
    * @return {string} msg.id
    */
-  connect(data, success = () => {}, error = () => {}) {
+  connect(data, cb = () => {}) {
     let msg = util.packmsg({
       from: CONST.MESSAGE_FROM_PAGE,
       to: CONST.MESSAGE_FROM_BACKGROUND,
@@ -107,7 +104,7 @@ class MessageManager {
         orign: window.location.hostname,
       },
     });
-    this.msgs.set(msg.id, { ...msg, success, error });
+    this.msgs.set(msg.id, { ...msg, cb });
     this.postMessage(msg);
     return msg.id;
   }
@@ -117,13 +114,13 @@ class MessageManager {
    * @param {function} error
    * @return {string} msg.id
    */
-  get_account(data, success = () => {}, error = () => {}) {
+  get_account(data, cb = () => {}) {
     let msg = util.packmsg({
       from: CONST.MESSAGE_FROM_PAGE,
       to: CONST.MESSAGE_FROM_BACKGROUND,
       type: CONST.METHOD_GET_ACCOUNT,
     });
-    this.msgs.set(msg.id, { ...msg, success, error });
+    this.msgs.set(msg.id, { ...msg, cb });
     this.postMessage(msg);
     return msg.id;
   }
@@ -131,13 +128,13 @@ class MessageManager {
    * 资产查询
    * @param {*} id
    */
-  get_balance(data, success = () => {}, error = () => {}) {
+  get_balance(data, cb = () => {}) {
     let msg = util.packmsg({
       from: CONST.MESSAGE_FROM_PAGE,
       to: CONST.MESSAGE_FROM_BACKGROUND,
       type: CONST.METHOD_GET_BALANCE,
     });
-    this.msgs.set(msg.id, { ...msg, success, error });
+    this.msgs.set(msg.id, { ...msg, cb });
     this.postMessage(msg);
     return msg.id;
   }

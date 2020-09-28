@@ -92,6 +92,9 @@ body {
   flex-direction: column;
   justify-content: space-between; 
 }*/
+#root {
+  min-height: 500px;
+}
 
 .g_content {
   max-width: 700px;

@@ -71,7 +71,7 @@ class ExtensionStore {
         if (err) {
           reject(err);
         } else {
-          resolve(result);
+          resolve({ ...result, password: this.password });
         }
       });
     });
@@ -90,8 +90,10 @@ class ExtensionStore {
       let data = { ...all, ...obj };
       if (data.password) {
         this.password = data.password;
-        delete data.password;
+      } else {
+        this.password = "";
       }
+      delete data.password;
       local.set(data, () => {
         const err = checkForError();
         if (err) {

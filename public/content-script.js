@@ -152,8 +152,8 @@ port.onMessage.addListener((message) => {
         window.postMessage(message);
       }
     } catch (e) {
-      console.warn(e.message);
-      console.warn(message);
+      // console.warn(e.message);
+      // console.warn(message);
     }
   }
 });
@@ -175,7 +175,7 @@ window.onmessage = (e) => {
       port.postMessage(JSON.stringify(data));
     }
   } catch (e) {
-    console.warn(e.message);
-    console.warn(data);
+    // console.warn(e.message);
+    // console.warn(data);
   }
 };
