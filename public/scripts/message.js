@@ -81,7 +81,7 @@ export default class MessageManager {
       return;
     }
     if (obj.to) {
-      console.log("background 接收到消息：" + msg);
+      // console.log("background 接收到消息：" + msg);
     }
     // 发送到background
     if (obj.to == CONST.MESSAGE_FROM_BACKGROUND) {
@@ -429,8 +429,8 @@ export default class MessageManager {
       tabId: obj.tabId,
       data: obj.data,
     });
-    console.log("send data to page:");
-    console.log(msg);
+    // console.log("send data to page:");
+    // console.log(msg);
     this.port.forEach((item) => {
       try {
         item.postMessage(JSON.stringify(msg));
