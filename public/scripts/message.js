@@ -22,6 +22,9 @@ export default class MessageManager {
     // 启动资产查询loop
     this.get_balance_loop();
 
+    // sign消息数量监听
+    this.updateBadge();
+
     this.port = new Map();
     extension.runtime.onConnect.addListener((port) => {
       if (port.name == "popup") {
@@ -150,7 +153,7 @@ export default class MessageManager {
   async account_logined(obj, type, port) {
     const datas = await store.get();
     // todo 无账户
-    if (datas.accounts.length == 0) {
+    if (!datas.accounts || datas.accounts.length == 0) {
       this.sendMsgToPage(
         {
           id: obj.id,
@@ -168,11 +171,7 @@ export default class MessageManager {
     const sites = datas.sites || [];
     const index = sites.findIndex((item) => orign.indexOf(item) > -1);
     // todo 未链接钱包
-    if (
-      index == -1 &&
-      type !== CONST.MEHTOD_CONNECT &&
-      obj.from == CONST.MESSAGE_FROM_PAGE
-    ) {
+    if (index == -1 && obj.from == CONST.MESSAGE_FROM_PAGE) {
       this.sendMsgToPage(
         {
           id: obj.id,
@@ -203,28 +202,6 @@ export default class MessageManager {
       return false;
     }
 
-    // type == sign , get_balance 地址不在当前账户列表
-    const from =
-      obj.data && obj.data.msgs && obj.data.msgs[0] && obj.data.msgs[0].value
-        ? obj.data.msgs[0].value.from_address
-        : "";
-    if (from && type == CONST.METHOD_SIGN) {
-      const index = datas.accounts.findIndex((item) => item.address == from);
-      if (index == -1) {
-        this.sendMsgToPage(
-          {
-            id: obj.id,
-            type,
-            data: {
-              msg: `${from} address does not exist`,
-              code: 400,
-            },
-          },
-          port
-        );
-        return false;
-      }
-    }
     return true;
   }
   /**
@@ -235,12 +212,12 @@ export default class MessageManager {
     const datas = await store.get();
     const accounts = datas.accounts;
     // 未创建账户
-    if (accounts.length == 0) {
+    if (!accounts || accounts.length == 0) {
       this.platform.openExtensionInBrowser("/welcome");
       this.sendMsgToPage(
         {
           id: obj.id,
-          type,
+          type: obj.type,
           data: {
             msg: "No account in wallet",
             code: 400,
@@ -334,7 +311,12 @@ export default class MessageManager {
    */
   async get_balance_loop() {
     const datas = await store.get();
-    if (datas.accounts.length && datas.account_index > -1 && datas.password) {
+    if (
+      datas.accounts &&
+      datas.accounts.length &&
+      datas.account_index > -1 &&
+      datas.password
+    ) {
       const account = datas.accounts[datas.account_index];
       const address = account.address;
       try {
@@ -401,6 +383,10 @@ export default class MessageManager {
    * @param {*} port
    */
   async sign_result(obj, port) {
+    if (obj.id && !this.signmsgs[obj.id]) {
+      console.warn(`sign message has no id = ${obj.id}`);
+      return;
+    }
     if (this.signmsgs && obj.id && this.signmsgs[obj.id]) {
       delete this.signmsgs[obj.id];
     }
@@ -473,5 +459,23 @@ export default class MessageManager {
         } catch (e) {}
       });
     }, 100);
+  }
+  /**
+   * updateBadge
+   */
+  async updateBadge() {
+    const datas = await store.get();
+    const count =
+      datas.password && Object.keys(this.signmsgs).length
+        ? Object.keys(this.signmsgs).length
+        : "";
+    extension.browserAction.setBadgeText({ text: `${count}` });
+    extension.browserAction.setBadgeBackgroundColor({ color: "#037DD6" });
+
+    if (!datas.password) {
+      this.signmsgs = {};
+    }
+    await util.delay(1000);
+    this.updateBadge();
   }
 }

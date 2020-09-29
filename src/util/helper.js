@@ -1,6 +1,5 @@
 import extension from "extensionizer";
 import CryptoJS from "crypto-js";
-//import { ethers } from "ethers";
 import * as bip39 from "bip39";
 import * as bip32 from "bip32";
 import * as crypto from "crypto";

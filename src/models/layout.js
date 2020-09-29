@@ -28,13 +28,13 @@ export default {
       password: "",
       signmsgs: {},
       sites: [],
+      unit: "usd",
     },
     balance: {},
-    unit: "usd",
     units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
     messageManager: null,
     domain: "main",
-    chain_id: "HBTC",
+    chain_id: "hbtc-testnet",
   },
 
   subscriptions: {

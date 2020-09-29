@@ -15,8 +15,6 @@ class MessageManager {
     window.HBC_wallet_isready = true;
     window.onmessage = (e) => {
       const data = e.data;
-      console.log("page get msg:");
-      console.log(data);
       this.messagehandle(data);
     };
   }
@@ -32,15 +30,16 @@ class MessageManager {
     try {
       obj = JSON.parse(data);
     } catch (e) {
-      console.warn(e.message);
+      //console.warn(e.message);
     }
     if (Object.keys(obj).length == 0) {
       return;
     }
     if (obj.to == CONST.MESSAGE_FROM_PAGE) {
+      console.log("page get msg:");
+      console.log(obj);
       let id = obj.id;
       let d = this.msgs.get(id);
-      console.log(d);
       if (d) {
         // 发送过的消息回调
         d.cb && d.cb(obj.data);
@@ -65,7 +64,6 @@ class MessageManager {
     try {
       if (this[name]) {
         id = this[name](data, cb);
-        console.log(name, data, cb);
       }
     } catch (e) {
       cb && cb({ code: 400, msg: `no ${name} method` });

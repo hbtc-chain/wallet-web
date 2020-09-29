@@ -41,7 +41,7 @@ class MessageManager {
     const data = await Store.get();
     // sign
     // 签名消息正确性在background中已验证，无须再次验证
-    if (obj.type == CONST.METHOD_SIGN) {
+    if (obj.type == CONST.METHOD_SIGN && obj.to == CONST.MESSAGE_FROM_POPUP) {
       this.dispatch(
         this.routerRedux.push({
           pathname: route_map.sign,
@@ -50,7 +50,10 @@ class MessageManager {
       );
     }
     // connect
-    if (obj.type == CONST.MEHTOD_CONNECT) {
+    if (
+      obj.type == CONST.MEHTOD_CONNECT &&
+      obj.to == CONST.MESSAGE_FROM_POPUP
+    ) {
       this.dispatch(
         this.routerRedux.push({
           pathname: route_map.connect,
@@ -59,7 +62,10 @@ class MessageManager {
       );
     }
     // get_balance
-    if (obj.type == CONST.METHOD_GET_BALANCE) {
+    if (
+      obj.type == CONST.METHOD_GET_BALANCE &&
+      obj.to == CONST.MESSAGE_FROM_POPUP
+    ) {
       if (obj.data && obj.data.address) {
         this.dispatch({
           type: "layout/get_balance",

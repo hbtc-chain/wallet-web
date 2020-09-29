@@ -40,6 +40,7 @@ import CONST from "../../util/const";
 import { v4 } from "uuid";
 import util from "../../util/util";
 import API from "../../util/api";
+import AutorenewIcon from "@material-ui/icons/Autorenew";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -59,6 +60,7 @@ class IndexRC extends React.Component {
       tab: "Assets",
       tokens: [],
       trades: [],
+      mask: true,
     };
   }
   componentDidMount() {
@@ -105,6 +107,9 @@ class IndexRC extends React.Component {
         }
       );
     }
+    this.setState({
+      mask: false,
+    });
   };
   get_balance = async () => {
     if (this.props.messageManager && this.props.store.password) {
@@ -299,10 +304,10 @@ class IndexRC extends React.Component {
   };
   rates = (v, t) => {
     if (this.state.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.unit, this.state.rates);
+      const d = helper.rates(v, t, this.props.store.unit, this.state.rates);
       return d;
     }
-    return ["", this.props.unit];
+    return ["", this.props.store.unit];
   };
   render() {
     const { classes } = this.props;
@@ -410,13 +415,13 @@ class IndexRC extends React.Component {
                 const rates2 = this.rates(
                   1,
                   item.symbol,
-                  this.props.unit,
+                  this.props.store.unit,
                   this.state.rates
                 );
                 const rates = this.rates(
                   item.amount,
                   item.symbol,
-                  this.props.unit,
+                  this.props.store.unit,
                   this.state.rates
                 );
                 return (
@@ -654,7 +659,7 @@ class IndexRC extends React.Component {
           </DialogTitle>
           <DialogContent>
             <List className={classes.sites}>
-              {this.props.store.sites.map((item, i) => {
+              {(this.props.store.sites || []).map((item, i) => {
                 return (
                   <ListItem key={item} className={classes.site_item}>
                     <Grid container alignItems="center" justify="space-between">
@@ -668,7 +673,7 @@ class IndexRC extends React.Component {
                   </ListItem>
                 );
               })}
-              {this.props.store.sites.length == 0 ? (
+              {(this.props.store.sites || []).length == 0 ? (
                 <em>{this.props.intl.formatMessage({ id: "no data" })}</em>
               ) : (
                 ""
@@ -760,6 +765,13 @@ class IndexRC extends React.Component {
             </IconButton>
           </DialogContent>
         </Dialog>
+        {this.state.mask ? (
+          <div className={classes.mask}>
+            <AutorenewIcon color="primary" />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     );
   }

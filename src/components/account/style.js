@@ -78,13 +78,13 @@ export default (theme) => ({
   acount: {
     padding: 20,
     background: theme.palette.grey[50],
-    textAlign: "center",
+    textAlign: "right",
     "& h1": {
-      fontSize: 36,
+      fontSize: 18,
+      margin: "10px 0",
     },
     "& span": {
-      fontSize: 16,
-      color: theme.palette.grey[800],
+      fontSize: 12,
     },
   },
   detail: {

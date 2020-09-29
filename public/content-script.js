@@ -147,8 +147,6 @@ port.onMessage.addListener((message) => {
         (obj.from == CONST.MESSAGE_FROM_BACKGROUND ||
           obj.from == CONST.MESSAGE_FROM_POPUP)
       ) {
-        console.log("page get msg:");
-        console.log(obj);
         window.postMessage(message);
       }
     } catch (e) {

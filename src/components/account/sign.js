@@ -14,6 +14,11 @@ import {
   ListItem,
   ListItemText,
   Fab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import VerticalAlignBottomIcon from "@material-ui/icons/VerticalAlignBottom";
@@ -29,6 +34,7 @@ import CONST from "../../util/const";
 import API from "../../util/api";
 import message from "../public/message";
 import math from "../../util/mathjs";
+import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -41,11 +47,14 @@ class IndexRC extends React.Component {
       tokens: [],
       fee: {
         gas: "200000",
-        amount: [{ denom: "hbc", amount: "12345678901234567890" }],
+        amount: [{ denom: "hbc", amount: "10000000000000000" }],
       },
       memo: "",
       gas: ["", ""],
       msg_amount: ["", ""],
+      password: "",
+      password_msg: "",
+      open: false,
     };
   }
   componentDidMount() {
@@ -57,29 +66,43 @@ class IndexRC extends React.Component {
    * @param {string} token
    * @return {string} amount
    */
-  amount_count = async (amount, token) => {
+  amount_count = async (amount, token, amount2, token2) => {
     if (!amount || !token) {
       return [amount, token];
     }
+    let res = [];
     let result = {};
+    let result2 = {};
     if (!this.state[token]) {
       result = await this.getToken(token);
       if (result.code == 200) {
         let a = this.decimals(amount, result.data.decimals);
-        return [a, token];
+        res = res.concat([a, token]);
       }
     } else {
       let a = this.decimals(amount, this.state[token]["decimals"]);
-      return [a, token];
+      res = res.concat([a, token]);
     }
+    if (amount2 && token2) {
+      if (!this.state[token2]) {
+        result2 = await this.getToken(token2);
+        if (result2.code == 200) {
+          let a = this.decimals(amount2, result2.data.decimals);
+          res = res.concat([a, token2]);
+        }
+      } else {
+        let a = this.decimals(amount2, this.state[token2]["decimals"]);
+        res = res.concat([a, token2]);
+      }
+    }
+    return res;
   };
   decimals = (amount, decimals) => {
     let a = math
       .chain(math.bignumber(amount))
       .divide(Math.pow(10, decimals))
-      .format({ notation: "fixed", precision: 1 })
+      .format({ notation: "fixed", precision: 0 })
       .done();
-    a = `${a}`.split(".")[0];
     return a;
   };
   init = async () => {
@@ -87,7 +110,7 @@ class IndexRC extends React.Component {
     let id = params.id;
     let all_data = await Store.get();
     let datas = (all_data.signmsgs || {})[id];
-    // {
+    // || {
     //   from: "page",
     //   to: "background",
     //   id: "fed481bf-27d7-499b-9621-6610670187de",
@@ -97,11 +120,22 @@ class IndexRC extends React.Component {
     //   data: {
     //     msgs: [
     //       {
-    //         type: "hbtcchain/transfer/MsgSend",
+    //         type: "hbtcchain/openswap/MsgSwapExactOut",
+
     //         value: {
-    //           amount: [{ denom: "hbc", amount: "12345678901234567890" }],
-    //           to_address: "HBCPCkU7Hhi45YwaMZ1jg1LxCse3gojFnTqb",
-    //           from_address: "HBCfJmfTLgxaXZFuanHT5RQnTXkWvfyH5AwS",
+    //           from: "HBCNUcZwwDR4uxMNfYG4QwcSf4CXKm6hAx6y",
+
+    //           referer: "HBCNUcZwwDR4uxMNfYG4QwcSf4CXKm6hAx6y",
+
+    //           receiver: "HBCNUcZwwDR4uxMNfYG4QwcSf4CXKm6hAx6y",
+
+    //           max_amount_in: "1000000000000",
+
+    //           amount_out: "1000000000",
+
+    //           swap_path: ["hbc", "btc", "usdt"],
+
+    //           expired_at: "-1",
     //         },
     //       },
     //     ],
@@ -175,21 +209,37 @@ class IndexRC extends React.Component {
     window.close();
   };
   sign = async () => {
+    if (!this.state.password) {
+      this.setState({
+        password_msg: this.props.intl.formatMessage({
+          id: "password is required",
+        }),
+      });
+      return;
+    }
     if (this.state.getTokenError) {
       message.error(
         this.props.intl.formatMessage({ id: "token has no decimals value" })
       );
       return;
     }
+    if (this.state.password != this.props.store.password) {
+      this.setState({
+        password_msg: this.props.intl.formatMessage({
+          id: "password is wrong",
+        }),
+      });
+      return;
+    }
+
     // 对amount进行精度处理
     let d = {
-      //chain_id: this.state.trade.chain_id,
+      chain_id: this.props.chain_id,
       fee: this.state.fee,
       memo: this.state.memo,
       msgs: this.state.trade.msgs,
       sequence: this.state.trade.sequence,
     };
-
     let obj = helper.jsonSort(d);
     let account = this.props.store.accounts[this.props.store.account_index];
     let privateKey = account.privateKey;
@@ -271,14 +321,31 @@ class IndexRC extends React.Component {
 
     // type = MsgSwapExactIn
     if (/MsgSwapExactIn/i.test(msgs.type)) {
-      return this.amount_count(msgs.value.amount_in, msgs.value.swap_path[0]);
+      return this.amount_count(
+        msgs.value.amount_in,
+        msgs.value.swap_path[0],
+        msgs.value.min_amount_out,
+        msgs.value.swap_path[msgs.value.swap_path.length - 1]
+      );
     }
 
     // type = MsgSwapExactOut
     if (/MsgSwapExactOut/i.test(msgs.type)) {
       return this.amount_count(
+        msgs.value.max_amount_in,
+        msgs.value.swap_path[0],
         msgs.value.amount_out,
         msgs.value.swap_path[msgs.value.swap_path.length - 1]
+      );
+    }
+
+    // type = MsgAddLiquidity
+    if (/MsgAddLiquidity/i.test(msgs.type)) {
+      return this.amount_count(
+        msgs.value.min_token_a_amount,
+        msgs.value.token_a,
+        msgs.value.min_token_b_amount,
+        msgs.token_b
       );
     }
 
@@ -307,6 +374,12 @@ class IndexRC extends React.Component {
 
     return data;
   };
+  handleChange = (key) => (e) => {
+    this.setState({
+      [key]: e.target.value,
+      password_msg: "",
+    });
+  };
   render() {
     const { classes, password } = this.props;
     return (
@@ -321,6 +394,7 @@ class IndexRC extends React.Component {
               })
             : ""}
         </p>
+
         {this.state.msg_amount ? (
           <div className={classes.acount}>
             <h1>
@@ -328,6 +402,22 @@ class IndexRC extends React.Component {
                 " " +
                 (this.state.msg_amount[1] || "").toUpperCase()}
             </h1>
+            {this.state.msg_amount[2] ? (
+              <span>
+                <ArrowDownwardIcon color="primary" />
+              </span>
+            ) : (
+              ""
+            )}
+            {this.state.msg_amount[2] ? (
+              <h1>
+                {this.state.msg_amount[2] +
+                  " " +
+                  (this.state.msg_amount[3] || "").toUpperCase()}
+              </h1>
+            ) : (
+              ""
+            )}
           </div>
         ) : (
           ""
@@ -338,7 +428,7 @@ class IndexRC extends React.Component {
               .sort((a, b) => (a.toUpperCase() > b.toUpperCase() ? 1 : -1))
               .map((item) => {
                 if (
-                  /amount|initial_deposit|coins|swap_path|expired_at|min_amount_out|max_amount_in|side|min_token_a_amount|min_token_b_amount|liquidity/i.test(
+                  /amount|initial_deposit|coins|swap_path|expired_at|min_amount_out|max_amount_in|side|liquidity|token_a|token_b/i.test(
                     item
                   )
                 ) {
@@ -395,12 +485,54 @@ class IndexRC extends React.Component {
               variant="contained"
               color="primary"
               className={classes.btn_large}
-              onClick={this.sign}
+              onClick={() => {
+                this.setState({ open: true });
+              }}
             >
               {this.props.intl.formatMessage({ id: "confirm" })}
             </Button>
           </Grid>
         </Grid>
+        <Dialog open={this.state.open}>
+          <DialogTitle>
+            {this.props.intl.formatMessage({ id: "confirmed password" })}
+          </DialogTitle>
+          <DialogContent>
+            <TextField
+              value={this.state.password}
+              onChange={this.handleChange("password")}
+              helperText={this.state.password_msg}
+              error={Boolean(this.state.password_msg)}
+              label={this.props.intl.formatMessage({
+                id: "password is required",
+              })}
+              style={{ width: 260 }}
+              variant="outlined"
+              type="password"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => {
+                this.setState({ open: false, password: "", password_msg: "" });
+              }}
+              style={{ padding: 10 }}
+            >
+              {this.props.intl.formatMessage({ id: "cancel" })}
+            </Button>
+            <Button
+              onClick={this.sign}
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ padding: 10 }}
+            >
+              {this.props.intl.formatMessage({ id: "confirm" })}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

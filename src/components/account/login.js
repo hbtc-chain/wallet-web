@@ -17,6 +17,16 @@ class IndexRC extends React.Component {
       password_msg: "",
     };
   }
+  componentDidMount() {
+    this.init();
+  }
+  init = () => {
+    const w = window.document.documentElement.offsetWidth;
+    if (!this.props.store.accounts.length && w == 360) {
+      window.open(window.location.href.split("#")[0] + "#/welcome");
+      window.close();
+    }
+  };
   handleChange = (e) => {
     const v = e.target.value;
     this.setState({
@@ -51,7 +61,6 @@ class IndexRC extends React.Component {
         },
       },
     });
-    console.log(this.props.location);
     const params = querystring.parse(this.props.location.search);
     if (this.props.location.pathname.indexOf(route_map.login) > -1) {
       await this.props.dispatch(

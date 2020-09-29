@@ -46,10 +46,13 @@ function browserLang() {
     ? navigator.languages[0]
     : navigator.language || navigator.userLanguage
   ).toLowerCase();
+  if (res != "zh-cn") {
+    res = "en-us";
+  }
   return res;
 }
 
-function start(initstore) {
+function start(initstore, lang) {
   // 1. Initialize
   const data = {
     initialState: initstore,
@@ -73,7 +76,7 @@ function start(initstore) {
   // 5. Start
   const App = app.start();
 
-  getLocale(browserLang(), function (appLocale) {
+  getLocale(lang, function (appLocale) {
     addLocaleData(...appLocale.data);
     ReactDOM.render(
       <IntlProvider
@@ -89,21 +92,31 @@ function start(initstore) {
 }
 const initStore = async () => {
   const res = await Store.get();
-  start({
-    layout: {
-      store: res || {
-        accounts: [],
-        account_index: -1,
-        sites: [],
-        signmsgs: {},
-        password: "",
-      },
-      balance: {},
+  const store = Object.assign(
+    {
+      accounts: [],
+      account_index: -1,
+      sites: [],
+      signmsgs: {},
+      password: "",
       unit: "usd",
-      units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
-      messageManager: null,
+      lang: browserLang(),
     },
-  });
+    res
+  );
+  start(
+    {
+      layout: {
+        store,
+        chain_id: "hbtc-testnet",
+        balance: {},
+        units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
+        langs: ["zh-cn", "en-us"],
+        messageManager: null,
+      },
+    },
+    store.lang
+  );
 };
 
 initStore();

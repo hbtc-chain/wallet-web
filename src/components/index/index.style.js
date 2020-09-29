@@ -100,4 +100,19 @@ export default (theme) => ({
     padding: 10,
     background: theme.palette.grey[100],
   },
+  mask: {
+    width: "360px",
+    height: "600px",
+    position: "absolute",
+    zIndex: 100,
+    left: 0,
+    top: 0,
+    background: "rgba(255,255,255,.5)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "& i": {
+      fontSize: 30,
+    },
+  },
 });

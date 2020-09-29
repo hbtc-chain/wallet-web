@@ -33,8 +33,8 @@ class HeaderRC extends React.Component {
     super();
     this.state = {
       anchorEl: null,
-      network: "HBC",
       open: false,
+      open2: false,
     };
   }
   setanchorEl = (e) => {
@@ -45,11 +45,6 @@ class HeaderRC extends React.Component {
   handleClose = () => {
     this.setState({
       anchorEl: null,
-    });
-  };
-  selectChange = (e) => {
-    this.setState({
-      network: e.target.value,
     });
   };
   choose = (i) => (e) => {
@@ -84,12 +79,34 @@ class HeaderRC extends React.Component {
     this.props.dispatch({
       type: "layout/save",
       payload: {
-        unit,
+        store: {
+          ...this.props.store,
+          unit,
+        },
       },
     });
     this.setState({
       open: false,
     });
+  };
+  changeLang = (lang) => async (e) => {
+    await this.props.dispatch({
+      type: "layout/save",
+      payload: {
+        store: {
+          ...this.props.store,
+          lang,
+        },
+      },
+    });
+    this.setState(
+      {
+        open2: false,
+      },
+      () => {
+        window.location.reload();
+      }
+    );
   };
   render() {
     const { classes } = this.props;
@@ -136,6 +153,54 @@ class HeaderRC extends React.Component {
                         className={classes.menuitem}
                         onClick={() => {
                           this.setState({
+                            open2: !this.state.open2,
+                          });
+                        }}
+                      >
+                        <ListItemText>
+                          {this.props.intl.formatMessage({ id: "lang" })}
+                        </ListItemText>
+                        <ListItemText
+                          className={classes.grey500}
+                          style={{ textAlign: "right" }}
+                        >
+                          {this.props.intl.formatMessage({
+                            id: this.props.store.lang,
+                          })}
+                        </ListItemText>
+                        {this.state.open2 ? (
+                          <ExpandLess className={classes.grey500} />
+                        ) : (
+                          <ExpandMore className={classes.grey500} />
+                        )}
+                      </ListItem>
+                      <Collapse
+                        in={this.state.open2}
+                        timeout="auto"
+                        unmountOnExit
+                      >
+                        <List component="div" className={classes.borderTop}>
+                          {this.props.langs.map((item) => {
+                            return (
+                              <ListItem
+                                button
+                                className={classes.nested}
+                                onClick={this.changeLang(item)}
+                                key={item}
+                              >
+                                <ListItemText className={classes.option_item}>
+                                  {this.props.intl.formatMessage({ id: item })}
+                                </ListItemText>
+                              </ListItem>
+                            );
+                          })}
+                        </List>
+                      </Collapse>
+
+                      <ListItem
+                        className={classes.menuitem}
+                        onClick={() => {
+                          this.setState({
                             open: !this.state.open,
                           });
                         }}
@@ -147,7 +212,7 @@ class HeaderRC extends React.Component {
                           className={classes.grey500}
                           style={{ textAlign: "right" }}
                         >
-                          {this.props.unit.toUpperCase()}
+                          {this.props.store.unit.toUpperCase()}
                         </ListItemText>
                         {this.state.open ? (
                           <ExpandLess className={classes.grey500} />
