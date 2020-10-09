@@ -102,7 +102,7 @@ export default class ExtensionPlatform {
     if (route) {
       extensionURL += `#${route}`;
     }
-    this.openTab({ url: extensionURL });
+    return this.openTab({ url: extensionURL });
     // if (getEnvironmentType() !== ENVIRONMENT_TYPE_BACKGROUND) {
     //   window.close();
     // }

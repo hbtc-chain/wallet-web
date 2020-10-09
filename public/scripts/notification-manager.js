@@ -22,7 +22,6 @@ export default class NotificationManager {
    */
   async showPopup() {
     const popup = await this._getPopup();
-
     // Bring focus to chrome popup
     if (popup) {
       // bring focus to existing chrome popup

@@ -13,8 +13,6 @@ const platform = new ExtensionPlatform();
 //let ports = new Map();
 
 async function triggerUi() {
-  const tabs = await platform.getActiveTabs();
-  const currentlyActiveTab = Boolean(tabs.find((tab) => openTabsIDs[tab.id]));
   if (!popupIsOpen) {
     await notificationManager.showPopup();
   }
@@ -47,9 +45,9 @@ const messages = new MessageManager({
 });
 
 // On first install, open a new tab with
-extension.runtime.onInstalled.addListener(({ reason }) => {
+extension.runtime.onInstalled.addListener(async ({ reason }) => {
   if (reason === "install") {
-    platform.openExtensionInBrowser("/welcome");
+    const tab = await platform.openExtensionInBrowser("/welcome");
   }
 });
 

@@ -13,7 +13,6 @@ export default class MessageManager {
     this.signmsgs = {};
     // 存储balance
     this.balance = new Map();
-    //this.port = opts.port;
     this.openPopup = opts.openPopup;
     this.popupIsOpen = opts.popupIsOpen;
     this.setpopupIsOpen = opts.setpopupIsOpen;
@@ -27,10 +26,11 @@ export default class MessageManager {
 
     this.port = new Map();
     extension.runtime.onConnect.addListener((port) => {
-      if (port.name == "popup") {
+      if (port.name == "popup" && port.sender.tab) {
         this.popupIsOpen = true;
         this.setpopupIsOpen(this.popupIsOpen);
       }
+      console.log(port);
       this.port.set(
         port.sender.tab ? port.sender.tab.id : port.sender.id,
         port
@@ -40,7 +40,7 @@ export default class MessageManager {
         this.port.delete(res.sender.tab ? res.sender.tab.id : res.sender.id);
         let haspopup = false;
         this.port.forEach((item) => {
-          if (item.name == "popup") {
+          if (item.name == "popup" && port.sender.tab) {
             haspopup = true;
           }
         });
@@ -142,7 +142,19 @@ export default class MessageManager {
       }
     }
   }
-
+  /**
+   * 查找已经打开的popup
+   * @return {string} popup window id
+   */
+  async findePopup() {
+    let win_id = "";
+    this.port.forEach((item) => {
+      if (item.name == "popup" && item.sender.tab) {
+        win_id = item.sender.tab.id;
+      }
+    });
+    return win_id;
+  }
   /**
    * sign,get_account等操作的前置判断
    * @param {object} obj

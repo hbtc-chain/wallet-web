@@ -23,6 +23,8 @@ export default (theme) => ({
     margin: "0 auto",
     textAlign: "center",
     padding: "50px 0 0",
+    position: "relative",
+    minHeight: 550,
     "& img": {
       maxWidth: 80,
       maxHeight: 80,
