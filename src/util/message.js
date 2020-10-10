@@ -13,8 +13,22 @@ import CONST from "./const";
 import Store from "./store";
 import route_map from "../config/route_map";
 import util from "./util";
+import { v4 } from "uuid";
 
 const env = window.location.hostname == "localhost" ? "local" : "server";
+
+function checkForError() {
+  const { lastError } = extension.runtime;
+  if (!lastError) {
+    return undefined;
+  }
+  // if it quacks like an Error, its an Error
+  if (lastError.stack && lastError.message) {
+    return lastError;
+  }
+  // repair incomplete error object (eg chromium v77)
+  return new Error(lastError.message);
+}
 
 class MessageManager {
   constructor(dispatch, history, routerRedux) {
@@ -37,8 +51,56 @@ class MessageManager {
       });
     }
   }
+  currentTab() {
+    return new Promise((resolve, reject) => {
+      extension.tabs.getCurrent((tab) => {
+        const err = checkForError();
+        if (err) {
+          reject(err);
+        } else {
+          resolve(tab);
+        }
+      });
+    });
+  }
+
+  switchToTab(tabId) {
+    return new Promise((resolve, reject) => {
+      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
+        const err = checkForError();
+        if (err) {
+          reject(err);
+        } else {
+          resolve(tab);
+        }
+      });
+    });
+  }
   async handleMsg(obj) {
     const data = await Store.get();
+    // login
+    if (obj.type == CONST.METHOD_LOGIN && obj.to == CONST.MESSAGE_FROM_POPUP) {
+      if (obj.data && obj.data.code == 200) {
+        this.dispatch({
+          type: "layout/save",
+          payload: {
+            logged: true,
+          },
+        });
+      }
+    }
+    // logged status query
+    if (
+      obj.type == CONST.METHOD_LOGGED_STATUS_QUERY &&
+      obj.to == CONST.MESSAGE_FROM_POPUP
+    ) {
+      this.dispatch({
+        type: "layout/save",
+        payload: {
+          logged: obj.data ? obj.data.logged : false,
+        },
+      });
+    }
     // sign
     // 签名消息正确性在background中已验证，无须再次验证
     if (obj.type == CONST.METHOD_SIGN && obj.to == CONST.MESSAGE_FROM_POPUP) {
@@ -48,6 +110,8 @@ class MessageManager {
           search: "?id=" + obj.id + "&tabId=" + obj.tabId,
         })
       );
+      const tabid = await this.currentTab();
+      console.log(tabid);
     }
     // connect
     if (
@@ -84,7 +148,7 @@ class MessageManager {
     let obj = util.packmsg({
       from: CONST.MESSAGE_FROM_POPUP,
       to: CONST.MESSAGE_FROM_BACKGROUND,
-      id,
+      id: id || v4(),
       type,
       data,
     });

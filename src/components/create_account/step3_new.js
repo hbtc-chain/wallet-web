@@ -7,6 +7,8 @@ import { injectIntl } from "react-intl";
 import { Button, Grid, TextField, Checkbox } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import querystring from "query-string";
+import CONST from "../../util/const";
+import helper from "../../util/helper";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -51,7 +53,7 @@ class IndexRC extends React.Component {
     await this.props.dispatch({
       type: "layout/create_account",
       payload: {
-        password: password,
+        password,
       },
     });
     this.props.dispatch(

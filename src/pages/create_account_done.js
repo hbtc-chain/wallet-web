@@ -5,15 +5,14 @@ import HeaderRC from "../components/header";
 import IndexRC from "../components/create_account/complete";
 import withRoot from "../withRoot";
 
-function IndexPage({ layout, dispatch, location }) {
+function IndexPage({ layout, dispatch, location, match }) {
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
       <HeaderRC
         {...layout}
         dispatch={dispatch}
         location={location}
-        match
-        location
+        match={match}
       />
       <div className="g_content">
         <IndexRC {...layout} dispatch={dispatch} location={location} />

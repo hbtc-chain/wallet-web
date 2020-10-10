@@ -98,7 +98,6 @@ const initStore = async () => {
       account_index: -1,
       sites: [],
       signmsgs: {},
-      password: "",
       unit: "usd",
       lang: browserLang(),
     },
@@ -113,6 +112,7 @@ const initStore = async () => {
         units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
         langs: ["zh-cn", "en-us"],
         messageManager: null,
+        logged: true,
       },
     },
     store.lang

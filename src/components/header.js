@@ -27,6 +27,7 @@ import { routerRedux } from "dva/router";
 import route_map from "../config/route_map";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
+import CONST from "../util/const";
 
 class HeaderRC extends React.Component {
   constructor() {
@@ -59,21 +60,26 @@ class HeaderRC extends React.Component {
     });
   };
   logout = async () => {
-    await this.props.dispatch({
-      type: "layout/save",
-      payload: {
-        store: {
-          ...this.props.store,
-          password: "",
-          account_index: -1,
+    if (this.props.messageManager) {
+      await this.props.messageManager.sendMessage({
+        type: CONST.METHOD_LOGOUT,
+        data: {},
+      });
+      await this.props.dispatch({
+        type: "layout/save",
+        payload: {
+          store: {
+            ...this.props.store,
+            account_index: -1,
+          },
         },
-      },
-    });
-    this.props.dispatch(
-      routerRedux.push({
-        pathname: route_map.login,
-      })
-    );
+      });
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.login,
+        })
+      );
+    }
   };
   changeUnit = (unit) => (e) => {
     this.props.dispatch({
@@ -110,7 +116,7 @@ class HeaderRC extends React.Component {
   };
   render() {
     const { classes } = this.props;
-    return this.props.store.password ? (
+    return this.props.store.account_index > -1 ? (
       <div className={classes.g_header_box}>
         <div className={classes.g_header}>
           <Grid container justify="space-between" alignItems="center">

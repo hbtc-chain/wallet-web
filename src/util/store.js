@@ -90,7 +90,6 @@ class ExtensionStore {
         resolve();
       });
     }
-    console.log(obj);
     return this.bg.store.set(obj);
   }
 }

@@ -89,7 +89,7 @@ class IndexRC extends React.Component {
     const { classes } = this.props;
     const sites = [...(this.props.store.sites || [])];
     let connected = false;
-    if (this.props.store.password) {
+    if (this.props.store.account_index > -1) {
       const index = sites.findIndex(
         (item) => item.indexOf(this.state.url) > -1
       );

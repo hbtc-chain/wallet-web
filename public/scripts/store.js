@@ -1,4 +1,3 @@
-import { DateRange } from "@material-ui/icons";
 // 数据管理
 // 与background进行数据交换
 import extension from "extensionizer";
@@ -29,7 +28,6 @@ class ExtensionStore {
     if (!this.isSupported) {
       log.error("Storage local API not available.");
     }
-    this.password = "";
   }
 
   /**
@@ -71,7 +69,7 @@ class ExtensionStore {
         if (err) {
           reject(err);
         } else {
-          resolve({ ...result, password: this.password });
+          resolve({ ...result });
         }
       });
     });
@@ -83,17 +81,11 @@ class ExtensionStore {
    * @returns {Promise<void>}
    * @private
    */
-  async _set(obj) {
+  async _set(obj = {}) {
     const { local } = extension.storage;
     const all = await this.get();
     return new Promise((resolve, reject) => {
       let data = { ...all, ...obj };
-      if (data.password) {
-        this.password = data.password;
-      } else {
-        this.password = "";
-      }
-      delete data.password;
       local.set(data, () => {
         const err = checkForError();
         if (err) {

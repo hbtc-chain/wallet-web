@@ -12,8 +12,7 @@ function IndexPage({ layout, dispatch, location, match }) {
         {...layout}
         dispatch={dispatch}
         location={location}
-        match
-        location
+        match={match}
       />
       <div className="g_content">
         <IndexRC

@@ -112,7 +112,7 @@ class IndexRC extends React.Component {
     });
   };
   get_balance = async () => {
-    if (this.props.messageManager && this.props.store.password) {
+    if (this.props.messageManager && this.props.store.account_index > -1) {
       this.props.messageManager.sendMessage({
         type: CONST.METHOD_GET_BALANCE,
         data: {},
@@ -261,7 +261,6 @@ class IndexRC extends React.Component {
     });
   };
   dialogChange = (key) => (e) => {
-    console.log("key", this.state[key]);
     this.setState({
       [key]: !this.state[key],
       anchorEl: null,

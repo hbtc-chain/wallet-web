@@ -157,19 +157,14 @@ class IndexRC extends React.Component {
       let gas = await this.amount_count(fee_amount, fee_token);
       let msg_amount = await this.renderAmount(datas.data.msgs[0]);
 
-      this.setState(
-        {
-          trade: datas.data,
-          id,
-          fee_token,
-          fee_amount,
-          gas,
-          msg_amount,
-        },
-        () => {
-          console.log(this.state.trade);
-        }
-      );
+      this.setState({
+        trade: datas.data,
+        id,
+        fee_token,
+        fee_amount,
+        gas,
+        msg_amount,
+      });
     }
   };
   getToken = async (token) => {
@@ -223,7 +218,9 @@ class IndexRC extends React.Component {
       );
       return;
     }
-    if (this.state.password != this.props.store.password) {
+    let pwd = helper.sha256(this.state.password);
+    let index = this.props.store.accounts.map((item) => item.password == pwd);
+    if (index == -1) {
       this.setState({
         password_msg: this.props.intl.formatMessage({
           id: "password is wrong",
@@ -245,8 +242,8 @@ class IndexRC extends React.Component {
     let privateKey = account.privateKey;
     let publicKey = account.publicKey;
 
-    privateKey = helper.aes_decrypt(privateKey, this.props.store.password);
-    publicKey = helper.aes_decrypt(publicKey, this.props.store.password);
+    privateKey = helper.aes_decrypt(privateKey, this.state.password);
+    publicKey = helper.aes_decrypt(publicKey, this.state.password);
 
     const sign = helper.sign(obj, privateKey, publicKey);
 
@@ -359,7 +356,6 @@ class IndexRC extends React.Component {
     return ["", ""];
   };
   renderContent = (item, data) => {
-    console.log(item, data);
     if (item == "content") {
       return (
         <div>

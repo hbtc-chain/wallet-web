@@ -8,6 +8,7 @@ import route_map from "../../config/route_map";
 import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
 import querystring from "query-string";
+import CONST from "../../util/const";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -51,12 +52,19 @@ class IndexRC extends React.Component {
       });
       return;
     }
+    if (this.props.messageManager) {
+      await this.props.messageManager.sendMessage({
+        type: CONST.METHOD_LOGIN,
+        data: {
+          password: pwd,
+        },
+      });
+    }
     await this.props.dispatch({
       type: "layout/save",
       payload: {
         store: {
           ...this.props.store,
-          password: this.state.password,
           account_index: index,
         },
       },
@@ -75,12 +83,6 @@ class IndexRC extends React.Component {
             pathname: decodeURIComponent(params.redirect),
           })
         );
-      } else {
-        // this.props.dispatch(
-        //   routerRedux.push({
-        //     ...this.props.location,
-        //   })
-        // );
       }
     }
   };

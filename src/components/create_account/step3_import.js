@@ -9,6 +9,7 @@ import querystring from "query-string";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import { routerRedux } from "dva/router";
+import CONST from "../../util/const";
 
 class IndexRC extends React.Component {
   constructor() {

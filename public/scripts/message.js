@@ -17,6 +17,10 @@ export default class MessageManager {
     this.popupIsOpen = opts.popupIsOpen;
     this.setpopupIsOpen = opts.setpopupIsOpen;
     this.platform = opts.platform;
+    this.notificationManager = opts.notificationManager;
+
+    // 登录状态
+    this.logged = false;
 
     // 启动资产查询loop
     this.get_balance_loop();
@@ -26,11 +30,10 @@ export default class MessageManager {
 
     this.port = new Map();
     extension.runtime.onConnect.addListener((port) => {
-      if (port.name == "popup" && port.sender.tab) {
+      if (port.name == "popup") {
         this.popupIsOpen = true;
         this.setpopupIsOpen(this.popupIsOpen);
       }
-      console.log(port);
       this.port.set(
         port.sender.tab ? port.sender.tab.id : port.sender.id,
         port
@@ -40,7 +43,7 @@ export default class MessageManager {
         this.port.delete(res.sender.tab ? res.sender.tab.id : res.sender.id);
         let haspopup = false;
         this.port.forEach((item) => {
-          if (item.name == "popup" && port.sender.tab) {
+          if (item.name == "popup") {
             haspopup = true;
           }
         });
@@ -85,6 +88,27 @@ export default class MessageManager {
     }
     // 发送到background
     if (obj.to == CONST.MESSAGE_FROM_BACKGROUND) {
+      if (obj.type == CONST.METHOD_LOGGED_STATUS_QUERY) {
+        if (obj.from == CONST.MESSAGE_FROM_POPUP) {
+          this.sendMsgToPopup({ ...obj, data: { logged: this.logged } }, port);
+        } else {
+          this.sendMsgToPage({ ...obj, data: { logged: this.logged } }, port);
+        }
+      }
+      if (
+        obj.type == CONST.METHOD_LOGIN &&
+        obj.from == CONST.MESSAGE_FROM_POPUP
+      ) {
+        this.login(obj, port);
+        return;
+      }
+      if (
+        obj.type == CONST.METHOD_LOGOUT &&
+        obj.from == CONST.MESSAGE_FROM_POPUP
+      ) {
+        this.logout(obj, port);
+        return;
+      }
       // 保存数据
       if (
         obj.type == CONST.METHOD_SET_STORE &&
@@ -199,7 +223,7 @@ export default class MessageManager {
     }
 
     // todo 未登录
-    if (datas.account_index == -1 || !datas.password) {
+    if (!this.logged && type != CONST.METHOD_LOGIN) {
       this.sendMsgToPage(
         {
           id: obj.id,
@@ -243,7 +267,7 @@ export default class MessageManager {
     const sites = datas.sites || [];
     const index = sites.findIndex((item) => origin.indexOf(item) > -1);
     // 已授权过，已登录
-    if (index > -1 && datas.password) {
+    if (index > -1 && this.logged) {
       this.sendMsgToPage(
         {
           id: obj.id,
@@ -324,10 +348,11 @@ export default class MessageManager {
   async get_balance_loop() {
     const datas = await store.get();
     if (
+      datas &&
       datas.accounts &&
       datas.accounts.length &&
       datas.account_index > -1 &&
-      datas.password
+      this.logged
     ) {
       const account = datas.accounts[datas.account_index];
       const address = account.address;
@@ -456,8 +481,19 @@ export default class MessageManager {
       await this.openPopup();
     }
     setTimeout(() => {
+      let back_to_front = false;
       this.port.forEach((item) => {
         try {
+          if (
+            item.sender &&
+            item.sender.tab &&
+            !back_to_front &&
+            (data.type == CONST.METHOD_SIGN ||
+              data.type == CONST.MEHTOD_CONNECT)
+          ) {
+            this.platform.switchToTab(item.sender.tab.id);
+            back_to_front = true;
+          }
           item.postMessage(
             JSON.stringify({
               from: CONST.MESSAGE_FROM_BACKGROUND,
@@ -476,18 +512,64 @@ export default class MessageManager {
    * updateBadge
    */
   async updateBadge() {
-    const datas = await store.get();
     const count =
-      datas.password && Object.keys(this.signmsgs).length
+      this.logged && Object.keys(this.signmsgs).length
         ? Object.keys(this.signmsgs).length
         : "";
     extension.browserAction.setBadgeText({ text: `${count}` });
     extension.browserAction.setBadgeBackgroundColor({ color: "#037DD6" });
 
-    if (!datas.password) {
+    if (!this.logged) {
       this.signmsgs = {};
     }
     await util.delay(1000);
     this.updateBadge();
+  }
+  /**
+   * login
+   */
+  async login(obj = {}, port) {
+    let datas = await store.get();
+    const pwd = obj && obj.data ? obj.data.password : "";
+    if (!pwd) {
+      this.sendMsgToPopup({
+        ...obj,
+        data: { code: 400, msg: "Please input password" },
+      });
+      return;
+    }
+    const accounts = datas ? datas.accounts : [];
+    if (accounts.length == 0) {
+      this.sendMsgToPopup({
+        ...obj,
+        data: { code: 400, msg: "no account" },
+      });
+      return;
+    }
+    const index = accounts.findIndex((item) => item.password == pwd);
+    if (index == -1) {
+      this.sendMsgToPopup({
+        ...obj,
+        data: { code: 400, msg: "Wrong password" },
+      });
+      return;
+    }
+    this.logged = true;
+    datas.account_index = index;
+    await store.set(datas);
+    this.sendMsgToPopup({
+      ...obj,
+      data: { code: 200, msg: "OK" },
+    });
+  }
+  /**
+   * logout
+   */
+  async logout(obj, port) {
+    this.logged = false;
+    let datas = await store.get();
+    datas.account_index = -1;
+    this.signmsgs = {};
+    store.set({ ...datas, signmsgs: {} });
   }
 }

@@ -6,6 +6,7 @@ import { routerRedux } from "dva/router";
 import MessageManager from "../util/message";
 import getData from "../service/getData";
 import API from "../util/api";
+import CONST2 from "../util/const";
 
 export default {
   namespace: "layout",
@@ -15,7 +16,6 @@ export default {
     store: {
       /**
        * account : [{
-       *  password: "", // 密码
        *  mnemonic: "", // 12词
        *  privateKey: "", // 秘钥
        *  publicKey: "", // 公钥
@@ -25,7 +25,6 @@ export default {
        */
       accounts: [],
       account_index: -1, //  -1 未登录任何账户， >=0 登录accounts[i]的账户
-      password: "",
       signmsgs: {},
       sites: [],
       unit: "usd",
@@ -35,11 +34,17 @@ export default {
     messageManager: null,
     domain: "main",
     chain_id: "hbtc-testnet",
+    logged: true,
   },
 
   subscriptions: {
     setup({ dispatch, history }) {
       const messageManager = new MessageManager(dispatch, history, routerRedux);
+      // 查询登录状态
+      messageManager.sendMessage({
+        type: CONST2.METHOD_LOGGED_STATUS_QUERY,
+        data: {},
+      });
       dispatch({
         type: "save",
         payload: {
@@ -119,8 +124,17 @@ export default {
             ...store,
             accounts,
             account_index: accounts.length - 1,
-            password: password,
           },
+        },
+      });
+      // 执行登录
+      const messageManager = yield select(
+        (state) => state.layout.messageManager
+      );
+      messageManager.sendMessage({
+        type: CONST2.METHOD_LOGIN,
+        data: {
+          password: helper.sha256(password),
         },
       });
     },
@@ -136,7 +150,6 @@ export default {
     },
     *get_balance({ payload }, { put, select }) {
       const balance = yield select((state) => state.layout.balance);
-      console.log(payload);
       yield put({
         type: "save",
         payload: {

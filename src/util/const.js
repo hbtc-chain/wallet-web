@@ -8,4 +8,7 @@ export default {
   METHOD_SET_STORE: "set_store",
   METHOD_GET_STORE: "get_store",
   METHOD_GET_BALANCE: "get_balance",
+  METHOD_LOGIN: "login",
+  METHOD_LOGOUT: "logout",
+  METHOD_LOGGED_STATUS_QUERY: "logged_status_query",
 };

@@ -118,4 +118,5 @@ export default {
   lang: "Language",
   "zh-cn": "Chinese",
   "en-us": "English",
+  "next time to backup": "Back up later",
 };

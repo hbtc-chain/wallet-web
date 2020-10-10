@@ -10,7 +10,7 @@ function IndexPage({ layout, dispatch, location, history }) {
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
       <div className="g_content">
-        {layout.store.password ? (
+        {layout.logged ? (
           <IndexRC
             {...layout}
             dispatch={dispatch}

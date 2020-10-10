@@ -19,21 +19,19 @@ function IndexPage({ layout, dispatch, location, match }) {
         location
       />
       <div className="g_content">
-        {layout.store.password ? (
+        {layout.logged ? (
           <IndexRC
             {...layout}
             dispatch={dispatch}
             location={location}
-            match
-            location
+            match={match}
           />
         ) : (
           <LoginRC
             {...layout}
             dispatch={dispatch}
             location={location}
-            match
-            location
+            match={match}
           />
         )}
       </div>

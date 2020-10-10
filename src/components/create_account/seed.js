@@ -18,21 +18,22 @@ class IndexRC extends React.Component {
       step2: false,
       seed: "",
       seeds: [],
+      seeds_sort: [],
       seed_confirm_msg: "",
     };
   }
   componentDidMount() {
+    const password = this.props.location.state
+      ? this.props.location.state.password
+      : "";
     const account =
       this.props.store.accounts &&
       this.props.store.account_index > -1 &&
       this.props.store.accounts[this.props.store.account_index]
         ? this.props.store.accounts[this.props.store.account_index]
         : "";
-    if (account.mnemonic && this.props.store.password) {
-      const seed = helper.aes_decrypt(
-        account.mnemonic,
-        this.props.store.password
-      );
+    if (account.mnemonic && password) {
+      const seed = helper.aes_decrypt(account.mnemonic, password);
       this.setState({
         seeds: seed.split(" "),
         seeds_sort: seed.split(" ").sort((a, b) => {
@@ -63,6 +64,7 @@ class IndexRC extends React.Component {
       mask: false,
       step1: true,
       step2: false,
+      seed: "",
     });
   };
   seed_set = (key) => (e) => {
@@ -92,6 +94,13 @@ class IndexRC extends React.Component {
       });
     }
   };
+  jump = () => {
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.index,
+      })
+    );
+  };
   render() {
     const { classes } = this.props;
     return (
@@ -117,17 +126,33 @@ class IndexRC extends React.Component {
                 </div>
               )}
             </Paper>
-            <Button
-              disabled={!Boolean(this.state.mask)}
-              onClick={this.next}
-              color="primary"
-              variant="contained"
-              className={classes.btn_large}
-            >
-              {this.props.intl.formatMessage({
-                id: "next",
-              })}
-            </Button>
+            <Grid container spacing={2}>
+              <Grid item>
+                <Button
+                  onClick={this.jump}
+                  color="primary"
+                  variant="contained"
+                  className={classes.btn_large}
+                >
+                  {this.props.intl.formatMessage({
+                    id: "next time to backup",
+                  })}
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  disabled={!Boolean(this.state.mask)}
+                  onClick={this.next}
+                  color="primary"
+                  variant="contained"
+                  className={classes.btn_large}
+                >
+                  {this.props.intl.formatMessage({
+                    id: "next",
+                  })}
+                </Button>
+              </Grid>
+            </Grid>
           </div>
         ) : (
           ""

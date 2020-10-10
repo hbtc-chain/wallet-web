@@ -101,8 +101,8 @@ export default (theme) => ({
     background: theme.palette.grey[100],
   },
   mask: {
-    width: "360px",
-    height: "600px",
+    width: "100vw",
+    height: "100vh",
     position: "absolute",
     zIndex: 100,
     left: 0,
