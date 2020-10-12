@@ -1,4 +1,6 @@
 export default {
+  HBC_ADDRESS_PREFIX: [2, 16, 66],
+  HBC_PATH: "m/44'/496'/0'/0/0",
   MESSAGE_FROM_PAGE: "page",
   MESSAGE_FROM_BACKGROUND: "background",
   MESSAGE_FROM_POPUP: "popup",

@@ -4,7 +4,7 @@ import * as bip39 from "bip39";
 import * as bip32 from "bip32";
 import * as crypto from "crypto";
 import ripemd160 from "ripemd160";
-import CONST from "../config/const";
+import CONST from "./const";
 import BASE58 from "base-x";
 import secp256k1 from "secp256k1";
 import mathjs from "./mathjs";

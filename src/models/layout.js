@@ -1,12 +1,11 @@
 import helper from "../util/helper";
 import store from "../util/store";
-import CONST from "../config/const";
+import CONST from "../util/const";
 import route_map from "../config/route_map";
 import { routerRedux } from "dva/router";
 import MessageManager from "../util/message";
 import getData from "../service/getData";
 import API from "../util/api";
-import CONST2 from "../util/const";
 import { v4 } from "uuid";
 import util from "../util/util";
 
@@ -21,7 +20,7 @@ export default {
       const messageManager = new MessageManager(dispatch, history, routerRedux);
       // 查询登录状态
       messageManager.sendMessage({
-        type: CONST2.METHOD_LOGGED_STATUS_QUERY,
+        type: CONST.METHOD_LOGGED_STATUS_QUERY,
         data: {},
       });
       dispatch({
@@ -119,7 +118,7 @@ export default {
         (state) => state.layout.messageManager
       );
       messageManager.sendMessage({
-        type: CONST2.METHOD_LOGIN,
+        type: CONST.METHOD_LOGIN,
         data: {
           password: helper.sha256(password),
         },
@@ -161,7 +160,7 @@ export default {
       );
       if (messageManager) {
         messageManager.sendMessage({
-          type: CONST2.METHOD_GET_BALANCE,
+          type: CONST.METHOD_GET_BALANCE,
           data: {},
           id: v4(),
         });
