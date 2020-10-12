@@ -28,7 +28,32 @@ function delay(timeout) {
   });
 }
 
+/**
+ * 精度判断
+ * @param {String} v v=number时，传入999. , 返回的数值会被忽略.
+ * @param {Number} digits   -10,-1,1,2,3,4
+ */
+function fix_digits(v, digits) {
+  if (!digits) {
+    return v ? Math.floor(v) : v;
+  }
+  if (!v && v !== 0) return v;
+  if (digits <= 0) {
+    return Math.floor(v);
+  }
+  let string_v = `${v}`;
+  let d = string_v.split(".");
+  if (!d[1] || d[1].length <= digits) {
+    return string_v;
+  }
+  d[1] = d[1].split("");
+  d[1].length = digits;
+  d[1] = d[1].join("");
+  return d[0] + "." + d[1];
+}
+
 export default {
   packmsg,
   delay,
+  fix_digits,
 };

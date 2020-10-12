@@ -109,6 +109,7 @@ const initStore = async () => {
         store,
         chain_id: "hbtc-testnet",
         balance: {},
+        tokens: [],
         units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
         langs: ["zh-cn", "en-us"],
         messageManager: null,

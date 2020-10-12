@@ -42,6 +42,7 @@ import util from "../../util/util";
 import API from "../../util/api";
 import AutorenewIcon from "@material-ui/icons/Autorenew";
 
+let timer = true;
 class IndexRC extends React.Component {
   constructor() {
     super();
@@ -64,13 +65,16 @@ class IndexRC extends React.Component {
     };
   }
   componentDidMount() {
-    this.get_tokens();
+    timer = true;
     this.get_balance();
   }
+  componentWillUnmount() {
+    timer = false;
+  }
   get_rates = async () => {
-    if (this.state.tokens.length) {
+    if (this.props.tokens.length) {
       let tokens = [];
-      this.state.tokens.map((item) => tokens.push(item.symbol));
+      this.props.tokens.map((item) => tokens.push(item.symbol));
       const result = await this.props.dispatch({
         type: "layout/commReq",
         payload: {
@@ -91,35 +95,8 @@ class IndexRC extends React.Component {
     await util.delay(10000);
     this.get_rates();
   };
-  get_tokens = async () => {
-    const result = await this.props.dispatch({
-      type: "layout/commReq",
-      payload: { page: 1, page_size: 100 },
-      url: API.tokens,
-    });
-    if (result.code == 200 && result.data) {
-      this.setState(
-        {
-          tokens: result.data.items,
-        },
-        () => {
-          this.get_rates();
-        }
-      );
-    }
-    this.setState({
-      mask: false,
-    });
-  };
+
   get_balance = async () => {
-    if (this.props.messageManager && this.props.store.account_index > -1) {
-      this.props.messageManager.sendMessage({
-        type: CONST.METHOD_GET_BALANCE,
-        data: {},
-        id: v4(),
-      });
-    }
-    await util.delay(2000);
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
@@ -128,11 +105,14 @@ class IndexRC extends React.Component {
         ? this.props.balance[address]
         : { assets: [] };
     const balances_json = {};
+    let total = 0;
     balances.assets.map((item) => {
       balances_json[item.symbol] = item.amount;
+      const d = this.rates(item.amount, item.symbol);
+      total = total + Number(d[0]);
     });
     let tokens = [];
-    this.state.tokens.map((item) => {
+    this.props.tokens.map((item) => {
       tokens.push({
         ...item,
         amount: balances_json[item.symbol] ? balances_json[item.symbol] : 0,
@@ -146,7 +126,9 @@ class IndexRC extends React.Component {
     });
     this.setState({
       tokens,
+      total: total,
     });
+    await util.delay(2000);
     this.get_balance();
   };
   goto = () => {};
@@ -302,7 +284,7 @@ class IndexRC extends React.Component {
     });
   };
   rates = (v, t) => {
-    if (this.state.tokens[this.state.i]) {
+    if (this.props.tokens[this.state.i]) {
       const d = helper.rates(v, t, this.props.store.unit, this.state.rates);
       return d;
     }
@@ -328,18 +310,12 @@ class IndexRC extends React.Component {
     let balance = { amount: "" };
     balances.assets.map((item) => {
       if (
-        this.state.tokens[this.state.i] &&
-        item.symbol == this.state.tokens[this.state.i]["symbol"]
+        this.props.tokens[this.state.i] &&
+        item.symbol == this.props.tokens[this.state.i]["symbol"]
       ) {
         balance = item;
       }
     });
-    const rates = this.state.tokens[this.state.i]
-      ? this.rates(
-          this.state.tokens[this.state.i].amount,
-          this.state.tokens[this.state.i]["symbol"]
-        )
-      : ["", ""];
 
     return (
       <div className={classes.index}>
@@ -373,30 +349,11 @@ class IndexRC extends React.Component {
             </Grid>
           </Grid>
           <div className={classes.token}>
-            {this.state.tokens[this.state.i] &&
-            this.state.tokens[this.state.i]["logo"] ? (
-              <img src={this.state.tokens[this.state.i]["logo"]} />
-            ) : (
-              <img src={require("../../assets/default_icon.png")} />
-            )}
-            <strong>
-              {this.state.tokens[this.state.i]
-                ? this.state.tokens[this.state.i].amount
-                : ""}{" "}
-              {this.state.tokens[this.state.i]
-                ? (
-                    this.state.tokens[this.state.i]["symbol"] || ""
-                  ).toUpperCase()
-                : ""}
-            </strong>
             <em>
-              {rates[0]} {rates[1]}
+              {this.state.total} {(this.props.store.unit || "").toUpperCase()}
             </em>
-            {/* <Button color="primary" variant="contained">
-              BUY
-            </Button> */}
           </div>
-          <Paper square>
+          {/* <Paper square>
             <Tabs
               value={this.state.tab}
               indicatorColor="primary"
@@ -407,10 +364,10 @@ class IndexRC extends React.Component {
               <Tab label="Assets" value="Assets" />
               <Tab label="Activity" value="Activity" />
             </Tabs>
-          </Paper>
+          </Paper> */}
           {this.state.tab == "Assets" ? (
             <List component="nav">
-              {this.state.tokens.map((item, i) => {
+              {this.props.tokens.map((item, i) => {
                 const rates2 = this.rates(
                   1,
                   item.symbol,
@@ -764,13 +721,13 @@ class IndexRC extends React.Component {
             </IconButton>
           </DialogContent>
         </Dialog>
-        {this.state.mask ? (
+        {/* {this.state.mask ? (
           <div className={classes.mask}>
             <AutorenewIcon color="primary" />
           </div>
         ) : (
           ""
-        )}
+        )} */}
       </div>
     );
   }

@@ -45,8 +45,8 @@ class MessageManager {
         if (Object.keys(obj).length == 0) {
           return;
         }
-        console.log("popup get msg:");
-        console.log(obj);
+        console.warn("popup get msg:");
+        console.warn(obj);
         this.handleMsg(obj);
       });
     }
@@ -152,8 +152,8 @@ class MessageManager {
       type,
       data,
     });
-    console.log("send msg to bg:");
-    console.log(obj);
+    console.warn("send msg to bg:");
+    console.warn(obj);
     if (window.location.hostname !== "localhost") {
       this.port.postMessage(JSON.stringify(obj));
     }

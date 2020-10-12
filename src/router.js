@@ -63,6 +63,26 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/sign"),
   });
+  // chain
+  const ChainRC = dynamic({
+    app,
+    component: () => import("./pages/chain"),
+  });
+  // external address
+  const ExternalAddressRC = dynamic({
+    app,
+    component: () => import("./pages/external_address"),
+  });
+  // symbol
+  const SymbolRC = dynamic({
+    app,
+    component: () => import("./pages/symbol"),
+  });
+  // transfer
+  const TransferRC = dynamic({
+    app,
+    component: () => import("./pages/transfer"),
+  });
 
   return (
     <Router history={history}>
@@ -103,6 +123,27 @@ function RouterConfig({ history, app }) {
         />
         {/* sign */}
         <Route exact path={route_map.sign} component={SignRC} />
+        {/* chain */}
+        <Route exact path={route_map.chain + "/:chainId"} component={ChainRC} />
+        <Redirect exact from={route_map.chain} to={route_map.chain + "/HBC"} />
+        {/* external address */}
+        <Route
+          exact
+          path={route_map.external_address + "/:symbol"}
+          component={ExternalAddressRC}
+        />
+        {/* symbol */}
+        <Route
+          exact
+          path={route_map.symbol + "/:symbol"}
+          component={SymbolRC}
+        />
+        {/* Transfer */}
+        <Route
+          exact
+          path={route_map.transfer + "/:symbol"}
+          component={TransferRC}
+        />
 
         <Route component={NotFountRC} />
       </Switch>

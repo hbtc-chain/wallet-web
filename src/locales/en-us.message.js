@@ -1,5 +1,5 @@
 export default {
-  "welcome.title": "Welcome to Bata Version of HBC Wallet",
+  "welcome.title": "Welcome to Bata Version of HBTC Wallet",
   "welcome.desc": "We are pleased to have you here",
   "welcome.btn.start": "Start to Use",
   "create.step1.desc.1": "No, I've had a seed encryption already ",
@@ -10,7 +10,7 @@ export default {
     "This will help you to create new wallet and seed encryption",
   "create.step1.btn.import": "Import wallet",
   "create.step1.btn.create": "Create wallet",
-  "create.title": "Add to HBC wallet?",
+  "create.title": "Add to HBTC wallet?",
   "create.title2": "Wallet Statement",
   import: "Import",
   "import.seed": "Input 12-digit mnemonic",
@@ -52,12 +52,12 @@ export default {
   "safe.tip.1": "Save the backup data in multiple places",
   "safe.tip.2": "Never share the backup encryption info to anyone",
   "safe.tip.3":
-    "BEWARE OF PHISHING SCAMS！HBC wallet will never ask you to provide your personal seed encryption",
+    "BEWARE OF PHISHING SCAMS！HBTC wallet will never ask you to provide your personal seed encryption",
   "safe.tip.4":
     'If you need to backup your personal seed encryption agin, please go to "Settings  -> Safety to complete the precedure',
   "safe.tip.5":
     "Please sent email to support@hbtc.com for any doubts you may have",
-  "create.done.desc2": "* HBC wallet could not recover your seed encryption",
+  "create.done.desc2": "* HBTC wallet could not recover your seed encryption",
   knowmore: "Know more",
   done: "Done",
   unlock: "Unlock",

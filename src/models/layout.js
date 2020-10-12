@@ -7,35 +7,14 @@ import MessageManager from "../util/message";
 import getData from "../service/getData";
 import API from "../util/api";
 import CONST2 from "../util/const";
+import { v4 } from "uuid";
+import util from "../util/util";
 
 export default {
   namespace: "layout",
 
-  //
-  state: {
-    store: {
-      /**
-       * account : [{
-       *  mnemonic: "", // 12词
-       *  privateKey: "", // 秘钥
-       *  publicKey: "", // 公钥
-       *  address: '', // 地址
-       *  username: '', 用户名
-       * }]
-       */
-      accounts: [],
-      account_index: -1, //  -1 未登录任何账户， >=0 登录accounts[i]的账户
-      signmsgs: {},
-      sites: [],
-      unit: "usd",
-    },
-    balance: {},
-    units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
-    messageManager: null,
-    domain: "main",
-    chain_id: "hbtc-testnet",
-    logged: true,
-  },
+  // 初始数据在 /src/index.js
+  state: {},
 
   subscriptions: {
     setup({ dispatch, history }) {
@@ -55,6 +34,14 @@ export default {
         type: "init",
         payload: {},
         dispatch,
+      });
+      dispatch({
+        type: "tokens",
+        payload: {},
+      });
+      dispatch({
+        type: "get_balance_loop",
+        payload: {},
       });
       history.listen((location) => {});
     },
@@ -139,13 +126,50 @@ export default {
       });
     },
     /**
+     * 查询 tokens
+     */
+    *tokens({ payload }, { call, put }) {
+      const result = yield call(getData(API.domain.main + API.tokens), {
+        payload: {},
+        method: "get",
+      });
+      if (result.code == 200 && result.data && result.data.items) {
+        yield put({
+          type: "save",
+          payload: {
+            tokens: result.data.items || [],
+          },
+        });
+      }
+    },
+    /**
      * commReq
      */
-    *commReq({ payload, url, method = "GET" }, { call, select }) {
-      const domain = yield select((state) => state.layout.main);
+    *commReq(
+      { payload, url, method = "GET", ...otherProps },
+      { call, select }
+    ) {
       return yield call(getData(API.domain.main + url), {
         payload,
         method,
+        ...otherProps,
+      });
+    },
+    *get_balance_loop({ payload }, { call, put, select }) {
+      const messageManager = yield select(
+        (state) => state.layout.messageManager
+      );
+      if (messageManager) {
+        messageManager.sendMessage({
+          type: CONST2.METHOD_GET_BALANCE,
+          data: {},
+          id: v4(),
+        });
+      }
+      yield util.delay(1000);
+      yield put({
+        type: "get_balance_loop",
+        payload: {},
       });
     },
     *get_balance({ payload }, { put, select }) {

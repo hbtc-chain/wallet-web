@@ -23,4 +23,8 @@ export default {
   create_account_done: `${local}/create_account_done`,
   sign: `${local}/sign`,
   connect: `${local}/connect`,
+  chain: `${local}/chain`,
+  symbol: `${local}/symbol`,
+  transfer: `${local}/transfer`,
+  external_address: `${local}/external_address`,
 };

@@ -115,4 +115,31 @@ export default (theme) => ({
       fontSize: 30,
     },
   },
+  grey: {
+    color: theme.palette.grey[500],
+  },
+  external_address: {
+    height: 560,
+    maxWidth: 360,
+    padding: "0 10px",
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+  },
+  symbol: {
+    maxWidth: 360,
+    padding: "0 10px",
+    margin: "0 auto",
+  },
+  back: {
+    height: 40,
+  },
+  external_content: {
+    margin: "20px 0 0",
+    flex: 1,
+  },
+  external_label: {
+    display: "block",
+    margin: "20px 0 10px",
+  },
 });
