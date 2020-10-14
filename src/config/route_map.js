@@ -26,5 +26,9 @@ export default {
   chain: `${local}/chain`,
   symbol: `${local}/symbol`,
   transfer: `${local}/transfer`,
+  send: `${local}/send`,
   external_address: `${local}/external_address`,
+  withdrawal: `${local}/withdrawal`,
+  keystore: `${local}/keystore`,
+  accept: `${local}/accept`,
 };

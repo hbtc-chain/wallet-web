@@ -15,6 +15,9 @@ import {
   DialogTitle,
   DialogContent,
   CircularProgress,
+  Select,
+  MenuItem,
+  OutlinedInput,
 } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import helper from "../../util/helper";
@@ -26,11 +29,13 @@ import { v4 } from "uuid";
 import util from "../../util/util";
 import API from "../../util/api";
 import math from "../../util/mathjs";
+import message from "../public/message";
 
 class IndexRC extends React.Component {
   constructor() {
     super();
     this.state = {
+      symbol: "hbc",
       loading: false,
       open: false,
       password: "",
@@ -85,7 +90,7 @@ class IndexRC extends React.Component {
     });
   };
   submit = async () => {
-    const symbol = this.props.match.params.symbol.toLowerCase();
+    const symbol = this.state.symbol;
     const balance =
       this.props.balance && this.props.balance.assets
         ? this.props.balance.assets.find((item) => item.symbol == symbol)
@@ -178,7 +183,7 @@ class IndexRC extends React.Component {
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
-    const symbol = this.props.match.params.symbol.toLowerCase();
+    const symbol = this.state.symbol.toLowerCase();
     const token = this.props.tokens.find((item) => item.symbol == symbol);
     const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
 
@@ -259,6 +264,11 @@ class IndexRC extends React.Component {
     if (result.code == 200) {
       this.check(result.data.txhash);
     } else {
+      const err_msg =
+        result.data && result.data.raw_log
+          ? JSON.parse(result.data.raw_log).message
+          : "unknown error";
+      message.error(err_msg);
       this.setState({
         loading: false,
         msg:
@@ -279,6 +289,10 @@ class IndexRC extends React.Component {
         if (result.data.success) {
           this.props.dispatch(routerRedux.goBack());
         } else {
+          const err_msg = result.data.error_message
+            ? result.data.error_message.message
+            : "unknown error";
+          message.error(err_msg);
           this.setState({
             loading: false,
             err_msg: result.data.error_message
@@ -292,14 +306,25 @@ class IndexRC extends React.Component {
     await util.delay(1000);
     this.check(txhash);
   };
+  symbolChange = (e) => {
+    this.setState({
+      symbol: e.target.value,
+    });
+  };
   render() {
     const { classes } = this.props;
-    const symbol = (this.props.match.params.symbol || "").toLowerCase();
+    const symbol = (this.state.symbol || "").toLowerCase();
     const balance =
       this.props.balance && this.props.balance.assets
-        ? this.props.balance.assets.find((item) => item.symbol == symbol)
-        : { amount: "" };
+        ? this.props.balance.assets.find(
+            (item) => item.symbol == this.state.symbol
+          )
+        : { amount: 0 };
     const rates = this.rates(balance.amount, symbol);
+    const account =
+      this.props.store.accounts && this.props.store.account_index > -1
+        ? this.props.store.accounts[this.props.store.account_index]
+        : {};
     return (
       <div className={classes.symbol}>
         <Grid
@@ -308,7 +333,7 @@ class IndexRC extends React.Component {
           alignItems="center"
           className={classes.back}
         >
-          <Grid item xs={2}>
+          <Grid item xs={2} style={{ padding: "0 0 0 10px" }}>
             <ArrowBackIosIcon
               onClick={() => {
                 this.props.dispatch(routerRedux.goBack());
@@ -316,87 +341,195 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            {this.props.match.params.symbol}
-            {this.props.intl.formatMessage({ id: "transfer" })}
+            <h2>{this.props.intl.formatMessage({ id: "send" })}</h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        <div>
-          <Grid container justify="space-between">
+        <div className={classes.form}>
+          <Grid
+            container
+            justify="space-between"
+            className={classes.form_label}
+          >
             <Grid item>
-              {this.props.intl.formatMessage({ id: "transfer address" })}
+              {this.props.intl.formatMessage({ id: "output address" })}
             </Grid>
             <Grid item></Grid>
           </Grid>
-          <TextField
-            placeholder={this.props.intl.formatMessage({ id: "input address" })}
-            value={this.state.to_address}
-            fullWidth
-            onChange={this.handleChange("to_address")}
-            error={Boolean(this.state.to_address_msg)}
-            helperText={this.state.to_address_msg}
-          />
-          <br />
-          <Grid container justify="space-between">
+          <div className={classes.form_input}>
+            <TextField
+              variant="outlined"
+              placeholder={this.props.intl.formatMessage({
+                id: "output address",
+              })}
+              value={account.address}
+              classes={{
+                root: classes.outline,
+              }}
+              fullWidth
+            />
+          </div>
+          <Grid
+            container
+            justify="space-between"
+            className={classes.form_label}
+          >
+            <Grid item>
+              {this.props.intl.formatMessage({ id: "accept address" })}
+            </Grid>
+            <Grid item></Grid>
+          </Grid>
+          <div className={classes.form_input}>
+            <TextField
+              variant="outlined"
+              placeholder={this.props.intl.formatMessage({
+                id: "input address",
+              })}
+              value={this.state.to_address}
+              fullWidth
+              classes={{
+                root: classes.outline,
+              }}
+              onChange={this.handleChange("to_address")}
+              error={Boolean(this.state.to_address_msg)}
+              helperText={this.state.to_address_msg}
+            />
+          </div>
+          <Grid
+            container
+            justify="space-between"
+            className={classes.form_label}
+          >
+            <Grid item>
+              {this.props.intl.formatMessage({ id: "select tokens" })}
+            </Grid>
+            <Grid item></Grid>
+          </Grid>
+          <div className={classes.form_input}>
+            <TextField
+              select
+              value={this.state.symbol}
+              fullWidth
+              onChange={this.symbolChange}
+              variant="outlined"
+              classes={{
+                root: classes.outline,
+                outlined: classes.outline_outline,
+              }}
+            >
+              {this.props.tokens.map((item) => {
+                const balance =
+                  this.props.balance && this.props.balance.assets
+                    ? this.props.balance.assets.find(
+                        (it) => it.symbol == item.symbol
+                      )
+                    : { amount: 0 };
+                return (
+                  <MenuItem value={item.symbol} key={item.symbol}>
+                    {item.symbol.toUpperCase()}({balance.amount})
+                  </MenuItem>
+                );
+              })}
+            </TextField>
+          </div>
+          <Grid
+            container
+            justify="space-between"
+            className={classes.form_label}
+          >
             <Grid item>
               {this.props.intl.formatMessage({ id: "transfer amount" })}
             </Grid>
-            <Grid item>{balance.amount}</Grid>
+            <Grid item>
+              {this.props.intl.formatMessage({ id: "available" })}{" "}
+              {balance.amount}
+              {this.state.symbol.toUpperCase()}
+            </Grid>
           </Grid>
-          <TextField
-            placeholder={this.props.intl.formatMessage({ id: "input amount" })}
-            value={this.state.amount}
-            onChange={this.handleChange("amount")}
-            fullWidth
-            error={Boolean(this.state.amount_msg)}
-            helperText={this.state.amount_msg}
-            InputProps={{
-              endAdornment: (
-                <Button
-                  onClick={() => {
-                    this.setState({
-                      amount: balance.amount,
-                      amount_msg: "",
-                    });
-                  }}
-                >
-                  {this.props.intl.formatMessage({ id: "all" })}
-                </Button>
-              ),
-            }}
-          />
-          <br />
-          <Grid container justify="space-between">
+          <div className={classes.form_input}>
+            <TextField
+              placeholder={this.props.intl.formatMessage({
+                id: "input amount",
+              })}
+              value={this.state.amount}
+              onChange={this.handleChange("amount")}
+              fullWidth
+              error={Boolean(this.state.amount_msg)}
+              classes={{
+                root: classes.outline,
+              }}
+              variant="outlined"
+              helperText={this.state.amount_msg}
+              InputProps={{
+                endAdornment: (
+                  <span
+                    onClick={() => {
+                      this.setState({
+                        amount: balance.amount,
+                        amount_msg: "",
+                      });
+                    }}
+                    color="primary"
+                    className={classes.btn_all}
+                  >
+                    {this.props.intl.formatMessage({ id: "all" })}
+                  </span>
+                ),
+              }}
+            />
+          </div>
+          <Grid
+            container
+            justify="space-between"
+            className={classes.form_label}
+          >
             <Grid item>{this.props.intl.formatMessage({ id: "fee" })}</Grid>
             <Grid item></Grid>
           </Grid>
-          <TextField
-            placeholder={this.props.intl.formatMessage({ id: "fee" })}
-            value={this.state.fee}
-            onChange={this.feeChange}
-            fullWidth
-            InputProps={{
-              endAdornment: <span className={classes.grey}>HBC</span>,
-            }}
-            error={Boolean(this.state.fee_msg)}
-            helperText={this.state.fee_msg}
-          />
-          <br />
-          <Grid container justify="space-between">
+          <div className={classes.form_input}>
+            <TextField
+              variant="outlined"
+              placeholder={this.props.intl.formatMessage({ id: "fee" })}
+              value={this.state.fee}
+              onChange={this.feeChange}
+              classes={{
+                root: classes.outline,
+              }}
+              fullWidth
+              InputProps={{
+                endAdornment: <span className={classes.grey}>HBC</span>,
+              }}
+              error={Boolean(this.state.fee_msg)}
+              helperText={this.state.fee_msg}
+            />
+          </div>
+          <Grid
+            container
+            justify="space-between"
+            className={classes.form_label}
+          >
             <Grid item>
               {this.props.intl.formatMessage({ id: "fee_min_max" })}
             </Grid>
             <Grid item></Grid>
           </Grid>
-          <Slider
-            value={Number(this.state.fee)}
-            onChange={this.sliderChange}
-            step={0.001}
-            min={0}
-            max={1}
-          />
+          <div className={classes.form_input}>
+            <Slider
+              value={Number(this.state.fee)}
+              onChange={this.sliderChange}
+              step={0.001}
+              min={0}
+              max={1}
+            />
+          </div>
           {this.state.loading ? (
-            <Button color="primary" variant="contained" fullWidth disabled>
+            <Button
+              color="primary"
+              variant="contained"
+              fullWidth
+              disabled
+              className={classes.submit}
+            >
               <CircularProgress color="primary" size="small" />
             </Button>
           ) : (
@@ -405,11 +538,11 @@ class IndexRC extends React.Component {
               variant="contained"
               fullWidth
               onClick={this.submit}
+              className={classes.submit}
             >
               {this.props.intl.formatMessage({ id: "transfer" })}
             </Button>
           )}
-          <p>{this.state.err_msg}</p>
         </div>
         <Dialog open={this.state.open}>
           <DialogTitle>

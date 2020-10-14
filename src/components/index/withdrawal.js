@@ -42,13 +42,31 @@ class IndexRC extends React.Component {
       fee: 0.01,
       fee_msg: "",
       gas_fee: "",
+      gas_fee_min: "",
       gas_fee_msg: "",
       sequence: "",
       memo: "",
       err_msg: "",
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.init();
+  }
+  componentDidUpdate(preProps) {
+    if (!preProps.tokens.length && this.props.tokens.length) {
+      this.init();
+    }
+  }
+  init = () => {
+    const symbol = this.props.match.params.symbol.toLowerCase();
+    const token = this.props.tokens.find((item) => item.symbol == symbol);
+    if (token) {
+      this.setState({
+        gas_fee: Number(token.withdrawal_fee),
+        gas_fee_min: Number(token.withdrawal_fee),
+      });
+    }
+  };
   handleChange = (key) => (e) => {
     this.setState({
       [key]: e.target.value,
@@ -87,15 +105,40 @@ class IndexRC extends React.Component {
     });
   };
   submit = async () => {
+    const symbol = this.props.match.params.symbol.toLowerCase();
+    const balance =
+      this.props.balance && this.props.balance.assets
+        ? this.props.balance.assets.find((item) => item.symbol == symbol)
+        : { amount: 0 };
     if (!this.state.to_address) {
       this.setState({
         to_address_msg: this.props.intl.formatMessage({ id: "input address" }),
       });
       return;
     }
-    if (!Number(this.state.amount)) {
+    if (
+      !Number(this.state.amount) ||
+      /[^0-9\.]/.test(this.state.amount)
+      //|| Number(this.state.amount) > balance.amount
+    ) {
       this.setState({
-        amount_msg: this.props.intl.formatMessage({ id: "input amount" }),
+        amount_msg: this.props.intl.formatMessage(
+          { id: "amount rule" },
+          { n: balance.amount }
+        ),
+      });
+      return;
+    }
+    if (
+      !Number(this.state.gas_fee) ||
+      /[^0-9\.]/.test(this.state.gas_fee) ||
+      Number(this.state.gas_fee) < Number(this.state.gas_fee_min)
+    ) {
+      this.setState({
+        gas_fee_msg: this.props.intl.formatMessage(
+          { id: "gas fee rule" },
+          { n: this.state.gas_fee_min }
+        ),
       });
       return;
     }
@@ -144,7 +187,7 @@ class IndexRC extends React.Component {
       .done();
     return a;
   };
-  transfer = async () => {
+  withdrawal = async () => {
     if (!this.state.password) {
       this.setState({
         password_msg: this.props.intl.formatMessage({
@@ -186,16 +229,14 @@ class IndexRC extends React.Component {
       memo: this.state.memo,
       msgs: [
         {
-          type: "hbtcchain/transfer/MsgSend",
+          type: "hbtcchain/transfer/MsgWithdrawal",
           value: {
-            from_address: address,
-            to_address: this.state.to_address,
-            amount: [
-              {
-                amount: this.decimals(this.state.amount, token.decimals),
-                denom: symbol,
-              },
-            ],
+            from_cu: address,
+            to_multi_sign_address: this.state.to_address,
+            symbol,
+            amount: this.decimals(this.state.amount, token.decimals),
+            gas_fee: this.decimals(this.state.gas_fee, token.decimals),
+            order_id: v4(),
           },
         },
       ],
@@ -372,6 +413,9 @@ class IndexRC extends React.Component {
             fullWidth
             error={Boolean(this.state.gas_fee_msg)}
             helperText={this.state.gas_fee_msg}
+            InputProps={{
+              endAdornment: <span>{symbol.toUpperCase()}</span>,
+            }}
           />
           <br />
           <Grid container justify="space-between">
@@ -389,6 +433,12 @@ class IndexRC extends React.Component {
             error={Boolean(this.state.fee_msg)}
             helperText={this.state.fee_msg}
           />
+          <Grid container justify="space-between">
+            <Grid item>
+              {this.props.intl.formatMessage({ id: "fee_min_max" })}
+            </Grid>
+            <Grid item></Grid>
+          </Grid>
           <Slider
             value={Number(this.state.fee)}
             onChange={this.sliderChange}
@@ -397,7 +447,6 @@ class IndexRC extends React.Component {
             max={1}
           />
           <br />
-
           {this.state.loading ? (
             <Button color="primary" variant="contained" fullWidth disabled>
               <CircularProgress color="primary" size="small" />
@@ -449,7 +498,7 @@ class IndexRC extends React.Component {
               {this.props.intl.formatMessage({ id: "cancel" })}
             </Button>
             <Button
-              onClick={this.transfer}
+              onClick={this.withdrawal}
               variant="contained"
               color="primary"
               fullWidth

@@ -52,8 +52,31 @@ function fix_digits(v, digits) {
   return d[0] + "." + d[1];
 }
 
+/**
+ * bex颜色转为rgba
+ * @param String #ff00ff #f0f
+ * @param Number a 0-1
+ * @return String rgba(r,g,b,a)
+ */
+function hex_to_rgba(hex, a) {
+  if (!hex || hex.indexOf("#") == -1) {
+    return "rgba(0,0,0,0)";
+  }
+  if (hex.length != 7 && hex.length != 4) {
+    console.error(`${hex} is not hex color`);
+    return "rgba(0,0,0,0)";
+  }
+  let s = hex.replace("#", "").match(/^(..?)(..?)(..?)/);
+  return `rgba(${parseInt(
+    "0x" + s[1] + (s[1].length == 1 ? s[1] : "")
+  )},${parseInt("0x" + s[2] + (s[2].length == 1 ? s[2] : ""))},${parseInt(
+    "0x" + s[3] + (s[3].length == 1 ? s[3] : "")
+  )},${Number(a) || 1})`;
+}
+
 export default {
   packmsg,
   delay,
   fix_digits,
+  hex_to_rgba,
 };

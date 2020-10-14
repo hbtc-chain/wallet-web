@@ -31,6 +31,7 @@
   flex-shrink: unset;
   align-items: center;
   animation: once 0.5s ease-in-out 1 forwards;
+  justify-content: center;
 }
 .g-message.close {
   animation: close 0.5s ease-in-out 1 forwards;

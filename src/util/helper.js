@@ -7,7 +7,13 @@ import ripemd160 from "ripemd160";
 import CONST from "./const";
 import BASE58 from "base-x";
 import secp256k1 from "secp256k1";
+import ecc from "tiny-secp256k1";
 import mathjs from "./mathjs";
+import {
+  decryptJsonWallet,
+  decryptJsonWalletSync,
+  encryptKeystore,
+} from "@ethersproject/json-wallets";
 
 function checkForError() {
   const { lastError } = extension.runtime;
@@ -49,47 +55,26 @@ function sha256(str) {
   return hash.digest("hex");
 }
 
-// /**
-//  * 生成keystore
-//  * @param {str} privateKey
-//  * @param {str} password
-//  * @return {promise} promise, resolve({}) or reject('xxx')
-//  */
-// function createKeystore(privateKey, password) {
-//   return new Promise((resolve, reject) => {
-//     if (!privateKey || !password) {
-//       reject("no params privateKey or password");
-//       return;
-//     }
-//     const wallet = new ethers.Wallet(privateKey);
-//     wallet
-//       .encrypt(password)
-//       .then((json) => {
-//         resolve(json);
-//       })
-//       .catch((e) => reject(e));
-//   });
-// }
+/**
+ * 生成keystore
+ * @param {string} privateKey
+ * @param {string} address
+ * @param {string} password
+ * @return {promise} promise, resolve({}) or reject('xxx')
+ */
+function createKeystore(privateKey, address, password) {
+  return encryptKeystore({ privateKey, address }, password);
+}
 
-// /**
-//  * 解密keystore
-//  * @param {object} json
-//  * @param {str} password
-//  * @return {promise} promise, resolve({}) or reject('xxx')
-//  */
-// function decryptKeyStore(json, password) {
-//   return new Promise((resolve, reject) => {
-//     if (!json || !password) {
-//       reject("no params json or password");
-//       return;
-//     }
-//     ethers.Wallet.fromEncryptedJson(json, password)
-//       .then((res) => {
-//         resolve(res);
-//       })
-//       .catch((e) => reject(e));
-//   });
-// }
+/**
+ * 解密keystore
+ * @param {object} json
+ * @param {str} password
+ * @return {promise} promise, resolve({}) or reject('xxx')
+ */
+function decryptKeyStore(json, password) {
+  return decryptJsonWallet(json, password);
+}
 
 // 16进制转字节
 function HexString2Bytes(str) {
@@ -126,7 +111,7 @@ function checkSum(address) {
   return res;
 }
 /**
- * 8 地址 =  base58.encode(HBC前缀 + address + checkSum的前4个byte)
+ * 4 地址 =  base58.encode(HBC前缀 + address + checkSum的前4个byte)
  * @param {string} address
  * @return {string} address
  */
@@ -139,7 +124,7 @@ function createHBCAddress(address) {
   return res;
 }
 /**
- * 7、根据公钥计算address
+ * 3、根据公钥计算address
  * @param {string} publicKey
  * @return {string} address hex string
  */
@@ -156,7 +141,7 @@ function createAddress(publicKey) {
 }
 
 /**
- * 6 助记词计算秘钥,公钥
+ * 2 助记词计算秘钥,公钥
  * @params {string} mnemonic 12词
  * @params {string} path
  * @return {object} { privateKey: Uint8Array(32) , publicKey: Uint8Array(33) }
@@ -170,9 +155,32 @@ function createKey(mnemonic, path = "m/44'/496'/0'/0/0") {
     publicKey: child.publicKey,
   };
 }
+/**
+ * 2.1 根据私钥计算公钥
+ * @params {string|buffer} privateKey
+ * @return {object} { privateKey: Uint8Array(32) , publicKey: Uint8Array(33) }
+ */
+function createKeyFromPrivateKey(privateKey) {
+  if (!privateKey) {
+    console.error("privateKey is require");
+    return {
+      privateKey: null,
+      publicKey: null,
+    };
+  }
+  const prikey =
+    Object.prototype.toString.call(privateKey) == "[object String]"
+      ? HexString2Bytes(privateKey)
+      : privateKey;
+  const pubkey = ecc.pointFromScalar(prikey, true);
+  return {
+    privateKey: prikey,
+    publicKey: pubkey,
+  };
+}
 
 /**
- * 随机12助记词
+ * 1、随机12助记词
  */
 function createMnemonic() {
   const mnemonic = bip39.generateMnemonic();
@@ -293,8 +301,9 @@ export default {
   aes_decrypt,
   aes_encrypt,
   sha256,
-  // createKeystore,
-  // decryptKeyStore,
+  createKeystore,
+  decryptKeyStore,
+  createKeyFromPrivateKey,
   // 随机词
   createMnemonic,
   // 创建公钥私钥
