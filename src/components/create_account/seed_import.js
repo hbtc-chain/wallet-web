@@ -72,8 +72,9 @@ class IndexRC extends React.Component {
   submit = async () => {
     const params = querystring.parse(this.props.location.search || "");
     const way = params.way;
+    const password = this.state.password;
+    let obj = {};
     if (way == "seed") {
-      const password = this.state.password;
       const seed = this.state.seed
         .replace(/\s{2,}/, " ")
         .replace(/^\s/g, "")
@@ -100,6 +101,10 @@ class IndexRC extends React.Component {
         });
         return;
       }
+      obj = {
+        password: this.state.password,
+        mnemonic: seed.join(" "),
+      };
     }
     if (way == "keyStore") {
       const keyStore = this.state.keyStore.replace(/\s/g, "");
@@ -107,19 +112,18 @@ class IndexRC extends React.Component {
       if (!keyStore || !keyStorepwd) {
         return;
       }
+      obj = {};
     }
     if (way == "key") {
       const key = this.state.key.replace(/\s/g, "");
       if (!key) {
         return;
       }
+      obj = {};
     }
     await this.props.dispatch({
       type: "layout/create_account",
-      payload: {
-        password: this.state.password,
-        mnemonic: seed.join(" "),
-      },
+      payload: obj,
     });
     this.props.dispatch(
       routerRedux.push({
