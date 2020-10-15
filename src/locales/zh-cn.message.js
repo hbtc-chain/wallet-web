@@ -1,4 +1,6 @@
 export default {
+  "hbtc.wallet": "HBTC Wallet",
+  continue: "继续",
   "welcome.title": "欢迎使用HBTC Wallet测试版",
   "welcome.desc": "我们很高兴与您见面。",
   "welcome.btn.start": "开始使用",
@@ -68,6 +70,8 @@ export default {
   "create.done.tip.1": "请勿通过邮箱、通讯工具分享您的助记词",
   "create.done.tip.2": "请勿将您的助记词轻易告知他人",
   "create.done.tip.3": "请勿将助记词截屏、照相等方式保存于您的移动设备中",
+  "account.list.title": "选择账户",
+  "account.list.desc": "选择下列需要导入的账户",
   "safe.tip": "安全保存小技巧",
   "safe.tip.1": "在多处保存备份数据。",
   "safe.tip.2": "绝不向任何分享该密语。",

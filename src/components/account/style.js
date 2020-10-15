@@ -1,14 +1,22 @@
 import helper from "../../util/helper";
 export default (theme) => ({
   login: {
-    width: 300,
+    // width: 300,
     margin: "0 auto",
     textAlign: "center",
-    padding: "50px 0 0",
-    "& img": {},
+    padding: "50px 16px 0",
+    "& img": {
+      width: 80,
+      height: 80,
+      borderRadius: 16,
+      margin: "0 0 16px",
+    },
     "& h1": {
-      color: theme.palette.grey[800],
-      margin: "20px 0 10px",
+      color: theme.palette.grey[700],
+      fontSize: 24,
+      lineHeight: "36px",
+      margin: "16px 0",
+      fontWeight: "bold",
     },
     "& p": {
       color: theme.palette.grey[500],
@@ -16,7 +24,7 @@ export default (theme) => ({
     },
   },
   login_form: {
-    margin: "30px 0 0",
+    margin: "56px 0 0",
   },
   connect: {
     width: 350,
@@ -44,6 +52,13 @@ export default (theme) => ({
   },
   btn_large: {
     padding: "15px 50px",
+  },
+  button: {
+    ...theme.typography.button,
+    "&.Mui-disabled": {
+      color: theme.palette.common.white,
+      background: theme.palette.grey[100],
+    },
   },
   sign: {
     width: 350,
@@ -186,6 +201,26 @@ export default (theme) => ({
       },
       "&:nth-child(2n+1)": {
         left: -8,
+      },
+    },
+  },
+  input_root: {
+    height: 48,
+    background: theme.palette.grey[50],
+    borderRadius: 4,
+    marginTop: "0 !important",
+    "&::before, &::after": {
+      display: "none",
+    },
+    "& input": {
+      height: 24,
+      padding: "12px 10px",
+      color: theme.palette.grey[900],
+      fontSize: 20,
+      "&::placeholder": {
+        opacity: 1,
+        color: theme.palette.grey[500],
+        fontSize: 14,
       },
     },
   },

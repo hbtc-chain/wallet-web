@@ -33,6 +33,7 @@ class IndexRC extends React.Component {
           onClick={this.goto("create")}
           color="primary"
           variant="contained"
+          className={classes.button}
         >
           {this.props.intl.formatMessage({
             id: "create.step1.btn.create",
@@ -43,6 +44,7 @@ class IndexRC extends React.Component {
           onClick={this.goto("import")}
           color="primary"
           variant="outlined"
+          className={classes.button}
         >
           {this.props.intl.formatMessage({
             id: "create.step1.btn.import",

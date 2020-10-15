@@ -44,6 +44,7 @@ class IndexRC extends React.Component {
           onClick={this.goto}
           color="primary"
           variant="contained"
+          className={classes.button}
           fullWidth
         >
           {intl.formatMessage({

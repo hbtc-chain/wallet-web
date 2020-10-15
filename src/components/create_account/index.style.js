@@ -38,6 +38,13 @@ export default (theme) => ({
     margin: "34px auto 16px",
     display: "block",
   },
+  button: {
+    ...theme.typography.button,
+    "&.Mui-disabled": {
+      color: theme.palette.common.white,
+      background: theme.palette.grey[100],
+    },
+  },
   index: {
     padding: "0 16px",
     margin: "0 auto",
@@ -51,8 +58,6 @@ export default (theme) => ({
       color: theme.palette.grey[700],
     },
     "& button": {
-      ...theme.typography.button,
-      height: 48,
       marginBottom: 24,
     },
   },
@@ -106,19 +111,16 @@ export default (theme) => ({
       margin: "0 0 10px",
     },
   },
-  agreement: {
+  footer: {
     padding: "16px 16px 24px",
     background: theme.palette.common.white,
     boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.12)",
+    zIndex: 10,
     "& button": {
-      ...theme.typography.button,
-      "&.Mui-disabled": {
-        color: theme.palette.common.white,
-        background: theme.palette.grey[100],
-      },
+      marginTop: 8,
     },
     "& label": {
-      marginBottom: 16,
+      marginBottom: 8,
       fontSize: 12,
       lineHeight: "17px",
       color: theme.palette.grey[700],
@@ -138,12 +140,7 @@ export default (theme) => ({
       margin: "50px 0 30px",
     },
     "& button": {
-      ...theme.typography.button,
       margin: "16px 0 0",
-      "&.Mui-disabled": {
-        color: theme.palette.common.white,
-        background: theme.palette.grey[100],
-      },
     },
   },
   step3_import: {
@@ -185,6 +182,7 @@ export default (theme) => ({
       },
       "& .MuiListItemText-root": {
         fontWeight: 500,
+        margin: 0,
         "& span": {
           fontSize: 16,
           lineHeight: "24px",
@@ -288,12 +286,7 @@ export default (theme) => ({
       padding: 20,
     },
     "& button": {
-      ...theme.typography.button,
       margin: "32px 0 16px",
-      "&.Mui-disabled": {
-        color: theme.palette.common.white,
-        background: theme.palette.grey[100],
-      },
     },
   },
   seed_item: {
@@ -436,11 +429,6 @@ export default (theme) => ({
       fontSize: 16,
       lineHeight: "23px",
     },
-    "& button": {
-      listStyle: "inside",
-      fontSize: 14,
-      margin: "0 0 6px",
-    },
   },
   tip: {
     padding: 16,
@@ -459,9 +447,6 @@ export default (theme) => ({
       lineHeight: "20px",
       color: theme.palette.grey[500],
     },
-    "& button": {
-      ...theme.typography.button,
-    },
   },
   seed_import: {
     padding: "0 16px 16px",
@@ -471,14 +456,6 @@ export default (theme) => ({
       lineHeight: "20px",
       color: theme.palette.grey[700],
       margin: "0 0 16px",
-    },
-    "& button": {
-      ...theme.typography.button,
-      // margin: "24px 0 ",
-      "&.Mui-disabled": {
-        color: theme.palette.common.white,
-        background: theme.palette.grey[100],
-      },
     },
   },
   textarea: {
@@ -524,6 +501,87 @@ export default (theme) => ({
       margin: "8px 0 0",
       fontSize: 14,
       lineHeight: "16px",
+    },
+  },
+  account_select: {
+    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    height: "calc(100vh)",
+  },
+  account_con_bg: {
+    flex: 1,
+    overflow: "hidden",
+  },
+  account_con: {
+    height: "100%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    padding: "0 16px 16px",
+    "& p": {
+      fontSize: 14,
+      lineHeight: "20px",
+      color: theme.palette.grey[700],
+      margin: "0 0 16px",
+    },
+  },
+  account_list: {
+    "& li": {
+      padding: 16,
+      borderRadius: 4,
+      background: theme.palette.grey[50],
+      overflow: "hidden",
+      margin: "0 0 16px",
+      "& .MuiListItemAvatar-root": {
+        minWidth: 32,
+      },
+      "& .MuiListItemText-root": {
+        fontWeight: 500,
+        margin: 0,
+        "& span": {
+          fontSize: 16,
+          lineHeight: "24px",
+          color: theme.palette.grey[900],
+        },
+        "& p": {
+          fontSize: 14,
+          lineHeight: "16px",
+          margin: "8px 0 0",
+          display: "flex",
+          alignItems: "center",
+          color: theme.palette.grey[500],
+          overflow: "hidden",
+        },
+      },
+      "& em": {
+        display: "flex",
+        width: 16,
+        height: 16,
+        alignItems: "center",
+        justifyContent: "center",
+        border: `1px solid ${helper.hex_to_rgba(
+          theme.palette.primary.main,
+          0.3
+        )}`,
+        borderRadius: "100%",
+        overflow: "hidden",
+        margin: "0 16px 0 0",
+        cursor: "pointer",
+      },
+      "& svg": {
+        display: "none",
+        color: theme.palette.primary.main,
+        marginLeft: -1,
+        fontSize: 18,
+      },
+      "&.select": {
+        "& em": {
+          display: "none",
+        },
+        "& svg": {
+          display: "block",
+        },
+      },
     },
   },
 });

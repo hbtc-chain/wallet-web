@@ -95,22 +95,30 @@ class IndexRC extends React.Component {
     );
   };
   render() {
-    const { classes } = this.props;
+    const { classes, intl } = this.props;
     return (
       <div className={classes.login}>
         <img src={require("../../assets/logo.png")} />
-        <h1>{this.props.intl.formatMessage({ id: "login.title" })}</h1>
-        <p>{this.props.intl.formatMessage({ id: "login.desc" })}</p>
+        <h1>{intl.formatMessage({ id: "hbtc.wallet" })}</h1>
+        <h1>{intl.formatMessage({ id: "login.title" })}</h1>
         <Grid container className={classes.login_form}>
-          <Grid item xs={12} style={{ height: 90 }}>
+          <Grid item xs={12} style={{ height: 80 }}>
             <TextField
-              label={this.props.intl.formatMessage({ id: "password" })}
+              placeholder={this.props.intl.formatMessage({ id: "password" })}
               value={this.state.password}
               onChange={this.handleChange}
               error={Boolean(this.state.password_msg)}
               helperText={this.state.password_msg}
               type="password"
               fullWidth
+              InputLabelProps={{
+                shrink: false,
+              }}
+              InputProps={{
+                classes: {
+                  root: classes.input_root,
+                },
+              }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -118,19 +126,16 @@ class IndexRC extends React.Component {
               color="primary"
               variant="contained"
               fullWidth
-              className={classes.btn_large}
+              className={classes.button}
               disabled={!Boolean(this.state.password)}
               onClick={this.login}
             >
               {this.props.intl.formatMessage({
-                id: "unlock",
+                id: "continue",
               })}
             </Button>
           </Grid>
         </Grid>
-        <em className={classes.login_mnemonic} onClick={this.goto}>
-          {this.props.intl.formatMessage({ id: "login mnemonic" })}
-        </em>
       </div>
     );
   }

@@ -3,11 +3,20 @@ import React from "react";
 import styles from "./index.style";
 import { withStyles } from "@material-ui/core/styles";
 import { injectIntl } from "react-intl";
-import { Button, Grid, TextField, Checkbox } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  TextField,
+  Checkbox,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+} from "@material-ui/core";
 import route_map from "../../config/route_map";
 import querystring from "query-string";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import CheckCircle from "@material-ui/icons/CheckCircle";
 import { routerRedux } from "dva/router";
 import CONST from "../../util/const";
 import Nav from "./nav";
@@ -17,202 +26,93 @@ class IndexRC extends React.Component {
   constructor() {
     super();
     this.state = {
-      showseed: false,
-      seed: "",
-      seed_msg: "",
-      password: "",
-      password_msg: "",
-      confirmpwd: "",
-      confirmpwd_msg: "",
-      checked: false,
+      account_index: -1,
     };
   }
-  showseed = () => {
+  componentWillMount() {
     this.setState({
-      showseed: !this.state.showseed,
+      account_index: this.props.store.account_index,
     });
-  };
-  handleChange = (key) => (e) => {
-    let v = e.target.value || "";
-    this.setState({
-      [key]: v,
-      [key + "_msg"]: "",
-    });
-  };
-  checkChange = (e) => {
-    this.setState({
-      checked: !this.state.checked,
-    });
-  };
+  }
   submit = async () => {
-    const password = this.state.password;
-    const confirmpwd = this.state.confirmpwd;
-    const checked = this.state.checked;
-    const seed = this.state.seed
-      .replace(/\s{2,}/, " ")
-      .replace(/^\s/g, "")
-      .replace(/\s$/g, "")
-      .split(" ");
-    if (seed.length != 12) {
-      this.setState({
-        seed_msg: this.props.intl.formatMessage({ id: "seed_error" }),
-      });
-      return;
-    }
-    if (password.length < 8) {
-      this.setState({
-        password_msg: this.props.intl.formatMessage({ id: "pwd_rule1" }),
-      });
-      return;
-    }
-    if (password != confirmpwd) {
-      this.setState({
-        confirmpwd_msg: this.props.intl.formatMessage({ id: "pwd_rule2" }),
-      });
-      return;
-    }
+    const account_index = this.state.account_index;
     await this.props.dispatch({
-      type: "layout/create_account",
+      type: "layout/save",
       payload: {
-        password: this.state.password,
-        mnemonic: seed.join(" "),
+        store: {
+          ...this.props.store,
+          account_index,
+        },
       },
     });
     this.props.dispatch(
       routerRedux.push({
-        pathname: route_map.create_account_done,
-        state: {
-          password: password,
-        },
+        pathname: route_map.index,
       })
     );
   };
-  verif = () => {
-    let r = true;
-    const password = this.state.password;
-    const seed = this.state.seed;
-    const confirmpwd = this.state.confirmpwd;
-    const checked = this.state.checked;
-    if (!password || !confirmpwd || !checked || !seed) {
-      return false;
-    }
-    return r;
+  changeAccount = (index) => (e) => {
+    this.setState({
+      account_index: index,
+    });
   };
 
   render() {
     const { classes, intl, ...otherProps } = this.props;
     const params = querystring.parse(window.location.search || "");
-    console.log(this.props.store.accounts);
+    const accounts = this.props.store.accounts;
+    const account_index = this.state.account_index;
     return (
-      <div className={classnames(classes.step, classes.step3_import)}>
+      <div className={classes.account_select}>
         <Nav
-          title={intl.formatMessage({ id: "create.step1.btn.import" })}
+          key="nav"
+          title={intl.formatMessage({ id: "account.list.title" })}
           url={route_map.create_account_step1}
           {...otherProps}
         />
-        <h1>{this.props.intl.formatMessage({ id: "import.title" })}</h1>
-        <p>{this.props.intl.formatMessage({ id: "import.desc" })}</p>
-        <Grid container className={classes.form}>
-          {this.state.showseed ? (
-            <Grid item xs={12} className={classes.item}>
-              <TextField
-                fullWidth
-                label={this.props.intl.formatMessage({ id: "import.seed" })}
-                value={this.state.seed}
-                onChange={this.handleChange("seed")}
-                error={Boolean(this.state.seed_msg)}
-                helperText={this.state.seed_msg}
-                multiline
-                rows={4}
-                variant="outlined"
-                InputProps={{
-                  endAdornment: (
-                    <VisibilityOffIcon
-                      style={{ cursor: "pointer" }}
-                      onClick={this.showseed}
+        <div className={classes.account_con_bg}>
+          <div className={classes.account_con}>
+            <p>{this.props.intl.formatMessage({ id: "account.list.desc" })}</p>
+            <List className={classes.account_list}>
+              {accounts.map((item, i) => {
+                return (
+                  <ListItem
+                    alignItems="center"
+                    className={account_index == i ? "select" : ""}
+                  >
+                    <ListItemAvatar>
+                      <em onClick={this.changeAccount(i)}></em>
+                      <CheckCircle />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={item.username}
+                      secondary={item.address.replace(
+                        /(.{10})(.*)(.{10})/,
+                        "$1......$3"
+                      )}
                     />
-                  ),
-                }}
-              />
-            </Grid>
-          ) : (
-            <Grid item xs={12} className={classes.item}>
-              <TextField
-                fullWidth
-                label={this.props.intl.formatMessage({ id: "import.seed" })}
-                value={this.state.seed}
-                onChange={this.handleChange("seed")}
-                error={Boolean(this.state.seed_msg)}
-                helperText={this.state.seed_msg}
-                type="password"
-                variant="outlined"
-                InputProps={{
-                  endAdornment: (
-                    <VisibilityIcon
-                      style={{ cursor: "pointer" }}
-                      onClick={this.showseed}
-                    />
-                  ),
-                }}
-              />
-            </Grid>
-          )}
-        </Grid>
-        <Grid container className={classes.form}>
-          <Grid item xs={12} className={classes.item}>
-            <TextField
-              fullWidth
-              label={this.props.intl.formatMessage({ id: "new.password" })}
-              value={this.state.password}
-              onChange={this.handleChange("password")}
-              error={Boolean(this.state.password_msg)}
-              helperText={this.state.password_msg}
-              type="password"
-              variant="outlined"
-            />
-          </Grid>
-          <Grid item xs={12} className={classes.item}>
-            <TextField
-              fullWidth
-              label={this.props.intl.formatMessage({ id: "confirm.password" })}
-              value={this.state.confirmpwd}
-              onChange={this.handleChange("confirmpwd")}
-              error={Boolean(this.state.confirmpwd_msg)}
-              helperText={this.state.confirmpwd_msg}
-              type="password"
-              variant="outlined"
-            />
-          </Grid>
-        </Grid>
-        <Grid container alignItems="center" className={classes.checkform2}>
-          <Grid item>
-            <Checkbox
-              color="primary"
-              className={classes.Checkbox}
-              checked={Boolean(this.state.checked)}
-              onChange={this.checkChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <span>
-              {this.props.intl.formatMessage({ id: "read and agree" })}
-            </span>
-            <a href="https://www.hbtc.com" target="_blank">
-              {this.props.intl.formatMessage({ id: "terms" })}
-            </a>
-          </Grid>
-        </Grid>
-        <Button
-          color="primary"
-          variant="contained"
-          className={classes.btn_large}
-          disabled={!this.verif()}
-          onClick={this.submit}
-        >
-          {this.props.intl.formatMessage({
-            id: "import",
-          })}
-        </Button>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>
+        </div>
+        <div className={classes.footer}>
+          <Button
+            onClick={this.submit}
+            color="primary"
+            variant="contained"
+            fullWidth
+            className={classes.button}
+            disabled={
+              !(account_index > -1 && account_index < accounts.length - 1)
+            }
+          >
+            {intl.formatMessage({
+              id: "import",
+            })}
+          </Button>
+        </div>
       </div>
     );
   }

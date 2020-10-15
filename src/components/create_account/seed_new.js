@@ -157,7 +157,7 @@ class IndexRC extends React.Component {
               fullWidth
               color="primary"
               variant="contained"
-              className={classes.btn_large}
+              className={classes.button}
             >
               {this.props.intl.formatMessage({
                 id: "next",
@@ -223,6 +223,7 @@ class IndexRC extends React.Component {
               variant="contained"
               onClick={this.seed_confirm}
               fullWidth
+              className={classes.button}
               disabled={
                 !(
                   this.state.seeds_select.length == 12 &&

@@ -272,7 +272,7 @@ class IndexRC extends React.Component {
         <Button
           color="primary"
           variant="contained"
-          className={classes.btn_large}
+          className={classes.button}
           disabled={!this.verif()}
           onClick={this.submit}
           fullWidth

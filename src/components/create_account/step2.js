@@ -46,7 +46,7 @@ class IndexRC extends React.Component {
             </ul>
           </div>
         </div>
-        <div className={classes.agreement}>
+        <div className={classes.footer}>
           <FormControlLabel
             checked={this.state.checked}
             control={<Radio onClick={this.radioChange} />}
@@ -57,6 +57,7 @@ class IndexRC extends React.Component {
             color="primary"
             variant="contained"
             fullWidth
+            className={classes.button}
             disabled={!this.state.checked}
           >
             {intl.formatMessage({

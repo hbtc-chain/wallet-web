@@ -191,13 +191,15 @@ class IndexRC extends React.Component {
         <Button
           onClick={this.submit}
           disabled={
+            !this.state.password ||
+            !this.state.confirmpwd ||
             this.state.password_msg_i.length ||
             this.state.confirmpwd_msg_i.length
           }
           color="primary"
           variant="contained"
           fullWidth
-          className={classes.btn_large}
+          className={classes.button}
         >
           {intl.formatMessage({
             id: "create",
