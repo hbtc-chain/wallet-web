@@ -9,46 +9,34 @@ import route_map from "../../config/route_map";
 import querystring from "query-string";
 import CONST from "../../util/const";
 import helper from "../../util/helper";
+import Nav from "./nav";
+import Cancel from "@material-ui/icons/Cancel";
+import CheckCircle from "@material-ui/icons/CheckCircle";
 
 class IndexRC extends React.Component {
   constructor() {
     super();
     this.state = {
       password: "",
-      password_msg: "",
+      password_msg_arr: ["pwd_rule1", "pwd_rule3"],
+      password_msg_i: [],
       confirmpwd: "",
-      confirmpwd_msg: "",
-      checked: false,
+      confirmpwd_msg_arr: ["pwd_rule2"],
+      confirmpwd_msg_i: [],
     };
   }
   handleChange = (key) => (e) => {
     let v = (e.target.value || "").replace(/\s/g, "");
     this.setState({
       [key]: v,
-      [key + "_msg"]: "",
+      [key + "_msg_i"]: [],
     });
-  };
-  checkChange = (e) => {
-    this.setState({
-      checked: !this.state.checked,
-    });
+    this.verify(key, v);
   };
   submit = async () => {
+    const { intl } = this.props;
     const password = this.state.password;
     const confirmpwd = this.state.confirmpwd;
-    const checked = this.state.checked;
-    if (password.length < 8) {
-      this.setState({
-        password_msg: this.props.intl.formatMessage({ id: "pwd_rule1" }),
-      });
-      return;
-    }
-    if (password != confirmpwd) {
-      this.setState({
-        confirmpwd_msg: this.props.intl.formatMessage({ id: "pwd_rule2" }),
-      });
-      return;
-    }
     // 创建账户
     await this.props.dispatch({
       type: "layout/create_account",
@@ -59,85 +47,164 @@ class IndexRC extends React.Component {
     this.props.dispatch(
       routerRedux.push({
         pathname: route_map.account_seed,
+        search: this.props.location.search,
         state: {
           password: password,
         },
       })
     );
   };
+  verify = (key, v) => {
+    let arr1 = [],
+      arr2 = [];
+    const password = key == "password" ? v : this.state.password;
+    const confirmpwd = key == "confirmpwd" ? v : this.state.confirmpwd;
+    if (password && password.length < 8) {
+      arr1.push(0);
+    }
+    if (password && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/.test(password)) {
+      arr1.push(1);
+    }
+    if (password != confirmpwd) {
+      arr2.push(0);
+    }
+    this.setState({
+      password_msg_i: arr1,
+      confirmpwd_msg_i: arr2,
+    });
+  };
   verif = () => {
     let r = true;
     const password = this.state.password;
     const confirmpwd = this.state.confirmpwd;
-    const checked = this.state.checked;
-    if (!password || !confirmpwd || !checked) {
+    if (!password || !confirmpwd) {
       return false;
     }
     return r;
   };
   render() {
-    const { classes } = this.props;
+    const { classes, intl, ...otherProps } = this.props;
     const params = querystring.parse(window.location.search || "");
-    return (
-      <div className={classes.step3}>
-        <h1>
-          {this.props.intl.formatMessage({ id: "create.step1.btn.create" })}
-        </h1>
+    return [
+      <Nav
+        key="nav"
+        title={intl.formatMessage({ id: "create.step1.btn.create" })}
+        url={route_map.create_account_step1}
+        {...otherProps}
+      />,
+      <div className={classes.step3} key="content">
+        <img className={classes.logo} src={require("../../assets/logo.png")} />
         <Grid container className={classes.form}>
           <Grid item xs={12} className={classes.item}>
             <TextField
               fullWidth
-              label={this.props.intl.formatMessage({ id: "new.password" })}
+              placeholder={intl.formatMessage({ id: "new.password" })}
               value={this.state.password}
               onChange={this.handleChange("password")}
-              error={Boolean(this.state.password_msg)}
-              helperText={this.state.password_msg}
               type="password"
+              InputLabelProps={{
+                shrink: false,
+              }}
+              InputProps={{
+                endAdornment: this.state.password ? (
+                  this.state.password_msg_i.length > 0 ? (
+                    <Cancel className={classes.error} />
+                  ) : (
+                    <CheckCircle className={classes.right} />
+                  )
+                ) : (
+                  ""
+                ),
+                classes: {
+                  root: classes.input_root,
+                },
+              }}
             />
+            {this.state.password && this.state.password_msg_i.length > 0 ? (
+              <div className="tip">
+                {this.state.password_msg_arr.map((item, i) => {
+                  return (
+                    <p
+                      className={
+                        this.state.password_msg_i.indexOf(i) > -1
+                          ? classes.error
+                          : ""
+                      }
+                      key={i}
+                    >
+                      {intl.formatMessage({ id: item })}
+                    </p>
+                  );
+                })}
+              </div>
+            ) : (
+              ""
+            )}
           </Grid>
           <Grid item xs={12} className={classes.item}>
             <TextField
               fullWidth
-              label={this.props.intl.formatMessage({ id: "confirm.password" })}
+              placeholder={intl.formatMessage({ id: "confirm.password" })}
               value={this.state.confirmpwd}
               onChange={this.handleChange("confirmpwd")}
-              error={Boolean(this.state.confirmpwd_msg)}
-              helperText={this.state.confirmpwd_msg}
               type="password"
+              InputLabelProps={{
+                shrink: false,
+              }}
+              InputProps={{
+                endAdornment: this.state.confirmpwd ? (
+                  this.state.confirmpwd_msg_i.length > 0 ? (
+                    <Cancel className={classes.error} />
+                  ) : (
+                    <CheckCircle className={classes.right} />
+                  )
+                ) : (
+                  ""
+                ),
+                classes: {
+                  root: classes.input_root,
+                },
+              }}
             />
-          </Grid>
-        </Grid>
-        <Grid container alignItems="center" className={classes.checkform}>
-          <Grid item>
-            <Checkbox
-              color="primary"
-              className={classes.Checkbox}
-              checked={Boolean(this.state.checked)}
-              onChange={this.checkChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <span>
-              {this.props.intl.formatMessage({ id: "read and agree" })}
-            </span>
-            <a href="https://www.hbtc.com" target="_blank">
-              {this.props.intl.formatMessage({ id: "terms" })}
-            </a>
+            {this.state.confirmpwd && this.state.confirmpwd_msg_i.length > 0 ? (
+              <div className="tip">
+                {this.state.confirmpwd_msg_arr.map((item, i) => {
+                  return (
+                    <p
+                      className={
+                        this.state.confirmpwd_msg_i.indexOf(i) > -1
+                          ? classes.error
+                          : ""
+                      }
+                      key={i}
+                    >
+                      {intl.formatMessage({ id: item })}
+                    </p>
+                  );
+                })}
+              </div>
+            ) : (
+              ""
+            )}
           </Grid>
         </Grid>
         <Button
           onClick={this.submit}
-          disabled={!this.verif()}
+          disabled={
+            this.state.password_msg_i.length ||
+            this.state.confirmpwd_msg_i.length
+          }
           color="primary"
           variant="contained"
+          fullWidth
           className={classes.btn_large}
         >
-          {this.props.intl.formatMessage({
+          {intl.formatMessage({
             id: "create",
           })}
         </Button>
-      </div>
-    );
+      </div>,
+    ];
   }
 }
 

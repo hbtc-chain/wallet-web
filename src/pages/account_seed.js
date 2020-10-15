@@ -3,12 +3,15 @@ import { connect } from "dva";
 import { routerRedux } from "dva/router";
 import LayoutRC from "../components/layout";
 import HeaderRC from "../components/header";
-import IndexRC from "../components/create_account/seed";
+import IndexRC from "../components/create_account/seed_new";
+import SeedImportRC from "../components/create_account/seed_import";
 import withRoot from "../withRoot";
 import route_map from "../config/route_map";
 import LoginRC from "../components/account/login";
+import querystring from "query-string";
 
 function IndexPage({ layout, dispatch, location, match }) {
+  const params = querystring.parse(location.search || "");
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
       <HeaderRC
@@ -20,12 +23,21 @@ function IndexPage({ layout, dispatch, location, match }) {
       />
       <div className="g_content">
         {layout.logged ? (
-          <IndexRC
-            {...layout}
-            dispatch={dispatch}
-            location={location}
-            match={match}
-          />
+          params.type == "create" ? (
+            <IndexRC
+              {...layout}
+              dispatch={dispatch}
+              location={location}
+              match={match}
+            />
+          ) : (
+            <SeedImportRC
+              {...layout}
+              dispatch={dispatch}
+              location={location}
+              match={match}
+            />
+          )
         ) : (
           <LoginRC
             {...layout}

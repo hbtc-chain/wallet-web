@@ -6,6 +6,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { injectIntl } from "react-intl";
 import { Button } from "@material-ui/core";
 import route_map from "../../config/route_map";
+import Nav from "./nav";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -20,39 +21,37 @@ class IndexRC extends React.Component {
     );
   };
   render() {
-    const { classes } = this.props;
-    return (
-      <div className={classes.step_done}>
-        <div className={classes.emoji}>🎉</div>
-        <h1>{this.props.intl.formatMessage({ id: "congratulations" })}</h1>
-        <p>{this.props.intl.formatMessage({ id: "create.done.desc" })}</p>
-        <h4>{this.props.intl.formatMessage({ id: "safe.tip" })}</h4>
-        <ul>
-          <li>{this.props.intl.formatMessage({ id: "safe.tip.1" })}</li>
-          <li>{this.props.intl.formatMessage({ id: "safe.tip.2" })}</li>
-          <li>{this.props.intl.formatMessage({ id: "safe.tip.3" })}</li>
-          <li>{this.props.intl.formatMessage({ id: "safe.tip.4" })}</li>
-          <li>{this.props.intl.formatMessage({ id: "safe.tip.5" })}</li>
-        </ul>
-        <p>
-          {this.props.intl.formatMessage({ id: "create.done.desc2" })}
-          <a href="" target="_blank">
-            {this.props.intl.formatMessage({ id: "knowmore" })}
-          </a>
-        </p>
-        <br />
+    const { classes, intl, ...otherProps } = this.props;
+    return [
+      <Nav
+        key="nav"
+        title={intl.formatMessage({ id: "create.step1.btn.create" })}
+        url={route_map.create_account_step3}
+        {...otherProps}
+      />,
+      <div className={classes.step_done} key="content">
+        <img src={require("../../assets/success.png")} />
+        <h2>{intl.formatMessage({ id: "create.done.desc" })}</h2>
+        <div className={classes.tip}>
+          <h4>{intl.formatMessage({ id: "create.done.tip" })}</h4>
+          <ul>
+            <li>{intl.formatMessage({ id: "create.done.tip.1" })}</li>
+            <li>{intl.formatMessage({ id: "create.done.tip.2" })}</li>
+            <li>{intl.formatMessage({ id: "create.done.tip.3" })}</li>
+          </ul>
+        </div>
         <Button
           onClick={this.goto}
           color="primary"
           variant="contained"
-          className={classes.btn_large}
+          fullWidth
         >
-          {this.props.intl.formatMessage({
-            id: "done",
+          {intl.formatMessage({
+            id: "determine",
           })}
         </Button>
-      </div>
-    );
+      </div>,
+    ];
   }
 }
 

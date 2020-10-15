@@ -26,8 +26,29 @@ class IndexRC extends React.Component {
     const { classes } = this.props;
     return (
       <div className={classes.index}>
+        <img className={classes.logo} src={require("../../assets/logo.png")} />
         <h1>{this.props.intl.formatMessage({ id: "create.title" })}</h1>
-        <Grid container justify="space-between" style={{ minWidth: 700 }}>
+        <Button
+          fullWidth
+          onClick={this.goto("create")}
+          color="primary"
+          variant="contained"
+        >
+          {this.props.intl.formatMessage({
+            id: "create.step1.btn.create",
+          })}
+        </Button>
+        <Button
+          fullWidth
+          onClick={this.goto("import")}
+          color="primary"
+          variant="outlined"
+        >
+          {this.props.intl.formatMessage({
+            id: "create.step1.btn.import",
+          })}
+        </Button>
+        {/* <Grid container justify="center">
           <Grid item>
             <Paper variant="outlined" className={classes.paper}>
               <VerticalAlignBottomIcon fontSize="large" />
@@ -76,7 +97,7 @@ class IndexRC extends React.Component {
               </Button>
             </Paper>
           </Grid>
-        </Grid>
+        </Grid> */}
       </div>
     );
   }

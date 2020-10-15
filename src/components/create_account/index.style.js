@@ -1,5 +1,5 @@
 import { ClickAwayListener } from "@material-ui/core";
-
+import helper from "../../util/helper";
 export default (theme) => ({
   paper: {
     margin: "50px 0 0",
@@ -14,47 +14,243 @@ export default (theme) => ({
       color: theme.palette.grey[500],
     },
   },
-  index: {
-    "& h1": {
-      margin: "50px 0 20px",
-      textAlign: "center",
+  nav: {
+    height: 42,
+    margin: "0 0 16px",
+    fontSize: 16,
+    lineHeight: "24px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: theme.palette.grey[900],
+    position: "relative",
+    fontWeight: 500,
+    padding: "0 16px",
+    "& svg": {
+      position: "absolute",
+      left: 16,
     },
   },
-  step2: {
+  logo: {
+    width: 80,
+    // height: 80,
+    borderRadius: 16,
+    margin: "34px auto 16px",
+    display: "block",
+  },
+  index: {
+    padding: "0 16px",
+    margin: "0 auto",
+    textAlign: "center",
     "& h1": {
-      margin: "50px 0 20px",
+      margin: "16px 0 190px",
+      textAlign: "center",
+      fontSize: 24,
+      lineHeight: "36px",
+      fontWeight: "bold",
+      color: theme.palette.grey[700],
+    },
+    "& button": {
+      ...theme.typography.button,
+      height: 48,
+      marginBottom: 24,
+    },
+  },
+  grey300: {
+    color: theme.palette.grey[300],
+  },
+  lang: {
+    ...theme.typography.body1,
+    display: "flex",
+    height: 72,
+    padding: "24px 18px 24px 0",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  step2: {
+    margin: "0 auto",
+    textAlign: "center",
+    color: theme.palette.grey[900],
+    display: "flex",
+    flexDirection: "column",
+    height: "calc(100vh)",
+  },
+  step2_con_bg: {
+    flex: 1,
+    overflow: "hidden",
+  },
+  step2_con: {
+    height: "100%",
+    overflowX: "hidden",
+    overflowY: "auto",
+    padding: "0 16px 16px",
+    "& h1": {
+      fontSize: 20,
+      lineHeight: "29px",
+      margin: "24px 0 0",
+      minHeight: 32,
+    },
+    "& p": {
+      fontSize: 12,
+      LineHeight: "17px",
+      minHeight: 24,
+      color: theme.palette.grey[500],
     },
     "& ul": {
-      margin: "0 0 50px",
+      margin: "16px 0",
+      textAlign: "left",
+      fontSize: 12,
+      lineHeight: "19px",
     },
     "& li": {
       margin: "0 0 10px",
     },
   },
+  agreement: {
+    padding: "16px 16px 24px",
+    background: theme.palette.common.white,
+    boxShadow: "0px -4px 10px rgba(0, 0, 0, 0.12)",
+    "& button": {
+      ...theme.typography.button,
+      "&.Mui-disabled": {
+        color: theme.palette.common.white,
+        background: theme.palette.grey[100],
+      },
+    },
+    "& label": {
+      marginBottom: 16,
+      fontSize: 12,
+      lineHeight: "17px",
+      color: theme.palette.grey[700],
+    },
+    "& .MuiRadio-root": {
+      padding: 1,
+      color: `${helper.hex_to_rgba(theme.palette.primary.main, 0.3)}`,
+      minHeight: 24,
+    },
+  },
   step3: {
-    width: 360,
+    // width: 360,
+    margin: "0 auto",
+    textAlign: "center",
+    padding: "0 16px",
     "& h1": {
       margin: "50px 0 30px",
     },
+    "& button": {
+      ...theme.typography.button,
+      margin: "16px 0 0",
+      "&.Mui-disabled": {
+        color: theme.palette.common.white,
+        background: theme.palette.grey[100],
+      },
+    },
   },
   step3_import: {
-    width: 360,
-    padding: "30px 0 0",
-    "& h1": {
-      margin: "30px 0 10px",
+    // width: 360,
+    padding: "0 16px 16px",
+    margin: "34px auto 0",
+    "& h2": {
+      fontSize: 20,
+      lineHeight: "24px",
+      fontWeight: 500,
+      color: theme.palette.grey[900],
     },
-    "& p": {
-      margin: "0 0 20px",
-      color: theme.palette.grey[800],
-      fontSize: 14,
+    // "& p": {
+    //   margin: "0 0 20px",
+    //   color: theme.palette.grey[800],
+    //   fontSize: 14,
+    // },
+  },
+  import_list: {
+    margin: "24px 0",
+    "& li": {
+      border: `2px solid ${theme.palette.primary.main}`,
+      borderRadius: 6,
+      marginBottom: 16,
+      "& .MuiListItem-root": {
+        padding: "16px 48px 16px 16px",
+      },
+      "& .MuiAvatar-root": {
+        width: 56,
+        height: 56,
+        background: "rgba(51, 117, 224, 0.08)",
+        borderRadius: 6,
+        marginRight: 16,
+        color: theme.palette.primary.main,
+        "& svg, & i": {
+          fontSize: 26,
+          color: theme.palette.primary.main,
+        },
+      },
+      "& .MuiListItemText-root": {
+        fontWeight: 500,
+        "& span": {
+          fontSize: 16,
+          lineHeight: "24px",
+          color: theme.palette.grey[900],
+        },
+        "& p": {
+          fontSize: 12,
+          lineHeight: "17px",
+          minHeight: 24,
+          display: "flex",
+          alignItems: "center",
+          color: theme.palette.grey[300],
+        },
+      },
+      "& svg": {
+        fontSize: 28,
+        color: theme.palette.grey[200],
+      },
     },
   },
   back: {
     cursor: "pointer",
   },
-  form: {},
+  form: {
+    margin: "0 0 8px",
+  },
   item: {
     minHeight: 80,
+    textAlign: "left",
+    "& .tip": {
+      margin: "8px 0 16px",
+    },
+    "& p": {
+      color: theme.palette.grey[500],
+      fontSize: 14,
+      lineHeight: "20px",
+    },
+  },
+  input_root: {
+    height: 48,
+    background: theme.palette.grey[50],
+    borderRadius: 4,
+    "&::before, &::after": {
+      display: "none",
+    },
+    "& input": {
+      height: 24,
+      padding: "12px 10px",
+      color: theme.palette.grey[900],
+      fontSize: 20,
+      "&::placeholder": {
+        opacity: 1,
+        color: theme.palette.grey[500],
+        fontSize: 14,
+      },
+    },
+    "& svg": {
+      margin: "0 10px 0 0",
+      fontSize: 16,
+    },
+  },
+  right: {
+    color: `${theme.palette.primary.main} !important`,
+  },
+  error: {
+    color: `${theme.palette.error.main} !important`,
   },
   Checkbox: {
     padding: 0,
@@ -68,14 +264,21 @@ export default (theme) => ({
     color: theme.palette.grey[800],
   },
   seed: {
-    maxWidth: 400,
+    // maxWidth: 400,
+    padding: "0 16px",
+    margin: "0 auto",
     "& h1": {
-      margin: "50px 0 30px",
+      margin: "26px 0 8px",
+      fontSize: 26,
+      lineHeight: "38px",
+      color: theme.palette.grey[900],
     },
     "& p": {
       fontSize: 14,
-      color: theme.palette.grey[800],
-      margin: "0 0 20px",
+      color: theme.palette.grey[500],
+      margin: "0 0 16px",
+      fontSize: 14,
+      lineHeight: "20px",
     },
     "& strong": {
       fontSize: 18,
@@ -83,6 +286,89 @@ export default (theme) => ({
       textAlign: "center",
       display: "block",
       padding: 20,
+    },
+    "& button": {
+      ...theme.typography.button,
+      margin: "32px 0 16px",
+      "&.Mui-disabled": {
+        color: theme.palette.common.white,
+        background: theme.palette.grey[100],
+      },
+    },
+  },
+  seed_item: {
+    height: 56,
+    width: "100%",
+    background: theme.palette.grey[50],
+    alignItems: "center",
+    display: "flex",
+    textAlign: "center",
+    color: theme.palette.grey[900],
+    position: "relative",
+    "& em": {
+      position: "absolute",
+      top: 8,
+      left: 8,
+      color: theme.palette.grey[500],
+      fontSize: 12,
+      transform: "scale(0.83)",
+    },
+    "& p": {
+      padding: 14,
+      width: "100%",
+      margin: 0,
+      height: "100%",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
+  },
+  seed_select: {
+    borderRadius: 6,
+    overflow: "hidden",
+    margin: "0 0 16px",
+    border: `1px solid ${theme.palette.grey[100]}`,
+  },
+  seed_input: {
+    borderRight: `1px solid ${theme.palette.grey[100]}`,
+    borderBottom: `1px solid ${theme.palette.grey[100]}`,
+    height: 48,
+    background: theme.palette.common.white,
+    "& >div": {
+      width: "100%",
+      height: "100%",
+    },
+    "&:nth-of-type(3n)": {
+      borderRight: 0,
+    },
+    "&:nth-of-type(12n+10), &:nth-of-type(12n+11), &:nth-of-type(12n)": {
+      borderBottom: 0,
+    },
+    "& em": {
+      top: 6,
+    },
+    "& p": {
+      padding: "10px 14px",
+    },
+    "& svg": {
+      display: "none",
+      position: "absolute",
+      right: 5,
+      top: 6,
+      color: theme.palette.grey[500],
+      cursor: "pointer",
+    },
+    "&:hover": {
+      "& svg": { display: "block" },
+    },
+    "&.error": {
+      "& p": {
+        color: theme.palette.error.main,
+      },
+      "& svg": {
+        display: "block",
+        color: theme.palette.error.main,
+      },
     },
   },
   blur: {
@@ -108,18 +394,22 @@ export default (theme) => ({
       cursor: "pointer",
     },
   },
-  seed_confirm: {
-    padding: "50px 0 0 ",
-    "& h1": {
-      margin: "20px 0",
-    },
-  },
+  // seed_confirm: {
+  //   padding: "50px 0 0 ",
+  //   "& h1": {
+  //     margin: "20px 0",
+  //   },
+  // },
   error_msg: {
     color: theme.palette.error.main,
     margin: "20px 0 0",
   },
   seed_options: {
-    margin: "0 -8px 20px",
+    height: 48,
+    cursor: "pointer",
+    "&.disabled p": {
+      color: theme.palette.grey[300],
+    },
   },
   btn_seed: {
     textTransform: "lowercase",
@@ -132,26 +422,108 @@ export default (theme) => ({
     margin: "20px 0 0",
   },
   step_done: {
-    "& h1": {
-      fontSize: 30,
-      margin: "10px 0 20px",
+    padding: "0 16px 16px",
+    margin: "26px auto 0",
+    textAlign: "center",
+    color: theme.palette.grey[900],
+    "& img": {
+      margin: "0 0 16px",
+      width: 72,
     },
-    "& p": {
-      margin: "0 0 10px",
-      fontSize: 14,
-    },
-    "& h4": {
+    "& h2": {
       fontWeight: 500,
-      margin: "20px 0",
+      margin: "16px 0",
       fontSize: 16,
+      lineHeight: "23px",
     },
-    "& li": {
+    "& button": {
       listStyle: "inside",
       fontSize: 14,
       margin: "0 0 6px",
     },
-    "& ul": {
-      margin: "0 0 20px",
+  },
+  tip: {
+    padding: 16,
+    margin: "35px 0",
+    border: `1px solid ${theme.palette.grey[100]}`,
+    boxSizing: "border-box",
+    borderRadius: 6,
+    textAlign: "left",
+    "& h4": {
+      fontSize: 14,
+      lineHeight: "20px",
+      marginBottom: 10,
+    },
+    "& li": {
+      fontSize: 14,
+      lineHeight: "20px",
+      color: theme.palette.grey[500],
+    },
+    "& button": {
+      ...theme.typography.button,
+    },
+  },
+  seed_import: {
+    padding: "0 16px 16px",
+    margin: "34px auto",
+    "& p": {
+      fontSize: 14,
+      lineHeight: "20px",
+      color: theme.palette.grey[700],
+      margin: "0 0 16px",
+    },
+    "& button": {
+      ...theme.typography.button,
+      // margin: "24px 0 ",
+      "&.Mui-disabled": {
+        color: theme.palette.common.white,
+        background: theme.palette.grey[100],
+      },
+    },
+  },
+  textarea: {
+    minHeight: 140,
+    "& .MuiFormHelperText-contained": {
+      fontSize: 14,
+      lineHeight: "16px",
+      margin: "8px 0 0",
+    },
+    "& .MuiInputBase-root": {
+      background: theme.palette.grey[50],
+      padding: "14px 16px",
+      "& fieldset": {
+        borderColor: theme.palette.grey[50],
+      },
+    },
+    "& textarea": {
+      color: theme.palette.grey[900],
+      "&::placeholder": {
+        color: theme.palette.grey[500],
+        opacity: 1,
+      },
+    },
+  },
+  input: {
+    height: 48,
+    background: theme.palette.grey[50],
+    borderRadius: 4,
+    "& ::before, & ::after": {
+      display: "none",
+    },
+    "& input": {
+      height: 24,
+      padding: "14px 16px",
+      color: theme.palette.grey[900],
+      fontSize: 14,
+      "&::placeholder": {
+        opacity: 1,
+        color: theme.palette.grey[500],
+      },
+    },
+    "& .MuiFormHelperText-root": {
+      margin: "8px 0 0",
+      fontSize: 14,
+      lineHeight: "16px",
     },
   },
 });

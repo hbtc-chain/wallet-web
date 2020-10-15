@@ -24,7 +24,7 @@ function IndexPage({ layout, dispatch, location, match }) {
             dispatch={dispatch}
             location={location}
             match
-            location
+            // location
           />
         ) : (
           <ImportRC
@@ -32,7 +32,7 @@ function IndexPage({ layout, dispatch, location, match }) {
             dispatch={dispatch}
             location={location}
             match
-            location
+            // location
           />
         )}
       </div>
