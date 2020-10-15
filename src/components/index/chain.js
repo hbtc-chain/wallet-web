@@ -133,6 +133,13 @@ class IndexRC extends React.Component {
       open: true,
     });
   };
+  goto = (symbol) => () => {
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.symbol + "/" + symbol,
+      })
+    );
+  };
   render() {
     const { classes } = this.props;
     const symbol = this.props.match.params.chainId;
@@ -166,7 +173,7 @@ class IndexRC extends React.Component {
         </Grid>
         <div className={classes.form}>
           {this.state.tokens.length && this.state.tokens[0].is_native ? (
-            <Paper square={0}>
+            <Paper square={0} style={{ margin: "0 0 6px" }}>
               <div className={classes.chain_symbol}>
                 <h2>{symbol.toUpperCase()}</h2>
                 <p>
@@ -204,7 +211,10 @@ class IndexRC extends React.Component {
             ""
           )}
           {this.state.tokens.length && !this.state.tokens[0].is_native ? (
-            <Paper square={0} style={{ padding: "0 0 10px" }}>
+            <Paper
+              square={0}
+              style={{ padding: "0 0 10px", margin: "0 0 6px" }}
+            >
               <div className={classes.chain_symbol}>
                 <h2>{symbol.toUpperCase()}</h2>
               </div>
@@ -328,6 +338,7 @@ class IndexRC extends React.Component {
                   alignItems="center"
                   justify="space-between"
                   className={classes.token_item}
+                  onClick={this.goto(item.symbol)}
                 >
                   <Grid item>
                     {item.logo ? (
