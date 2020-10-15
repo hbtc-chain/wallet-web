@@ -119,15 +119,15 @@ export default function request(url, options = { method: "GET" }) {
                 msg: "Request denied",
               };
             }
-            let data =
-              d && d.length
-                ? JSON.parse(d)
-                : {
-                    code: 1000,
-                    msg: "unknown error",
-                  };
-            data.code = data.code || data.status;
-            return data;
+            let data = {};
+            try {
+              data = JSON.parse(d);
+            } catch (e) {}
+            return {
+              code: res.status,
+              msg: res.statusText,
+              data,
+            };
           }
         });
       })

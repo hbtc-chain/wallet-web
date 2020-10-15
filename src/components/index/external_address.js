@@ -23,6 +23,7 @@ import { v4 } from "uuid";
 import util from "../../util/util";
 import API from "../../util/api";
 import math from "../../util/mathjs";
+import message from "../public/message";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -128,11 +129,16 @@ class IndexRC extends React.Component {
         msg: "",
       });
     } else {
-      this.setState({
-        msg: this.props.intl.formatMessage({
+      message.error(
+        this.props.intl.formatMessage({
           id: "create external address error",
-        }),
-      });
+        })
+      );
+      // this.setState({
+      //   msg: this.props.intl.formatMessage({
+      //     id: "create external address error",
+      //   }),
+      // });
       return;
     }
   };
@@ -235,12 +241,14 @@ class IndexRC extends React.Component {
     if (result.code == 200) {
       this.check_address();
     } else {
+      console.log(result);
+      message.error(
+        result.data && result.data.raw_log
+          ? JSON.parse(result.data.raw_log).message
+          : "unknown error"
+      );
       this.setState({
         loading: false,
-        msg:
-          result.data && result.data.raw_log
-            ? JSON.parse(result.data.raw_log).message
-            : "unknown error",
       });
     }
   };
@@ -309,7 +317,13 @@ class IndexRC extends React.Component {
           />
         </div>
         {this.state.loading ? (
-          <Button disabled fullWidth variant="contained" color="primary">
+          <Button
+            disabled
+            fullWidth
+            variant="contained"
+            color="primary"
+            style={{ height: 48 }}
+          >
             <CircularProgress color="primary" size={22} />
           </Button>
         ) : (
@@ -318,6 +332,7 @@ class IndexRC extends React.Component {
             fullWidth
             variant="contained"
             color="primary"
+            style={{ height: 48 }}
           >
             {this.props.intl.formatMessage({ id: "create external address" })}
           </Button>

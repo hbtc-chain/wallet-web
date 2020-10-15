@@ -83,6 +83,26 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/transfer"),
   });
+  // send
+  const SendRC = dynamic({
+    app,
+    component: () => import("./pages/send"),
+  });
+  // withdrawal
+  const WithdrawalRC = dynamic({
+    app,
+    component: () => import("./pages/withdrawal"),
+  });
+  // keystore
+  const KeystoreRC = dynamic({
+    app,
+    component: () => import("./pages/keystore"),
+  });
+  // accept
+  const AcceptRC = dynamic({
+    app,
+    component: () => import("./pages/accept"),
+  });
 
   return (
     <Router history={history}>
@@ -125,7 +145,7 @@ function RouterConfig({ history, app }) {
         <Route exact path={route_map.sign} component={SignRC} />
         {/* chain */}
         <Route exact path={route_map.chain + "/:chainId"} component={ChainRC} />
-        <Redirect exact from={route_map.chain} to={route_map.chain + "/HBC"} />
+        <Redirect exact from={route_map.chain} to={route_map.chain + "/hbc"} />
         {/* external address */}
         <Route
           exact
@@ -144,6 +164,17 @@ function RouterConfig({ history, app }) {
           path={route_map.transfer + "/:symbol"}
           component={TransferRC}
         />
+        <Route exact path={route_map.send} component={SendRC} />
+        {/* withdrawal */}
+        <Route
+          exact
+          path={route_map.withdrawal + "/:symbol"}
+          component={WithdrawalRC}
+        />
+        {/* KeystoreRC */}
+        <Route exact path={route_map.keystore} component={KeystoreRC} />
+        {/* AcceptRC */}
+        <Route exact path={route_map.accept} component={AcceptRC} />
 
         <Route component={NotFountRC} />
       </Switch>

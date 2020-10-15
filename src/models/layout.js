@@ -82,6 +82,10 @@ export default {
         Buffer.from(keys.publicKey).toString("hex"),
         password
       );
+      const encrypt_chainCode = helper.aes_encrypt(
+        Buffer.from(keys.chainCode).toString("hex"),
+        password
+      );
 
       // 根据公钥计算address
       const address = helper.createAddress(keys.publicKey);
@@ -97,6 +101,7 @@ export default {
         mnemonic: encrypt_mnemonic,
         privateKey: encrypt_privateKey,
         publicKey: encrypt_publicKey,
+        chainCode: encrypt_chainCode,
       };
       if (accounts && accounts.length) {
         accounts.push(data);

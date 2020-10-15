@@ -123,4 +123,70 @@ export default (theme) => ({
     padding: "16px 10px",
     fontSize: 20,
   },
+  back: {
+    height: 44,
+    "& h2": {
+      fontSize: 16,
+    },
+  },
+  accept: {
+    height: "100vh",
+  },
+  accept_content: {
+    height: "calc(100vh - 44px)",
+    background: theme.palette.primary.main,
+    padding: 24,
+    "& p": {
+      color: theme.palette.common.white,
+      textAlign: "center",
+      fontSize: 12,
+      padding: "8px 20px",
+      margin: "0 0 24px",
+    },
+    "& div": {
+      padding: "40px 0 0",
+      textAlign: "center",
+      position: "relative",
+      maxWidth: 375,
+      margin: "0 auto",
+    },
+    "& img": {
+      width: 240,
+      display: "block",
+      margin: "0 auto",
+    },
+    "& strong": {
+      fontSize: 12,
+      color: theme.palette.grey[700],
+      display: "block",
+      textAlign: "center",
+      padding: "0 0 24px",
+      borderBottom: `1px dashed ${theme.palette.grey[300]}`,
+    },
+    "& span": {
+      display: "flex",
+      width: "100%",
+      height: 72,
+      justifyContent: "center",
+      alignItems: "center",
+      fontSize: 16,
+      color: theme.palette.primary.main,
+      cursor: "pointer",
+    },
+    "& i": {
+      display: "block",
+      width: 16,
+      height: 16,
+      background: theme.palette.primary.main,
+      position: "absolute",
+      borderRadius: 8,
+      bottom: 65,
+      "&:nth-child(2n)": {
+        right: -8,
+      },
+      "&:nth-child(2n+1)": {
+        left: -8,
+      },
+    },
+  },
 });
