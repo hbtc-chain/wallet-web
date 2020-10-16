@@ -103,6 +103,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/accept"),
   });
+  // accept by type
+  const AccpetByTypeRC = dynamic({
+    app,
+    component: () => import("./pages/accept_by_type"),
+  });
 
   return (
     <Router history={history}>
@@ -175,6 +180,12 @@ function RouterConfig({ history, app }) {
         <Route exact path={route_map.keystore} component={KeystoreRC} />
         {/* AcceptRC */}
         <Route exact path={route_map.accept} component={AcceptRC} />
+        {/* AccpetByTypeRC */}
+        <Route
+          exact
+          path={route_map.accept_by_type + "/:symbol/:address/:type"}
+          component={AccpetByTypeRC}
+        />
 
         <Route component={NotFountRC} />
       </Switch>

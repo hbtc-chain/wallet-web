@@ -31,4 +31,5 @@ export default {
   withdrawal: `${local}/withdrawal`,
   keystore: `${local}/keystore`,
   accept: `${local}/accept`,
+  accept_by_type: `${local}/accept_by_type`,
 };

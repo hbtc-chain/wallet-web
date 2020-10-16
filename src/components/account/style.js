@@ -125,17 +125,57 @@ export default (theme) => ({
   },
   back: {
     height: 44,
+    maxWidth: 375,
+    margin: "0 auto",
     "& h2": {
       fontSize: 16,
     },
   },
+  back2: {
+    color: theme.palette.common.white,
+  },
   accept: {
     height: "100vh",
+  },
+  accept_by_type_native: {
+    background: theme.palette.primary.main,
+  },
+  accept_by_type_chain_in: {
+    background: "#269A99",
+    "& i": {
+      background: "#269A99 !important",
+    },
+  },
+  accept_by_type_chain_out: {
+    background: theme.palette.grey[700],
+    "& i": {
+      background: `${theme.palette.grey[700]} !important`,
+    },
+  },
+  tip: {
+    color: helper.hex_to_rgba(theme.palette.common.white, 0.45),
+    margin: "40px auto 0",
+    maxWidth: 375,
+    padding: "0 0 20px",
+    lineHeight: "20px",
+    fontSize: 12,
+    "& dt": {
+      textAlign: "center",
+    },
   },
   accept_content: {
     height: "calc(100vh - 44px)",
     background: theme.palette.primary.main,
+    position: "relative",
     padding: 24,
+    "& h3": {
+      margin: "-42px -24px 42px",
+      background: helper.hex_to_rgba(theme.palette.secondary.main, 0.2),
+      color: theme.palette.secondary.main,
+      fontSize: 14,
+      lineHeight: 1.5,
+      padding: "4px 48px",
+    },
     "& p": {
       color: theme.palette.common.white,
       textAlign: "center",
@@ -154,6 +194,16 @@ export default (theme) => ({
       width: 240,
       display: "block",
       margin: "0 auto",
+    },
+    "& img.token_logo": {
+      width: 56,
+      height: 56,
+      border: "2px solid #fff",
+      borderRadius: 28,
+      position: "absolute",
+      left: "50%",
+      top: -26,
+      margin: "0 0 0 -28px",
     },
     "& strong": {
       fontSize: 12,
@@ -188,5 +238,10 @@ export default (theme) => ({
         left: -8,
       },
     },
+  },
+  accept_content_type: {
+    height: "calc(100vh - 44px)",
+    background: "none",
+    padding: "42px 24px 24px",
   },
 });
