@@ -33,8 +33,11 @@ class IndexRC extends React.Component {
       this.props.store.accounts[this.props.store.account_index]
         ? this.props.store.accounts[this.props.store.account_index]
         : "";
+
     if (account.mnemonic && password) {
       const seed = helper.aes_decrypt(account.mnemonic, password);
+      // const seed =
+      //   "embody oven oven erode life crater ostrich marble marine problem thrive body";
       this.setState({
         seeds: seed.split(" "),
         seeds_sort: seed.split(" ").sort((a, b) => {
@@ -96,20 +99,14 @@ class IndexRC extends React.Component {
       this.state.seeds.join(" ") === this.state.seeds_select.join(" ")
     ) {
       // 创建账户
+      const search = this.props.location.search;
       this.props.dispatch(
         routerRedux.push({
           pathname: route_map.create_account_done,
-          search: this.props.location.search,
+          search,
         })
       );
     }
-  };
-  jump = () => {
-    this.props.dispatch(
-      routerRedux.push({
-        pathname: route_map.index,
-      })
-    );
   };
   render() {
     const { classes, intl, ...otherProps } = this.props;
@@ -119,7 +116,6 @@ class IndexRC extends React.Component {
         <Nav
           key="nav"
           title={intl.formatMessage({ id: "create.step1.btn.create" })}
-          url={route_map.create_account_step3}
           {...otherProps}
         />
       ) : (
@@ -138,8 +134,12 @@ class IndexRC extends React.Component {
       <div className={classes.seed} key="content">
         {step1 ? (
           <div>
-            <h1>{intl.formatMessage({ id: "seed.new.title" })}</h1>
-            <p>{this.props.intl.formatMessage({ id: "seed.new.desc1" })}</p>
+            <h1 className={classes.tit}>
+              {intl.formatMessage({ id: "seed.new.title" })}
+            </h1>
+            <p className={classes.desc}>
+              {intl.formatMessage({ id: "seed.new.desc1" })}
+            </p>
             <Grid container spacing={1}>
               {seeds.map((item, i) => {
                 return (
@@ -169,7 +169,9 @@ class IndexRC extends React.Component {
         )}
         {step2 ? (
           <div className={classes.seed_confirm}>
-            <p>{this.props.intl.formatMessage({ id: "seed.confirm.desc" })}</p>
+            <p className={classes.desc}>
+              {this.props.intl.formatMessage({ id: "seed.confirm.desc" })}
+            </p>
             <Grid container className={classes.seed_select}>
               {seeds_select.map((item, i) => {
                 return (

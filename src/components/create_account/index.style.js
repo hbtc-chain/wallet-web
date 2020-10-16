@@ -16,7 +16,7 @@ export default (theme) => ({
   },
   nav: {
     height: 42,
-    margin: "0 0 16px",
+    margin: "0 0 18px",
     fontSize: 16,
     lineHeight: "24px",
     display: "flex",
@@ -44,6 +44,21 @@ export default (theme) => ({
       color: theme.palette.common.white,
       background: theme.palette.grey[100],
     },
+  },
+  tit: {
+    fontSize: 26,
+    fontWeight: 500,
+    lineHeight: "38px",
+    color: theme.palette.grey[900],
+    margin: "0 0 8px",
+    textAlign: "left",
+  },
+  desc: {
+    fontSize: 14,
+    lineHeight: "22px",
+    color: theme.palette.grey[500],
+    textAlign: "left",
+    margin: "0 0 16px",
   },
   index: {
     padding: "0 16px",
@@ -136,9 +151,6 @@ export default (theme) => ({
     margin: "0 auto",
     textAlign: "center",
     padding: "0 16px",
-    "& h1": {
-      margin: "50px 0 30px",
-    },
     "& button": {
       margin: "16px 0 0",
     },
@@ -146,7 +158,7 @@ export default (theme) => ({
   step3_import: {
     // width: 360,
     padding: "0 16px 16px",
-    margin: "34px auto 0",
+    margin: "0 auto",
     "& h2": {
       fontSize: 20,
       lineHeight: "24px",
@@ -265,19 +277,6 @@ export default (theme) => ({
     // maxWidth: 400,
     padding: "0 16px",
     margin: "0 auto",
-    "& h1": {
-      margin: "26px 0 8px",
-      fontSize: 26,
-      lineHeight: "38px",
-      color: theme.palette.grey[900],
-    },
-    "& p": {
-      fontSize: 14,
-      color: theme.palette.grey[500],
-      margin: "0 0 16px",
-      fontSize: 14,
-      lineHeight: "20px",
-    },
     "& strong": {
       fontSize: 18,
       lineHeight: 2,
@@ -450,13 +449,7 @@ export default (theme) => ({
   },
   seed_import: {
     padding: "0 16px 16px",
-    margin: "34px auto",
-    "& p": {
-      fontSize: 14,
-      lineHeight: "20px",
-      color: theme.palette.grey[700],
-      margin: "0 0 16px",
-    },
+    margin: "0 auto",
   },
   textarea: {
     minHeight: 140,
@@ -582,6 +575,19 @@ export default (theme) => ({
           display: "block",
         },
       },
+    },
+  },
+  set_account: {
+    "& label": {
+      display: "block",
+      margin: "8px 0",
+      fontSize: 14,
+      lineHeight: "22px",
+      color: theme.palette.grey[700],
+      textAlign: "left",
+    },
+    "& button": {
+      marginTop: 0,
     },
   },
 });

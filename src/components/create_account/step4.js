@@ -32,21 +32,21 @@ class IndexRC extends React.Component {
   }
 
   goto = (way) => (e) => {
+    const search = this.props.location.search;
     this.props.dispatch(
       routerRedux.push({
         pathname: route_map.account_seed,
-        search: this.props.location.search + "&way=" + way,
+        search: search + "&way=" + way,
       })
     );
   };
   render() {
     const { classes, intl, ...otherProps } = this.props;
-    const params = querystring.parse(window.location.search || "");
+    const params = querystring.parse(this.props.location.search || "");
     return [
       <Nav
         key="nav"
         title={intl.formatMessage({ id: "create.step1.btn.import" })}
-        url={route_map.create_account_step1}
         {...otherProps}
       />,
       <div

@@ -19,6 +19,7 @@ export default {
   create_account_step1: `${local}/create_account_step1`,
   create_account_step2: `${local}/create_account_step2`,
   create_account_step3: `${local}/create_account_step3`,
+  create_account_step4: `${local}/create_account_step4`,
   account_seed: `${local}/account_seed`,
   account_list: `${local}/account_list`,
   create_account_done: `${local}/create_account_done`,

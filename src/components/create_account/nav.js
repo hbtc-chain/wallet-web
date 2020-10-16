@@ -16,13 +16,7 @@ class NavRC extends React.Component {
     if (this.props.onClick) {
       this.props.onClick();
     } else {
-      console.log(this.props.search);
-      this.props.dispatch(
-        routerRedux.push({
-          pathname: this.props.url,
-          search: this.props.search || this.props.location.search,
-        })
-      );
+      this.props.dispatch(routerRedux.goBack());
     }
   };
   render() {

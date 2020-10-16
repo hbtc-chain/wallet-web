@@ -20,14 +20,23 @@ class IndexRC extends React.Component {
     );
   };
   render() {
-    const { classes } = this.props;
+    const { classes, intl } = this.props;
     return (
       <div className={classes.index}>
-        <img src={require("../../assets/logo.png")} />
-        <h1>{this.props.intl.formatMessage({ id: "welcome.title" })}</h1>
-        <p>{this.props.intl.formatMessage({ id: "welcome.desc" })}</p>
-        <Button onClick={this.goto} color="primary" variant="contained">
-          {this.props.intl.formatMessage({ id: "welcome.btn.start" })}
+        <img className={classes.logo} src={require("../../assets/logo.png")} />
+        <h1>{intl.formatMessage({ id: "hbtc.wallet" })}</h1>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: intl.formatMessage({ id: "welcome.desc" }),
+          }}
+        />
+        <Button
+          onClick={this.goto}
+          color="primary"
+          variant="contained"
+          fullWidth
+        >
+          {intl.formatMessage({ id: "welcome.btn.start" })}
         </Button>
       </div>
     );

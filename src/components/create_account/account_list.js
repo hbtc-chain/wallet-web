@@ -59,7 +59,7 @@ class IndexRC extends React.Component {
 
   render() {
     const { classes, intl, ...otherProps } = this.props;
-    const params = querystring.parse(window.location.search || "");
+    const params = querystring.parse(this.props.location.search || "");
     const accounts = this.props.store.accounts;
     const account_index = this.state.account_index;
     return (
@@ -67,7 +67,6 @@ class IndexRC extends React.Component {
         <Nav
           key="nav"
           title={intl.formatMessage({ id: "account.list.title" })}
-          url={route_map.create_account_step1}
           {...otherProps}
         />
         <div className={classes.account_con_bg}>

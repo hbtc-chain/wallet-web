@@ -7,6 +7,7 @@ import { Button, FormControlLabel, Radio } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import querystring from "query-string";
 import { routerRedux } from "dva/router";
+import helper from "../../util/helper";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -16,12 +17,25 @@ class IndexRC extends React.Component {
     };
   }
   goto = () => {
-    this.props.dispatch(
-      routerRedux.push({
-        pathname: route_map.create_account_step3,
-        search: this.props.location.search,
-      })
-    );
+    const params = querystring.parse(this.props.location.search || "");
+    console.log(params.type);
+    const search = this.props.location.search;
+    if (params.type == "create") {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.create_account_step3,
+          search,
+        })
+      );
+    }
+    if (params.type == "import") {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.create_account_step4,
+          search,
+        })
+      );
+    }
   };
   radioChange = () => {
     const checked = this.state.checked;
@@ -31,7 +45,7 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes, intl } = this.props;
-    const params = querystring.parse(window.location.search || "");
+    const params = querystring.parse(this.props.location.search || "");
     return (
       <div className={classes.step2}>
         <div className={classes.step2_con_bg}>

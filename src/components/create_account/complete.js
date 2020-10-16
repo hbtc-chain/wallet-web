@@ -26,7 +26,6 @@ class IndexRC extends React.Component {
       <Nav
         key="nav"
         title={intl.formatMessage({ id: "create.step1.btn.create" })}
-        url={route_map.create_account_step3}
         {...otherProps}
       />,
       <div className={classes.step_done} key="content">

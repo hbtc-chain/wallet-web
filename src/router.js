@@ -48,6 +48,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/create_account_step3"),
   });
+  // create account step 4
+  const CreateAccountStep4RC = dynamic({
+    app,
+    component: () => import("./pages/create_account_step4"),
+  });
   //  account seed
   const AccountSeedRC = dynamic({
     app,
@@ -137,6 +142,12 @@ function RouterConfig({ history, app }) {
           exact
           path={route_map.create_account_step3}
           component={CreateAccountStep3RC}
+        />
+        {/* create account step4 */}
+        <Route
+          exact
+          path={route_map.create_account_step4}
+          component={CreateAccountStep4RC}
         />
         {/*  account seed */}
         <Route exact path={route_map.account_seed} component={AccountSeedRC} />

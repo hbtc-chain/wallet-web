@@ -2,8 +2,7 @@ import React from "react";
 import { connect } from "dva";
 import LayoutRC from "../components/layout";
 import HeaderRC from "../components/header";
-import IndexRC from "../components/create_account/step3";
-// import ImportRC from "../components/create_account/step3_import";
+import IndexRC from "../components/create_account/step4";
 import withRoot from "../withRoot";
 import querystring from "query-string";
 
@@ -18,23 +17,7 @@ function IndexPage({ layout, dispatch, location, match }) {
         match={match}
       />
       <div className="g_content">
-        {/* {params.type == "create" ? ( */}
-        <IndexRC
-          {...layout}
-          dispatch={dispatch}
-          location={location}
-          match
-          // location
-        />
-        {/* ) : (
-          <ImportRC
-            {...layout}
-            dispatch={dispatch}
-            location={location}
-            match
-            // location
-          />
-        )} */}
+        <IndexRC {...layout} dispatch={dispatch} location={location} match />
       </div>
     </LayoutRC>
   );

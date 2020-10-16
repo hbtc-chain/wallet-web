@@ -8,6 +8,7 @@ import getData from "../service/getData";
 import API from "../util/api";
 import { v4 } from "uuid";
 import util from "../util/util";
+const secp256k1 = require("secp256k1");
 
 export default {
   namespace: "layout",
@@ -71,21 +72,30 @@ export default {
       }
       const mnemonic = payload.mnemonic || helper.createMnemonic();
       const encrypt_mnemonic = helper.aes_encrypt(mnemonic, password);
+      let keys = {};
+      if (payload.key) {
+        // 根据私钥解公钥
+        keys = helper.createKeyFromPrivateKey(payload.key);
+      } else {
+        // 生成公钥秘钥
+        keys = helper.createKey(mnemonic, CONST.HBC_PATH);
+      }
 
-      // 生成公钥秘钥
-      const keys = helper.createKey(mnemonic, CONST.HBC_PATH);
       const encrypt_privateKey = helper.aes_encrypt(
         Buffer.from(keys.privateKey).toString("hex"),
         password
       );
+      // console.log(
+      //   secp256k1.publicKeyCreate(Buffer.from(keys.privateKey).toString("hex"))
+      // );
       const encrypt_publicKey = helper.aes_encrypt(
         Buffer.from(keys.publicKey).toString("hex"),
         password
       );
-      const encrypt_chainCode = helper.aes_encrypt(
-        Buffer.from(keys.chainCode).toString("hex"),
-        password
-      );
+      // const encrypt_chainCode = helper.aes_encrypt(
+      //   Buffer.from(keys.chainCode).toString("hex"),
+      //   password
+      // );
 
       // 根据公钥计算address
       const address = helper.createAddress(keys.publicKey);
@@ -96,12 +106,14 @@ export default {
       const data = {
         address,
         username:
+          payload.account ||
           "Account" + (accounts && accounts.length ? accounts.length + 1 : 1),
-        password: helper.sha256(password),
-        mnemonic: encrypt_mnemonic,
+        password:
+          accounts && accounts.length ? password : helper.sha256(password),
+        mnemonic: payload.key ? "" : encrypt_mnemonic,
         privateKey: encrypt_privateKey,
         publicKey: encrypt_publicKey,
-        chainCode: encrypt_chainCode,
+        // chainCode: encrypt_chainCode,
       };
       if (accounts && accounts.length) {
         accounts.push(data);

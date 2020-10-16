@@ -19,17 +19,13 @@ class IndexRC extends React.Component {
     this.state = {
       seed: "",
       seed_msg: "",
-      password: "",
-      password_msg: "",
-      confirmpwd: "",
-      confirmpwd_msg: "",
       keyStore: "",
       keyStorepwd: "",
       key: "",
       // 展示信息
       seed_title: "seed.import.title",
       seed_desc: "seed.import.desc",
-      keyStore_title: "keystore.import.tile",
+      keyStore_title: "keystore.import.title",
       keyStore_desc: "keystore.import.desc1",
       key_title: "key.import.title",
       key_desc: "key.import.desc",
@@ -52,17 +48,9 @@ class IndexRC extends React.Component {
         .replace(/\s$/g, "")
         .split(" ");
       msg =
-        v && (seedArr.length != 12 || this.unique(seedArr).length != 12)
+        v && seedArr.length != 12
           ? this.props.intl.formatMessage({ id: "seed.error" })
           : "";
-    }
-    if (key == "password") {
-      if (v && v.length < 8) {
-        msg = this.props.intl.formatMessage({ id: "pwd_rule1" });
-      }
-      if (v && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/.test(v)) {
-        msg = this.props.intl.formatMessage({ id: "pwd_rule3" });
-      }
     }
     this.setState({
       [key]: v,
@@ -72,7 +60,7 @@ class IndexRC extends React.Component {
   submit = async () => {
     const params = querystring.parse(this.props.location.search || "");
     const way = params.way;
-    const password = this.state.password;
+    const search = this.props.location.search;
     let obj = {};
     if (way == "seed") {
       const seed = this.state.seed
@@ -80,29 +68,15 @@ class IndexRC extends React.Component {
         .replace(/^\s/g, "")
         .replace(/\s$/g, "")
         .split(" ");
-      if (seed.length != 12 || this.unique(seed).length != 12) {
+      // if (seed.length != 12 || this.unique(seed).length != 12) {
+      if (seed.length != 12) {
         this.setState({
           seed_msg: this.props.intl.formatMessage({ id: "seed.error" }),
         });
         return;
       }
-      if (password.length < 8) {
-        this.setState({
-          password_msg: this.props.intl.formatMessage({ id: "pwd_rule1" }),
-        });
-        return;
-      }
-      if (
-        password &&
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/.test(password)
-      ) {
-        this.setState({
-          password_msg: this.props.intl.formatMessage({ id: "pwd_rule3" }),
-        });
-        return;
-      }
       obj = {
-        password: this.state.password,
+        way: "seed",
         mnemonic: seed.join(" "),
       };
     }
@@ -112,27 +86,31 @@ class IndexRC extends React.Component {
       if (!keyStore || !keyStorepwd) {
         return;
       }
-      obj = {};
+      // obj = {};
     }
     if (way == "key") {
       const key = this.state.key.replace(/\s/g, "");
       if (!key) {
         return;
       }
-      obj = {};
+      obj = {
+        way: "key",
+        key,
+      };
     }
-    await this.props.dispatch({
-      type: "layout/create_account",
-      payload: obj,
-    });
-    this.props.dispatch(
-      routerRedux.push({
-        pathname: route_map.create_account_done,
-        state: {
-          password: password,
-        },
-      })
-    );
+    // await this.props.dispatch({
+    //   type: "layout/create_account",
+    //   payload: obj,
+    // });
+    if (way == "seed" || way == "key") {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.create_account_step3,
+          search,
+          state: obj,
+        })
+      );
+    }
   };
   verif = () => {
     let r = true;
@@ -145,7 +123,8 @@ class IndexRC extends React.Component {
         .replace(/^\s/g, "")
         .replace(/\s$/g, "")
         .split(" ");
-      if (!seed || seedArr.length != 12 || this.unique(seedArr).length != 12) {
+      // if (!seed || seedArr.length != 12 || this.unique(seedArr).length != 12) {
+      if (!seed || seedArr.length != 12) {
         return false;
       }
       return r;
@@ -174,15 +153,15 @@ class IndexRC extends React.Component {
       <Nav
         key="nav"
         title={intl.formatMessage({ id: this.state[way + "_title"] })}
-        url={route_map.create_account_step3}
-        search={search}
         {...otherProps}
       />,
       <div
         className={classnames(classes.step, classes.seed_import)}
         key="content"
       >
-        <p>{intl.formatMessage({ id: this.state[way + "_desc"] })}</p>
+        <p className={classes.desc}>
+          {intl.formatMessage({ id: this.state[way + "_desc"] })}
+        </p>
         {way == "seed" ? (
           <Grid container className={classes.form}>
             <Grid item xs={12} className={classes.item}>

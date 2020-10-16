@@ -172,7 +172,7 @@ function createKeyFromPrivateKey(privateKey) {
     Object.prototype.toString.call(privateKey) == "[object String]"
       ? HexString2Bytes(privateKey)
       : privateKey;
-  const pubkey = ecc.pointFromScalar(prikey, true);
+  const pubkey = ecc.pointFromScalar(Buffer.from(prikey), true);
   return {
     privateKey: prikey,
     publicKey: pubkey,
