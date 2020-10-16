@@ -18,7 +18,6 @@ class IndexRC extends React.Component {
   }
   goto = () => {
     const params = querystring.parse(this.props.location.search || "");
-    console.log(params.type);
     const search = this.props.location.search;
     if (params.type == "create") {
       this.props.dispatch(

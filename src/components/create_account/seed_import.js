@@ -22,6 +22,7 @@ class IndexRC extends React.Component {
       keyStore: "",
       keyStorepwd: "",
       key: "",
+      key_msg: "",
       // 展示信息
       seed_title: "seed.import.title",
       seed_desc: "seed.import.desc",
@@ -50,6 +51,12 @@ class IndexRC extends React.Component {
       msg =
         v && seedArr.length != 12
           ? this.props.intl.formatMessage({ id: "seed.error" })
+          : "";
+    }
+    if (key == "key") {
+      msg =
+        v && (v.length > 64 || !v.match(/^[A-Fa-f0-9]+$/))
+          ? this.props.intl.formatMessage({ id: "key.error" })
           : "";
     }
     this.setState({
@@ -94,6 +101,12 @@ class IndexRC extends React.Component {
       if (!key) {
         return;
       }
+      if (key > 64 || !key.match(/^[A-Fa-f0-9]+$/)) {
+        this.setState({
+          key_msg: this.props.intl.formatMessage({ id: "seed.error" }),
+        });
+        return;
+      }
       obj = {
         way: "key",
         key,
@@ -135,7 +148,8 @@ class IndexRC extends React.Component {
       }
       return r;
     } else if (way == "key") {
-      if (!this.state.key) {
+      const key = this.state.key;
+      if (!key || key > 64 || !key.match(/^[A-Fa-f0-9]+$/)) {
         return false;
       }
       return r;
@@ -225,6 +239,8 @@ class IndexRC extends React.Component {
                 onChange={this.handleChange("key")}
                 multiline
                 rows={5}
+                error={Boolean(this.state.key_msg)}
+                helperText={this.state.key_msg}
                 variant="outlined"
               />
             </Grid>

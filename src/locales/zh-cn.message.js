@@ -60,6 +60,7 @@ export default {
     "您正在导入BlueHelix钱包的托管单元，并将拥有一份跨链钱包",
   "key.import.title": "导入私钥",
   "key.import.desc": "请在下方输入框中输入私钥，并留意大小写",
+  "key.error": "格式错误",
   seed: "助记词",
   confirm: "确认",
   determine: "确定",
