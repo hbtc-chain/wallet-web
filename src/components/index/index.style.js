@@ -136,6 +136,9 @@ export default (theme) => ({
     color: theme.palette.common.white,
     background: "#3E3A50",
   },
+  token_list: {
+    padding: "10px 0 0",
+  },
   token_item: {
     borderBottom: `1px solid ${theme.palette.grey[50]}`,
     "& div": {
@@ -154,6 +157,7 @@ export default (theme) => ({
     "& p": {
       color: theme.palette.grey[300],
       fontSize: 12,
+      margin: "4px 0 0",
     },
     "& i": {
       display: "inline-block",
@@ -288,7 +292,11 @@ export default (theme) => ({
       alignItems: "center",
       borderRadius: 18,
       margin: "0 0 8px",
+      "&.cross": {
+        width: 64,
+      },
     },
+
     "& i": {
       color: theme.palette.common.text,
       fontSize: 12,
