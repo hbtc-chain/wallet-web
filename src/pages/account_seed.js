@@ -14,13 +14,13 @@ function IndexPage({ layout, dispatch, location, match }) {
   const params = querystring.parse(location.search || "");
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
-      <HeaderRC
+      {/* <HeaderRC
         {...layout}
         dispatch={dispatch}
         location={location}
         match
         location
-      />
+      /> */}
       <div className="g_content">
         {layout.logged ? (
           params.type == "create" ? (

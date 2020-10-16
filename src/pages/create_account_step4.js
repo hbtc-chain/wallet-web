@@ -10,12 +10,12 @@ function IndexPage({ layout, dispatch, location, match }) {
   const params = querystring.parse(location.search || "");
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
-      <HeaderRC
+      {/* <HeaderRC
         {...layout}
         dispatch={dispatch}
         location={location}
         match={match}
-      />
+      /> */}
       <div className="g_content">
         <IndexRC {...layout} dispatch={dispatch} location={location} match />
       </div>

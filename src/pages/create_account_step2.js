@@ -8,12 +8,12 @@ import withRoot from "../withRoot";
 function IndexPage({ layout, dispatch, location, match }) {
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
-      <HeaderRC
+      {/* <HeaderRC
         {...layout}
         dispatch={dispatch}
         location={location}
         match={match}
-      />
+      /> */}
       <div className="g_content">
         <IndexRC
           {...layout}

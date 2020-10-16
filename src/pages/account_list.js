@@ -11,13 +11,13 @@ import LoginRC from "../components/account/login";
 function IndexPage({ layout, dispatch, location, match }) {
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
-      <HeaderRC
+      {/* <HeaderRC
         {...layout}
         dispatch={dispatch}
         location={location}
         match
         location
-      />
+      /> */}
       <div className="g_content">
         {layout.logged ? (
           <IndexRC
