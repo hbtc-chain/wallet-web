@@ -86,6 +86,7 @@ class IndexRC extends React.Component {
       if (!keyStore || !keyStorepwd) {
         return;
       }
+      // keyStore导入
       // obj = {};
     }
     if (way == "key") {
@@ -176,23 +177,6 @@ class IndexRC extends React.Component {
                 multiline
                 rows={5}
                 variant="outlined"
-              />
-            </Grid>
-          </Grid>
-        ) : (
-          ""
-        )}
-        {way == "seed" ? (
-          <Grid container className={classes.form}>
-            <Grid item xs={12} className={classes.item}>
-              <TextField
-                fullWidth
-                value={this.state.password}
-                className={classes.input}
-                onChange={this.handleChange("password")}
-                error={Boolean(this.state.password_msg)}
-                helperText={this.state.password_msg}
-                placeholder={intl.formatMessage({ id: "enter password" })}
               />
             </Grid>
           </Grid>

@@ -80,14 +80,11 @@ export default {
         // 生成公钥秘钥
         keys = helper.createKey(mnemonic, CONST.HBC_PATH);
       }
-
+      console.log(Buffer.from(keys.privateKey).toString("hex"));
       const encrypt_privateKey = helper.aes_encrypt(
         Buffer.from(keys.privateKey).toString("hex"),
         password
       );
-      // console.log(
-      //   secp256k1.publicKeyCreate(Buffer.from(keys.privateKey).toString("hex"))
-      // );
       const encrypt_publicKey = helper.aes_encrypt(
         Buffer.from(keys.publicKey).toString("hex"),
         password

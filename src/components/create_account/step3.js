@@ -157,7 +157,7 @@ class IndexRC extends React.Component {
   };
   pre = () => {
     if (this.state.step1) {
-      routerRedux.goBack();
+      this.props.dispatch(routerRedux.goBack());
     } else {
       this.setState({
         step1: true,
