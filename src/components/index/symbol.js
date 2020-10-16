@@ -3,7 +3,15 @@ import React from "react";
 import styles from "./index.style";
 import { withStyles } from "@material-ui/core/styles";
 import { injectIntl } from "react-intl";
-import { Button, Grid, TextField, Checkbox, Paper } from "@material-ui/core";
+import {
+  Button,
+  Grid,
+  TextField,
+  Checkbox,
+  Paper,
+  Menu,
+  MenuItem,
+} from "@material-ui/core";
 import route_map from "../../config/route_map";
 import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
@@ -13,6 +21,8 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { v4 } from "uuid";
 import util from "../../util/util";
 import API from "../../util/api";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import moment from "moment";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -24,6 +34,7 @@ class IndexRC extends React.Component {
       page_size: 100,
       loading: false,
       hasmore: true,
+      open: false,
     };
   }
   componentDidMount() {
@@ -71,9 +82,16 @@ class IndexRC extends React.Component {
     }
     return ["", this.props.store.unit];
   };
+  goto = (hash) => (e) => {
+    // open window tab
+    window.open("http://explorer.hbtcchain.io/txs/" + hash, "_blank");
+  };
   render() {
     const { classes } = this.props;
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
     const balance =
       this.props.balance && this.props.balance.assets
         ? this.props.balance.assets.find((item) => item.symbol == symbol)
@@ -162,21 +180,6 @@ class IndexRC extends React.Component {
             ""
           )}
         </Paper>
-        <div>
-          {this.state.data.map((item) => {
-            return (
-              <div key={item.hash}>
-                {this.props.intl.formatMessage({
-                  id:
-                    item.activities && item.activities
-                      ? item.activities[0]["type"]
-                      : "other",
-                })}{" "}
-                {item.success} {item.time}
-              </div>
-            );
-          })}
-        </div>
         <div className={classes.token_list}>
           {this.state.data.map((item) => {
             return (
@@ -186,7 +189,7 @@ class IndexRC extends React.Component {
                 alignItems="center"
                 justify="space-between"
                 className={classes.token_item}
-                onClick={this.goto(item.symbol)}
+                onClick={this.goto(item.hash)}
                 key={item.hash}
               >
                 <Grid item>
@@ -203,6 +206,9 @@ class IndexRC extends React.Component {
                       id: item.success ? "success" : "error",
                     })}
                   </i>
+                  <p>
+                    {moment(item.time * 1000).format("YYYY-MM-DD HH:mm:ss")}
+                  </p>
                 </Grid>
                 <Grid item style={{ textAlign: "right" }}>
                   <strong>{item.amount}</strong>
@@ -243,15 +249,92 @@ class IndexRC extends React.Component {
           alignItems="center"
           className={classes.btns}
         >
-          <Grid item>
+          <Grid
+            item
+            onClick={() => {
+              this.props.dispatch(
+                routerRedux.push({
+                  pathname:
+                    route_map.accept_by_type +
+                    `/${token.symbol}/${address}/${
+                      token.is_native ? "native" : "chain_in"
+                    }`,
+                })
+              );
+            }}
+          >
             <span>x</span>
             <i>{this.props.intl.formatMessage({ id: "accept" })}</i>
           </Grid>
-          <Grid item>
+          <Grid
+            item
+            onClick={() => {
+              this.props.dispatch(
+                routerRedux.push({
+                  pathname: route_map.transfer + "/" + symbol,
+                })
+              );
+            }}
+          >
             <span>xx</span>
             <i>{this.props.intl.formatMessage({ id: "output" })}</i>
           </Grid>
+          {token && !token.is_native ? (
+            <Grid
+              item
+              onClick={(e) => {
+                this.setState({
+                  open: this.state.open ? null : e.target,
+                });
+              }}
+            >
+              <span className="cross">
+                xxx <ExpandMoreIcon />
+              </span>
+              <i>{this.props.intl.formatMessage({ id: "cross chain" })}</i>
+            </Grid>
+          ) : (
+            ""
+          )}
         </Grid>
+        <Menu
+          anchorEl={this.state.open}
+          open={Boolean(this.state.open)}
+          keepMounted
+          onClose={() => {
+            this.setState({ open: false });
+          }}
+        >
+          <MenuItem
+            onClick={() => {
+              this.props.dispatch(
+                routerRedux.push({
+                  pathname: balance.external_address
+                    ? route_map.accept_by_type +
+                      "/" +
+                      symbol +
+                      "/" +
+                      address +
+                      "/chain_out"
+                    : route_map.external_address + "/" + symbol,
+                })
+              );
+            }}
+          >
+            {this.props.intl.formatMessage({ id: "cross chain accept" })}
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              this.props.dispatch(
+                routerRedux.push({
+                  pathname: route_map.withdrawal + "/" + symbol,
+                })
+              );
+            }}
+          >
+            {this.props.intl.formatMessage({ id: "cross chain withdrawl" })}
+          </MenuItem>
+        </Menu>
       </div>
     );
   }

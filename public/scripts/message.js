@@ -249,7 +249,7 @@ export default class MessageManager {
     const accounts = datas.accounts;
     // 未创建账户
     if (!accounts || accounts.length == 0) {
-      this.platform.openExtensionInBrowser("/welcome");
+      //this.platform.openExtensionInBrowser("/welcome");
       this.sendMsgToPage(
         {
           id: obj.id,

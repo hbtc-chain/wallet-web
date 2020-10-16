@@ -8,7 +8,7 @@
       "38": "logo192.png"
     },
     "default_title": "HBC wallet",
-    "default_popup": "index.html"
+    "default_popup": "index.html#/index"
   },
   "content_scripts": [
     {

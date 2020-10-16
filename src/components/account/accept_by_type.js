@@ -1,4 +1,4 @@
-// 接收
+// 按类型 接收
 import React from "react";
 import styles from "./style";
 import { withStyles } from "@material-ui/core/styles";
@@ -19,6 +19,7 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import Qrcode from "qrcode";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import message from "../public/message";
+import classnames from "classnames";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -29,10 +30,9 @@ class IndexRC extends React.Component {
     };
   }
   componentDidMount() {
-    const account =
-      this.props.store.accounts && this.props.store.account_index > -1
-        ? this.props.store.accounts[this.props.store.account_index]
-        : {};
+    const account = {
+      address: this.props.match.params.address,
+    };
     this.setState({
       account,
     });
@@ -55,17 +55,23 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes } = this.props;
-    const account =
-      this.props.store.accounts && this.props.store.account_index > -1
-        ? this.props.store.accounts[this.props.store.account_index]
-        : {};
+    const account = this.state.account;
+    const type = this.props.match.params.type;
+    const symbol = this.props.match.params.symbol.toLowerCase();
+    const token = this.props.tokens.find((item) => item.symbol == symbol);
+
     return (
-      <div className={classes.accept}>
+      <div
+        className={classnames(
+          classes.accept,
+          classes["accept_by_type_" + type]
+        )}
+      >
         <Grid
           container
           justify="space-between"
           alignItems="center"
-          className={classes.back}
+          className={classnames(classes.back, classes.back2)}
         >
           <Grid item xs={2} style={{ padding: "0 0 0 10px" }}>
             <ArrowBackIosIcon
@@ -79,9 +85,25 @@ class IndexRC extends React.Component {
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        <div className={classes.accept_content}>
-          <p>{this.props.intl.formatMessage({ id: "support hbc account" })}</p>
+        <div
+          className={classnames(
+            classes.accept_content,
+            classes.accept_content_type
+          )}
+        >
+          {type == "chain_out" ? (
+            <h3>{this.props.intl.formatMessage({ id: "support hbc fee" })}</h3>
+          ) : (
+            ""
+          )}
+
           <Paper>
+            <h2>
+              {this.props.intl.formatMessage(
+                { id: "{symbol} address" },
+                { symbol: symbol.toUpperCase() }
+              )}
+            </h2>
             {account.address ? <img src={this.state.img} /> : ""}
             <strong>{account.address}</strong>
             <CopyToClipboard text={account.address} onCopy={this.copy}>
@@ -91,7 +113,13 @@ class IndexRC extends React.Component {
             </CopyToClipboard>
             <i></i>
             <i></i>
+            {token ? <img src={token.logo} className="token_logo" /> : ""}
           </Paper>
+          <dl className={classes.tip}>
+            <dt>{this.props.intl.formatMessage({ id: "tip" })}</dt>
+            <dd>xxxxxxxxxxxxxxxxx</dd>
+            <dd>yyyyyyyyyyyyyyyyyy</dd>
+          </dl>
         </div>
       </div>
     );
