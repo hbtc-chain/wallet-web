@@ -241,7 +241,6 @@ class IndexRC extends React.Component {
     if (result.code == 200) {
       this.check_address();
     } else {
-      console.log(result);
       message.error(
         result.data && result.data.raw_log
           ? JSON.parse(result.data.raw_log).message
@@ -337,7 +336,6 @@ class IndexRC extends React.Component {
             {this.props.intl.formatMessage({ id: "create external address" })}
           </Button>
         )}
-        <p>{this.state.msg}</p>
         <Dialog open={this.state.open}>
           <DialogTitle>
             {this.props.intl.formatMessage({ id: "confirmed password" })}

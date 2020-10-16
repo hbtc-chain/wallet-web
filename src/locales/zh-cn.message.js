@@ -184,4 +184,8 @@ export default {
   "HBC chain address": "HBC chain地址",
   "external chain address": "跨链地址",
   "external address": "跨链地址",
+  success: "成功",
+  error: "失败",
+  nodata: "暂无数据",
+  output: "转出",
 };

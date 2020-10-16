@@ -79,6 +79,7 @@ class IndexRC extends React.Component {
         ? this.props.balance.assets.find((item) => item.symbol == symbol)
         : { amount: "" };
     const rates = this.rates(balance.amount, symbol);
+    const token = this.props.tokens.find((item) => item.symbol == symbol);
     return (
       <div className={classes.symbol}>
         <Grid
@@ -94,24 +95,37 @@ class IndexRC extends React.Component {
               }}
             />
           </Grid>
-          <Grid item>{this.props.match.params.symbol}</Grid>
+          <Grid item>
+            <h2>{this.props.match.params.symbol.toUpperCase()}</h2>
+          </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        <Paper>
-          <p>{this.props.intl.formatMessage({ id: "currently held" })}</p>
-          <strong>{balance.amount}</strong>
-          <span>
-            {rates[0]} {rates[1]}
-          </span>
+        <Paper className={classes.symbol_paper}>
+          <div className={classes.symbol_amount}>
+            <p>{this.props.intl.formatMessage({ id: "currently held" })}</p>
+            <strong>{balance.amount || "--"}</strong>
+            <span>
+              {rates[0]} {rates[1]}
+            </span>
+            {token && token.logo ? <img src={token.logo} /> : ""}
+          </div>
           {symbol == "hbc" ? (
-            <div>
-              <Grid container justify="space-between">
+            <div style={{ padding: "10px 0 8px" }}>
+              <Grid
+                container
+                justify="space-between"
+                className={classes.symbol_amount_item}
+              >
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "available" })}
                 </Grid>
                 <Grid item>{balance.amount}</Grid>
               </Grid>
-              <Grid container justify="space-between">
+              <Grid
+                container
+                justify="space-between"
+                className={classes.symbol_amount_item}
+              >
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "bonded" })}
                 </Grid>
@@ -119,7 +133,11 @@ class IndexRC extends React.Component {
                   {this.props.balance ? this.props.balance.bonded : ""}
                 </Grid>
               </Grid>
-              <Grid container justify="space-between">
+              <Grid
+                container
+                justify="space-between"
+                className={classes.symbol_amount_item}
+              >
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "unbonding" })}
                 </Grid>
@@ -127,7 +145,11 @@ class IndexRC extends React.Component {
                   {this.props.balance ? this.props.balance.unbonding : ""}
                 </Grid>
               </Grid>
-              <Grid container justify="space-between">
+              <Grid
+                container
+                justify="space-between"
+                className={classes.symbol_amount_item}
+              >
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "claimed_reward" })}
                 </Grid>
@@ -155,6 +177,55 @@ class IndexRC extends React.Component {
             );
           })}
         </div>
+        <div className={classes.token_list}>
+          {this.state.data.map((item) => {
+            return (
+              <Grid
+                container
+                key={item.symbol}
+                alignItems="center"
+                justify="space-between"
+                className={classes.token_item}
+                onClick={this.goto(item.symbol)}
+                key={item.hash}
+              >
+                <Grid item>
+                  <strong>
+                    {this.props.intl.formatMessage({
+                      id:
+                        item.activities && item.activities
+                          ? item.activities[0]["type"]
+                          : "other",
+                    })}
+                  </strong>
+                  <i className={item.success ? "native" : ""}>
+                    {this.props.intl.formatMessage({
+                      id: item.success ? "success" : "error",
+                    })}
+                  </i>
+                </Grid>
+                <Grid item style={{ textAlign: "right" }}>
+                  <strong>{item.amount}</strong>
+                </Grid>
+              </Grid>
+            );
+          })}
+        </div>
+        {!this.state.loading && !this.state.data.length ? (
+          <Grid
+            container
+            alignItems="center"
+            justify="center"
+            className={classes.nodata}
+          >
+            <Grid item>
+              <img src={require("../../assets/nodata.png")} />
+              <p>{this.props.intl.formatMessage({ id: "nodata" })}</p>
+            </Grid>
+          </Grid>
+        ) : (
+          ""
+        )}
         {this.state.hasmore && !this.state.loading ? (
           <Grid container justify="center">
             <Grid item>
@@ -166,6 +237,21 @@ class IndexRC extends React.Component {
         ) : (
           ""
         )}
+        <Grid
+          container
+          justify="space-around"
+          alignItems="center"
+          className={classes.btns}
+        >
+          <Grid item>
+            <span>x</span>
+            <i>{this.props.intl.formatMessage({ id: "accept" })}</i>
+          </Grid>
+          <Grid item>
+            <span>xx</span>
+            <i>{this.props.intl.formatMessage({ id: "output" })}</i>
+          </Grid>
+        </Grid>
       </div>
     );
   }

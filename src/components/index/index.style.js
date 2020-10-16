@@ -208,6 +208,92 @@ export default (theme) => ({
     margin: "0 auto",
     position: "relative",
   },
+  symbol_paper: {
+    boxShadow: "0px 3px 12px 0px rgba(51,117,224,.12)",
+  },
+  symbol_amount: {
+    position: "relative",
+    height: 112,
+    padding: 16,
+    borderBottom: `1px solid ${theme.palette.grey[50]}`,
+    overflow: "hidden",
+    "& img": {
+      width: 128,
+      opacity: 0.1,
+      position: "absolute",
+      right: 0,
+      top: 32,
+    },
+    "& p": {
+      color: theme.palette.grey[500],
+      fontSize: 12,
+      lineHeight: "20px",
+    },
+    "& strong": {
+      color: theme.palette.grey[900],
+      fontSize: 26,
+      display: "block",
+      lineHeight: "40px",
+      height: 40,
+      fontWeight: 500,
+    },
+    "& span": {
+      color: theme.palette.grey[500],
+      fontSize: 16,
+      lineHeight: "20px",
+    },
+  },
+  symbol_amount_item: {
+    margin: "8px 0",
+    padding: "0 16px",
+    height: 20,
+    "& div": {
+      fontSize: 12,
+      "&:nth-child(2n+1)": {
+        color: theme.palette.grey[500],
+      },
+      "&:nth-child(2n)": {
+        color: theme.palette.grey[900],
+      },
+    },
+  },
+  nodata: {
+    padding: "56px 0 74px",
+    "& img": {
+      width: 48,
+      margin: "0 auto 16px",
+      display: "block",
+    },
+    "& p": {
+      color: theme.palette.grey[300],
+      textAlign: "center",
+      fontSize: 16,
+    },
+  },
+  btns: {
+    position: "fixed",
+    left: 0,
+    bottom: 10,
+    width: "100%",
+    "& div": {
+      textAlign: "center",
+      cursor: "pointer",
+    },
+    "& span": {
+      boxShadow: "0px 2px 6px 0px rgba(51,117,224,0.16)",
+      display: "flex",
+      width: 48,
+      height: 48,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 18,
+      margin: "0 0 8px",
+    },
+    "& i": {
+      color: theme.palette.common.text,
+      fontSize: 12,
+    },
+  },
   back: {
     height: 44,
     margin: "0 0 12px",
