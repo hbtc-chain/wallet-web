@@ -36,8 +36,6 @@ class IndexRC extends React.Component {
 
     if (account.mnemonic && password) {
       const seed = helper.aes_decrypt(account.mnemonic, password);
-      // const seed =
-      //   "embody oven oven erode life crater ostrich marble marine problem thrive body";
       this.setState({
         seeds: seed.split(" "),
         seeds_sort: seed.split(" ").sort((a, b) => {
@@ -74,9 +72,10 @@ class IndexRC extends React.Component {
       seeds_select,
     });
   };
-  seed_set = (key) => (e) => {
+  seed_set = (key, i) => (e) => {
     let seeds_select = this.state.seeds_select;
-    const isSelect = seeds_select.indexOf(key) > -1;
+    let v = key + "_" + i;
+    const isSelect = seeds_select.indexOf(v) > -1;
     if (isSelect) {
       return;
     }
@@ -84,7 +83,7 @@ class IndexRC extends React.Component {
       return v == "";
     });
     if (index > -1) {
-      seeds_select[index] = key;
+      seeds_select[index] = v;
       this.setState({ seeds_select });
     }
   };
@@ -93,11 +92,18 @@ class IndexRC extends React.Component {
     seeds_select[i] = "";
     this.setState({ seeds_select });
   };
-  seed_confirm = () => {
-    if (
+  verify = () => {
+    const seeds_select = [].concat(this.state.seeds_select);
+    for (var i = 0; i < seeds_select.length; i++) {
+      seeds_select[i] = seeds_select[i].replace(/(_.*)/, "");
+    }
+    return (
       this.state.seeds_select.length == 12 &&
-      this.state.seeds.join(" ") === this.state.seeds_select.join(" ")
-    ) {
+      this.state.seeds.join(" ") === seeds_select.join(" ")
+    );
+  };
+  seed_confirm = () => {
+    if (this.verify()) {
       // 创建账户
       const search = this.props.location.search;
       this.props.dispatch(
@@ -174,6 +180,7 @@ class IndexRC extends React.Component {
             </p>
             <Grid container className={classes.seed_select}>
               {seeds_select.map((item, i) => {
+                const seed = item.replace(/(_.*)/, "");
                 return (
                   <Grid
                     item
@@ -182,13 +189,13 @@ class IndexRC extends React.Component {
                     className={classnames(
                       classes.seed_item,
                       classes.seed_input,
-                      item && seeds[i] !== item ? "error" : ""
+                      item && seeds[i] !== seed ? "error" : ""
                     )}
                   >
                     <div>
                       <em>{i + 1}</em>
-                      <p>{item || ""}</p>
-                      {item ? (
+                      <p>{seed || ""}</p>
+                      {seed ? (
                         <Cancel
                           style={{ fontSize: 14 }}
                           onClick={this.seed_delete(i)}
@@ -202,8 +209,8 @@ class IndexRC extends React.Component {
               })}
             </Grid>
             <Grid container spacing={1}>
-              {seeds_sort.map((item) => {
-                const isSelect = seeds_select.indexOf(item) > -1;
+              {seeds_sort.map((item, i) => {
+                const isSelect = seeds_select.indexOf(item + "_" + i) > -1;
                 return (
                   <Grid item xs={4} key={item}>
                     <div
@@ -212,7 +219,7 @@ class IndexRC extends React.Component {
                         classes.seed_options,
                         isSelect ? "disabled" : ""
                       )}
-                      onClick={this.seed_set(item)}
+                      onClick={this.seed_set(item, i)}
                     >
                       <p>{item}</p>
                     </div>
@@ -226,13 +233,7 @@ class IndexRC extends React.Component {
               onClick={this.seed_confirm}
               fullWidth
               className={classes.button}
-              disabled={
-                !(
-                  this.state.seeds_select.length == 12 &&
-                  this.state.seeds.join(" ") ===
-                    this.state.seeds_select.join(" ")
-                )
-              }
+              disabled={!this.verify()}
             >
               {this.props.intl.formatMessage({ id: "determine" })}
             </Button>
