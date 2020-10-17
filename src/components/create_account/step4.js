@@ -24,6 +24,7 @@ import { routerRedux } from "dva/router";
 import CONST from "../../util/const";
 import Nav from "./nav";
 import classnames from "classnames";
+import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -58,7 +59,7 @@ class IndexRC extends React.Component {
           <ListItem alignItems="center" onClick={this.goto("seed")}>
             <ListItemAvatar>
               <Avatar>
-                <Book />
+                <Iconfont type="menus" size={28} />
               </Avatar>
             </ListItemAvatar>
             <ListItemText
@@ -74,7 +75,7 @@ class IndexRC extends React.Component {
           <ListItem alignItems="center" onClick={this.goto("keyStore")}>
             <ListItemAvatar>
               <Avatar>
-                <Book />
+                <Iconfont type="locked" size={28} />
               </Avatar>
             </ListItemAvatar>
             <ListItemText
@@ -90,7 +91,7 @@ class IndexRC extends React.Component {
           <ListItem alignItems="center" onClick={this.goto("key")}>
             <ListItemAvatar>
               <Avatar>
-                <Book />
+                <Iconfont type="language" size={28} />
               </Avatar>
             </ListItemAvatar>
             <ListItemText

@@ -61,7 +61,7 @@ export default (theme) => ({
     margin: "0 0 16px",
   },
   index: {
-    padding: "0 16px",
+    padding: "0 16px 8px",
     margin: "0 auto",
     textAlign: "center",
     "& h1": {
@@ -150,14 +150,14 @@ export default (theme) => ({
     // width: 360,
     margin: "0 auto",
     textAlign: "center",
-    padding: "0 16px",
+    padding: "0 16px 8px",
     "& button": {
       margin: "16px 0 0",
     },
   },
   step3_import: {
     // width: 360,
-    padding: "0 16px 16px",
+    padding: "0 16px 8px",
     margin: "0 auto",
     "& h2": {
       fontSize: 20,
@@ -225,7 +225,7 @@ export default (theme) => ({
     minHeight: 80,
     textAlign: "left",
     "& .tip": {
-      margin: "8px 0 16px",
+      margin: "6px 0",
     },
     "& p": {
       color: theme.palette.grey[500],
@@ -275,7 +275,7 @@ export default (theme) => ({
   },
   seed: {
     // maxWidth: 400,
-    padding: "0 16px",
+    padding: "0 16px 8px",
     margin: "0 auto",
     "& strong": {
       fontSize: 18,
@@ -285,7 +285,7 @@ export default (theme) => ({
       padding: 20,
     },
     "& button": {
-      margin: "32px 0 16px",
+      margin: "32px 0 0",
     },
   },
   seed_item: {
@@ -414,7 +414,7 @@ export default (theme) => ({
     margin: "20px 0 0",
   },
   step_done: {
-    padding: "0 16px 16px",
+    padding: "0 16px 8px",
     margin: "26px auto 0",
     textAlign: "center",
     color: theme.palette.grey[900],
@@ -424,7 +424,7 @@ export default (theme) => ({
     },
     "& h2": {
       fontWeight: 500,
-      margin: "16px 0",
+      margin: "16px 0 35px",
       fontSize: 16,
       lineHeight: "23px",
     },
@@ -448,7 +448,7 @@ export default (theme) => ({
     },
   },
   seed_import: {
-    padding: "0 16px 16px",
+    padding: "0 16px 8px",
     margin: "0 auto",
   },
   textarea: {
@@ -510,7 +510,7 @@ export default (theme) => ({
     height: "100%",
     overflowX: "hidden",
     overflowY: "auto",
-    padding: "0 16px 16px",
+    padding: "0 16px 8px",
     "& p": {
       fontSize: 14,
       lineHeight: "20px",

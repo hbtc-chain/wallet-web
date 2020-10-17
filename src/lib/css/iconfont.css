@@ -1,0 +1,101 @@
+@font-face {
+  font-family: "iconfont";
+  src: url("../iconfonts/iconfont.eot");
+  src: url("../iconfonts/iconfont.eot?#iefix") format("embedded-opentype"),
+    url("../iconfonts/iconfont.woff") format("woff"),
+    url("../iconfonts/iconfont.ttf") format("truetype"),
+    url("../iconfonts/iconfont.svg#iconfont") format("svg");
+}
+
+.bhex-icon {
+  display: inline-block;
+  font-family: "iconfont";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-rendering: auto;
+  line-height: 1;
+  font-size: 24px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  vertical-align: middle;
+}
+
+.bhex-icon span {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  line-height: 24px;
+  padding: 0 5px;
+}
+.bhex-icon-menus:before {
+  content: "\e60e";
+}
+
+.bhex-icon-telegram:before {
+  content: "\e60f";
+}
+
+.bhex-icon-wechart:before {
+  content: "\e610";
+}
+
+.bhex-icon-twitter:before {
+  content: "\e611";
+}
+
+.bhex-icon-QRcode:before {
+  content: "\e60d";
+}
+
+.bhex-icon-add:before {
+  content: "\e60c";
+}
+
+.bhex-icon-warning:before {
+  content: "\e60b";
+}
+
+.bhex-icon-sort:before {
+  content: "\e608";
+}
+
+.bhex-icon-sort-top:before {
+  content: "\e609";
+}
+
+.bhex-icon-sort-bottom:before {
+  content: "\e60a";
+}
+
+.bhex-icon-locked:before {
+  content: "\e606";
+}
+
+.bhex-icon-setting:before {
+  content: "\e607";
+}
+
+.bhex-icon-language:before {
+  content: "\e600";
+}
+
+.bhex-icon-hbtc:before {
+  content: "\e601";
+}
+
+.bhex-icon-switch:before {
+  content: "\e602";
+}
+
+.bhex-icon-search:before {
+  content: "\e603";
+}
+
+.bhex-icon-explorer:before {
+  content: "\e604";
+}
+
+.bhex-icon-question:before {
+  content: "\e605";
+}

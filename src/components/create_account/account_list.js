@@ -26,34 +26,32 @@ class IndexRC extends React.Component {
   constructor() {
     super();
     this.state = {
-      account_index: -1,
+      select_accounts: [],
     };
   }
   componentWillMount() {
+    const accounts = this.props.store.accounts;
+    const select_accounts = [].concat(this.state.select_accounts);
+    if (accounts && accounts.length) {
+      select_accounts.push(accounts[0]);
+    }
     this.setState({
-      account_index: this.props.store.account_index,
+      select_accounts,
     });
   }
-  submit = async () => {
-    const account_index = this.state.account_index;
-    await this.props.dispatch({
-      type: "layout/save",
-      payload: {
-        store: {
-          ...this.props.store,
-          account_index,
-        },
-      },
-    });
-    this.props.dispatch(
-      routerRedux.push({
-        pathname: route_map.index,
-      })
+  import = async () => {};
+  handleAccount = (data) => (e) => {
+    const select_accounts = [].concat(this.state.select_accounts);
+    const index = select_accounts.findIndex(
+      (item) => item.username == data.username
     );
-  };
-  changeAccount = (index) => (e) => {
+    if (index > -1) {
+      select_accounts.splice(index, 1);
+    } else {
+      select_accounts.push(data);
+    }
     this.setState({
-      account_index: index,
+      select_accounts,
     });
   };
 
@@ -61,7 +59,6 @@ class IndexRC extends React.Component {
     const { classes, intl, ...otherProps } = this.props;
     const params = querystring.parse(this.props.location.search || "");
     const accounts = this.props.store.accounts;
-    const account_index = this.state.account_index;
     return (
       <div className={classes.account_select}>
         <Nav
@@ -73,39 +70,42 @@ class IndexRC extends React.Component {
           <div className={classes.account_con}>
             <p>{this.props.intl.formatMessage({ id: "account.list.desc" })}</p>
             <List className={classes.account_list}>
-              {accounts.map((item, i) => {
-                return (
-                  <ListItem
-                    alignItems="center"
-                    className={account_index == i ? "select" : ""}
-                  >
-                    <ListItemAvatar>
-                      <em onClick={this.changeAccount(i)}></em>
-                      <CheckCircle />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={item.username}
-                      secondary={item.address.replace(
-                        /(.{10})(.*)(.{10})/,
-                        "$1......$3"
-                      )}
-                    />
-                  </ListItem>
-                );
-              })}
+              {accounts && accounts.length
+                ? accounts.map((item, i) => {
+                    const arr = this.state.select_accounts.filter(
+                      (account) => account.username == item.username
+                    );
+                    return (
+                      <ListItem
+                        alignItems="center"
+                        className={arr.length ? "select" : ""}
+                      >
+                        <ListItemAvatar>
+                          <em onClick={this.handleAccount(item)}></em>
+                          <CheckCircle onClick={this.handleAccount(item)} />
+                        </ListItemAvatar>
+                        <ListItemText
+                          primary={item.username}
+                          secondary={item.address.replace(
+                            /(.{10})(.*)(.{10})/,
+                            "$1......$3"
+                          )}
+                        />
+                      </ListItem>
+                    );
+                  })
+                : ""}
             </List>
           </div>
         </div>
         <div className={classes.footer}>
           <Button
-            onClick={this.submit}
+            onClick={this.import}
             color="primary"
             variant="contained"
             fullWidth
             className={classes.button}
-            disabled={
-              !(account_index > -1 && account_index < accounts.length - 1)
-            }
+            disabled={this.state.select_accounts.length < 1}
           >
             {intl.formatMessage({
               id: "import",

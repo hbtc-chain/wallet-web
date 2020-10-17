@@ -13,7 +13,7 @@ export default (theme) => ({
     },
   },
   index: {
-    padding: "0 16px",
+    padding: "0 16px 8px",
     margin: "0 auto",
     textAlign: "center",
     "& h1": {
