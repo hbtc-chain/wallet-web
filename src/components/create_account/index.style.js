@@ -527,6 +527,12 @@ export default (theme) => ({
       margin: "0 0 16px",
       "& .MuiListItemAvatar-root": {
         minWidth: 32,
+        height: 32,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "relative",
+        right: 8,
       },
       "& .MuiListItemText-root": {
         fontWeight: 500,
@@ -558,7 +564,6 @@ export default (theme) => ({
         )}`,
         borderRadius: "100%",
         overflow: "hidden",
-        margin: "0 16px 0 0",
         cursor: "pointer",
       },
       "& svg": {

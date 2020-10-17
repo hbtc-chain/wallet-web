@@ -80,9 +80,9 @@ class IndexRC extends React.Component {
                         alignItems="center"
                         className={arr.length ? "select" : ""}
                       >
-                        <ListItemAvatar>
-                          <em onClick={this.handleAccount(item)}></em>
-                          <CheckCircle onClick={this.handleAccount(item)} />
+                        <ListItemAvatar onClick={this.handleAccount(item)}>
+                          <em></em>
+                          <CheckCircle />
                         </ListItemAvatar>
                         <ListItemText
                           primary={item.username}

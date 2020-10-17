@@ -28,6 +28,19 @@
   line-height: 24px;
   padding: 0 5px;
 }
+
+.bhex-icon-importbykeystore:before {
+  content: "\e612";
+}
+
+.bhex-icon-importbyprivatekey:before {
+  content: "\e613";
+}
+
+.bhex-icon-importbymnemonic:before {
+  content: "\e614";
+}
+
 .bhex-icon-menus:before {
   content: "\e60e";
 }

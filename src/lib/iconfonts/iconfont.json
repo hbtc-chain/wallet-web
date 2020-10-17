@@ -6,6 +6,27 @@
   "description": "App",
   "glyphs": [
     {
+      "icon_id": "17719906",
+      "name": "import by keystore",
+      "font_class": "importbykeystore",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "17719907",
+      "name": "import by private key",
+      "font_class": "importbyprivatekey",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "17719908",
+      "name": "import by mnemonic",
+      "font_class": "importbymnemonic",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
       "icon_id": "17714760",
       "name": "menus",
       "font_class": "menus",

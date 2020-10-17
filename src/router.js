@@ -58,6 +58,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/account_seed"),
   });
+  //  account import
+  const AccountImportRC = dynamic({
+    app,
+    component: () => import("./pages/account_import"),
+  });
   //  account list
   const AccountListRC = dynamic({
     app,
@@ -156,6 +161,12 @@ function RouterConfig({ history, app }) {
         />
         {/*  account seed */}
         <Route exact path={route_map.account_seed} component={AccountSeedRC} />
+        {/*  account import */}
+        <Route
+          exact
+          path={route_map.account_import}
+          component={AccountImportRC}
+        />
         {/* account list */}
         <Route exact path={route_map.account_list} component={AccountListRC} />
         {/* create account done */}

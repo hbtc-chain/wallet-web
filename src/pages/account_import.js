@@ -3,7 +3,7 @@ import { connect } from "dva";
 import { routerRedux } from "dva/router";
 import LayoutRC from "../components/layout";
 import HeaderRC from "../components/header";
-import IndexRC from "../components/create_account/seed_new";
+import IndexRC from "../components/create_account/account_import";
 import withRoot from "../withRoot";
 import route_map from "../config/route_map";
 import LoginRC from "../components/account/login";
@@ -21,21 +21,12 @@ function IndexPage({ layout, dispatch, location, match }) {
         location
       /> */}
       <div className="g_content">
-        {layout.logged ? (
-          <IndexRC
-            {...layout}
-            dispatch={dispatch}
-            location={location}
-            match={match}
-          />
-        ) : (
-          <LoginRC
-            {...layout}
-            dispatch={dispatch}
-            location={location}
-            match={match}
-          />
-        )}
+        <IndexRC
+          {...layout}
+          dispatch={dispatch}
+          location={location}
+          match={match}
+        />
       </div>
     </LayoutRC>
   );
