@@ -21,21 +21,12 @@ function IndexPage({ layout, dispatch, location, match }) {
         location
       /> */}
       <div className="g_content">
-        {layout.logged ? (
-          <IndexRC
-            {...layout}
-            dispatch={dispatch}
-            location={location}
-            match={match}
-          />
-        ) : (
-          <LoginRC
-            {...layout}
-            dispatch={dispatch}
-            location={location}
-            match={match}
-          />
-        )}
+        <IndexRC
+          {...layout}
+          dispatch={dispatch}
+          location={location}
+          match={match}
+        />
       </div>
     </LayoutRC>
   );
