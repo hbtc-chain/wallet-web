@@ -59,7 +59,7 @@ class IndexRC extends React.Component {
           <ListItem alignItems="center" onClick={this.goto("seed")}>
             <ListItemAvatar>
               <Avatar>
-                <Iconfont type="menus" size={28} />
+                <Iconfont type="importbymnemonic" size={26} />
               </Avatar>
             </ListItemAvatar>
             <ListItemText
@@ -75,7 +75,7 @@ class IndexRC extends React.Component {
           <ListItem alignItems="center" onClick={this.goto("keyStore")}>
             <ListItemAvatar>
               <Avatar>
-                <Iconfont type="locked" size={28} />
+                <Iconfont type="importbykeystore" size={26} />
               </Avatar>
             </ListItemAvatar>
             <ListItemText
@@ -91,7 +91,7 @@ class IndexRC extends React.Component {
           <ListItem alignItems="center" onClick={this.goto("key")}>
             <ListItemAvatar>
               <Avatar>
-                <Iconfont type="language" size={28} />
+                <Iconfont type="importbyprivatekey" size={26} />
               </Avatar>
             </ListItemAvatar>
             <ListItemText
