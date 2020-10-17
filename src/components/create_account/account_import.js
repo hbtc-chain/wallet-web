@@ -65,9 +65,9 @@ class IndexRC extends React.Component {
     });
   };
   submit = async () => {
-    const params = querystring.parse(this.props.location.search || "");
-    const way = params.way;
     const search = this.props.location.search;
+    const params = querystring.parse(search || "");
+    const way = params.way;
     let obj = {};
     if (way == "seed") {
       const seed = this.state.seed
@@ -120,7 +120,7 @@ class IndexRC extends React.Component {
       this.props.dispatch(
         routerRedux.push({
           pathname: route_map.create_account_step3,
-          search,
+          search: "type=import",
           state: obj,
         })
       );
@@ -160,10 +160,6 @@ class IndexRC extends React.Component {
     const { classes, intl, ...otherProps } = this.props;
     const params = querystring.parse(this.props.location.search || "");
     const way = params.way;
-    const search = (this.props.location.search || "").replace(
-      /&way=(.*?)(&|$)/,
-      ""
-    );
     return [
       <Nav
         key="nav"

@@ -36,8 +36,8 @@ class IndexRC extends React.Component {
     const search = this.props.location.search;
     this.props.dispatch(
       routerRedux.push({
-        pathname: route_map.account_seed,
-        search: search + "&way=" + way,
+        pathname: route_map.account_import,
+        search: "way=" + way,
       })
     );
   };

@@ -31,7 +31,7 @@ class IndexRC extends React.Component {
       this.props.dispatch(
         routerRedux.push({
           pathname: route_map.create_account_step4,
-          search,
+          // search,
         })
       );
     }
