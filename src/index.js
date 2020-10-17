@@ -91,22 +91,31 @@ function start(initstore, lang) {
   });
 }
 const initStore = async () => {
-  const res = await Store.get();
-  const store = Object.assign(
-    {
-      accounts: [],
-      account_index: -1,
-      sites: [],
-      signmsgs: {},
-      unit: "usd",
-      lang: browserLang(),
-    },
-    res
-  );
+  let res = await Store.get();
+  console.log(res);
+  // 数据在 /public/scripts/store.js中进行初始化，以下为本地开发用
+  if (window.location.href.indexOf("localhost") > -1) {
+    res = Object.assign(
+      {
+        accounts: [],
+        account_index: -1,
+        sites: [],
+        signmsgs: {},
+        unit: "usd",
+        lang: browserLang(),
+        chain: [
+          { name: "main net", url: "https://juswap.io" },
+          { name: "test net", url: "https://juswap.io" },
+        ],
+        chain_index: 0,
+      },
+      res
+    );
+  }
   start(
     {
       layout: {
-        store,
+        store: res || {},
         chain_id: "hbtc-testnet",
         balance: {},
         tokens: [],
@@ -116,7 +125,7 @@ const initStore = async () => {
         logged: true,
       },
     },
-    store.lang
+    res ? res.lang : "zh-cn"
   );
 };
 

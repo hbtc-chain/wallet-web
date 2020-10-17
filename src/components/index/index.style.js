@@ -139,6 +139,100 @@ export default (theme) => ({
   token_list: {
     padding: "10px 0 0",
   },
+  withdrawl_tip: {
+    margin: "0 auto 20px",
+    border: `1px solid ${theme.palette.grey[100]}`,
+    padding: "16px 10px",
+    borderRadius: 10,
+    padding: "10px 10px 10px 30px",
+    "& li": {
+      listStyle: "initial",
+      padding: "3px 0",
+      color: theme.palette.grey[700],
+      fontSize: 14,
+    },
+  },
+  index_top_content: {
+    background: theme.palette.primary.main,
+    color: theme.palette.common.white,
+    padding: "16px 16px 0",
+  },
+  index_top: {
+    height: 30,
+    "& span": {
+      display: "inline-flex",
+      alignItems: "center",
+      background: "rgba(255,255,255,.2)",
+      borderRadius: 4,
+      padding: "0 4px",
+      cursor: "pointer",
+      "& em": {
+        width: 6,
+        height: 6,
+        display: "inline-block",
+        borderRadius: 6,
+        background: "linear-gradient(0deg, #35E5DB, #35E5DB)",
+        margin: "0 4px 0 0",
+      },
+    },
+  },
+  userinfo: {
+    textAlign: "center",
+    padding: "16px 0",
+    display: "flex",
+    height: 120,
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "space-between",
+    "& span": {
+      color: "rgba(255,255,255,0.6)",
+      fontSize: 12,
+    },
+    "& strong": {
+      fontSize: 24,
+    },
+    "& em": {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      height: 24,
+      lineHeight: "24px",
+      background: "rgba(255,255,255,0.2)",
+      width: 194,
+      color: "rgba(255,255,255,.75)",
+      borderRadius: 4,
+    },
+  },
+  chain_choose_title: {
+    height: 72,
+    textAlign: "center",
+    "& h2": {
+      fontSize: 16,
+      color: theme.palette.common.text,
+    },
+  },
+  chains: {
+    "& li": {
+      display: "flex",
+      height: 56,
+      borderTop: "1px solid rgba(244,247,255,1)",
+    },
+  },
+  index_top_btn: {
+    margin: "0 -16px",
+    width: "calc(100% + 32px)",
+    height: 40,
+    borderTop: `1px solid rgba(255, 255, 255, 0.2)`,
+    "& div:nth-child(3n+1),& div:nth-child(3n)": {
+      flex: 1,
+      textAlign: "center",
+      fontSize: 14,
+      cursor: "pointer",
+    },
+    "& div:nth-child(3n+2)": {
+      width: 2,
+    },
+  },
   token_item: {
     borderBottom: `1px solid ${theme.palette.grey[50]}`,
     "& div": {

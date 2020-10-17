@@ -24,6 +24,8 @@ import util from "../../util/util";
 import API from "../../util/api";
 import math from "../../util/mathjs";
 import message from "../public/message";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -244,7 +246,7 @@ class IndexRC extends React.Component {
       message.error(
         result.data && result.data.raw_log
           ? JSON.parse(result.data.raw_log).message
-          : "unknown error"
+          : result.data.error || "unknown error"
       );
       this.setState({
         loading: false,
@@ -341,18 +343,62 @@ class IndexRC extends React.Component {
             {this.props.intl.formatMessage({ id: "confirmed password" })}
           </DialogTitle>
           <DialogContent>
-            <TextField
-              value={this.state.password}
-              onChange={this.handleChange("password")}
-              helperText={this.state.password_msg}
-              error={Boolean(this.state.password_msg)}
-              label={this.props.intl.formatMessage({
-                id: "password is required",
-              })}
-              style={{ width: 260 }}
-              variant="outlined"
-              type="password"
-            />
+            {this.state.show_pwd ? (
+              <TextField
+                value={this.state.password}
+                onChange={this.handleChange("password")}
+                helperText={this.state.password_msg}
+                error={Boolean(this.state.password_msg)}
+                label={this.props.intl.formatMessage({
+                  id: "password is required",
+                })}
+                style={{ width: 260 }}
+                variant="outlined"
+                InputProps={{
+                  endAdornment: this.state.show_pwd ? (
+                    <VisibilityIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: false });
+                      }}
+                    />
+                  ) : (
+                    <VisibilityOffIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: true });
+                      }}
+                    />
+                  ),
+                }}
+              />
+            ) : (
+              <TextField
+                value={this.state.password}
+                onChange={this.handleChange("password")}
+                helperText={this.state.password_msg}
+                error={Boolean(this.state.password_msg)}
+                label={this.props.intl.formatMessage({
+                  id: "password is required",
+                })}
+                type="password"
+                style={{ width: 260 }}
+                variant="outlined"
+                InputProps={{
+                  endAdornment: this.state.show_pwd ? (
+                    <VisibilityIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: false });
+                      }}
+                    />
+                  ) : (
+                    <VisibilityOffIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: true });
+                      }}
+                    />
+                  ),
+                }}
+              />
+            )}
           </DialogContent>
           <DialogActions>
             <Button

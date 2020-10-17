@@ -11,7 +11,7 @@ import LoginRC from "../components/account/login";
 function IndexPage({ layout, dispatch, location }) {
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
-      <HeaderRC {...layout} dispatch={dispatch} location={location} />
+      {/* <HeaderRC {...layout} dispatch={dispatch} location={location} /> */}
       <div className="g_content">
         {layout.logged ? (
           <IndexRC {...layout} dispatch={dispatch} location={location} />

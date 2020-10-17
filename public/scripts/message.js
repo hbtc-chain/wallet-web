@@ -357,7 +357,7 @@ export default class MessageManager {
       const account = datas.accounts[datas.account_index];
       const address = account.address;
       try {
-        const result = await request(API.domain.main + API.cus + "/" + address);
+        const result = await request(API.cus + "/" + address);
         if (result.code == 200) {
           this.balance.set(address, result.data);
         }
@@ -392,9 +392,7 @@ export default class MessageManager {
       // 获取sequence
       try {
         let data = Sign.get_info_from_msgs(sign_obj.data.msgs[0]);
-        const result = await request(
-          API.domain.main + API.cus + "/" + data.address
-        );
+        const result = await request(API.cus + "/" + data.address);
         if (result.code == 200) {
           sign_obj.data.sequence = result.data.sequence;
           this.signmsgs[obj.id] = sign_obj;
@@ -441,7 +439,7 @@ export default class MessageManager {
         msg: obj.data.msgs,
         signatures: obj.data.signatures,
       };
-      const result = await request(API.domain.main + API.txs, {
+      const result = await request(API.txs, {
         body: JSON.stringify({
           tx: d,
           mode: "sync",

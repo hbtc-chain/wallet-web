@@ -140,11 +140,15 @@ export default {
     /**
      * 查询 tokens
      */
-    *tokens({ payload }, { call, put }) {
-      const result = yield call(getData(API.domain.main + API.tokens), {
-        payload: {},
-        method: "get",
-      });
+    *tokens({ payload }, { call, put, select }) {
+      const store = yield select((state) => state.layout.store);
+      const result = yield call(
+        getData(store.chain[store.chain_index]["url"] + API.tokens),
+        {
+          payload: {},
+          method: "get",
+        }
+      );
       if (result.code == 200 && result.data && result.data.items) {
         yield put({
           type: "save",
@@ -161,7 +165,8 @@ export default {
       { payload, url, method = "GET", ...otherProps },
       { call, select }
     ) {
-      return yield call(getData(API.domain.main + url), {
+      const store = yield select((state) => state.layout.store);
+      return yield call(getData(store.chain[store.chain_index]["url"] + url), {
         payload,
         method,
         ...otherProps,

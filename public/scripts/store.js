@@ -44,7 +44,7 @@ class ExtensionStore {
     if (isEmpty(result)) {
       return undefined;
     }
-    return { ...result, password: this.password };
+    return { ...result };
   }
 
   /**
@@ -108,5 +108,19 @@ function isEmpty(obj) {
 }
 
 const store = new ExtensionStore();
+// 数据初始化
+store.set({
+  accounts: [],
+  account_index: -1,
+  sites: [],
+  signmsgs: {},
+  unit: "usd",
+  lang: browserLang(),
+  chain: [
+    { name: "main net", url: "https://juswap.io" },
+    { name: "test net", url: "https://juswap.io" },
+  ],
+  chain_index: 0,
+});
 
 export default store;

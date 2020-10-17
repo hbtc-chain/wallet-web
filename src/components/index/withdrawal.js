@@ -27,6 +27,8 @@ import util from "../../util/util";
 import API from "../../util/api";
 import math from "../../util/mathjs";
 import message from "../public/message";
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -363,7 +365,7 @@ class IndexRC extends React.Component {
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        <ul>
+        <ul className={classes.withdrawl_tip}>
           <li>{this.props.intl.formatMessage({ id: "withdrawal tip 1" })}</li>
           <li>{this.props.intl.formatMessage({ id: "withdrawal tip 2" })}</li>
           <li>{this.props.intl.formatMessage({ id: "withdrawal tip 3" })}</li>
@@ -425,16 +427,17 @@ class IndexRC extends React.Component {
               helperText={this.state.amount_msg}
               InputProps={{
                 endAdornment: (
-                  <Button
+                  <span
                     onClick={() => {
                       this.setState({
                         amount: balance.amount,
                         amount_msg: "",
                       });
                     }}
+                    className={classes.btn_all}
                   >
                     {this.props.intl.formatMessage({ id: "all" })}
-                  </Button>
+                  </span>
                 ),
               }}
             />
@@ -462,7 +465,9 @@ class IndexRC extends React.Component {
               error={Boolean(this.state.gas_fee_msg)}
               helperText={this.state.gas_fee_msg}
               InputProps={{
-                endAdornment: <span>{symbol.toUpperCase()}</span>,
+                endAdornment: (
+                  <span className={classes.grey}>{symbol.toUpperCase()}</span>
+                ),
               }}
             />
           </div>
@@ -537,18 +542,62 @@ class IndexRC extends React.Component {
             {this.props.intl.formatMessage({ id: "confirmed password" })}
           </DialogTitle>
           <DialogContent>
-            <TextField
-              value={this.state.password}
-              onChange={this.handleChange("password")}
-              helperText={this.state.password_msg}
-              error={Boolean(this.state.password_msg)}
-              label={this.props.intl.formatMessage({
-                id: "password is required",
-              })}
-              style={{ width: 260 }}
-              variant="outlined"
-              type="password"
-            />
+            {this.state.show_pwd ? (
+              <TextField
+                value={this.state.password}
+                onChange={this.handleChange("password")}
+                helperText={this.state.password_msg}
+                error={Boolean(this.state.password_msg)}
+                label={this.props.intl.formatMessage({
+                  id: "password is required",
+                })}
+                style={{ width: 260 }}
+                variant="outlined"
+                InputProps={{
+                  endAdornment: this.state.show_pwd ? (
+                    <VisibilityIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: false });
+                      }}
+                    />
+                  ) : (
+                    <VisibilityOffIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: true });
+                      }}
+                    />
+                  ),
+                }}
+              />
+            ) : (
+              <TextField
+                value={this.state.password}
+                onChange={this.handleChange("password")}
+                helperText={this.state.password_msg}
+                error={Boolean(this.state.password_msg)}
+                label={this.props.intl.formatMessage({
+                  id: "password is required",
+                })}
+                type="password"
+                style={{ width: 260 }}
+                variant="outlined"
+                InputProps={{
+                  endAdornment: this.state.show_pwd ? (
+                    <VisibilityIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: false });
+                      }}
+                    />
+                  ) : (
+                    <VisibilityOffIcon
+                      onClick={() => {
+                        this.setState({ show_pwd: true });
+                      }}
+                    />
+                  ),
+                }}
+              />
+            )}
           </DialogContent>
           <DialogActions>
             <Button

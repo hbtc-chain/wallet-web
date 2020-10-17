@@ -1,7 +1,6 @@
 // 与background进行数据交换
 import extension from "extensionizer";
 import log from "loglevel";
-import helper from "./helper";
 
 const env = window.location.hostname == "localhost" ? "local" : "production";
 

@@ -200,4 +200,5 @@ export default {
   "cross chain withdrawl": "跨链提币",
   "support hbc fee":
     "提示：充值非主链代币需要HBTC Chain账户拥有一定的对应主链代币作为归集手续费才可以入账。",
+  "choose chain": "选择网络",
 };
