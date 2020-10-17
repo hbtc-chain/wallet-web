@@ -7,6 +7,7 @@ import { injectIntl } from "react-intl";
 import { Button } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import Nav from "./nav";
+import querystring from "query-string";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -22,23 +23,38 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes, intl, ...otherProps } = this.props;
+    const params = querystring.parse(this.props.location.search || "");
     return [
       <Nav
         key="nav"
-        title={intl.formatMessage({ id: "create.step1.btn.create" })}
+        title={intl.formatMessage({
+          id:
+            params.type == "create"
+              ? "create.step1.btn.create"
+              : "create.step1.btn.import",
+        })}
         {...otherProps}
       />,
       <div className={classes.step_done} key="content">
         <img src={require("../../assets/success.png")} />
-        <h2>{intl.formatMessage({ id: "create.done.desc" })}</h2>
-        <div className={classes.tip}>
-          <h4>{intl.formatMessage({ id: "create.done.tip" })}</h4>
-          <ul>
-            <li>{intl.formatMessage({ id: "create.done.tip.1" })}</li>
-            <li>{intl.formatMessage({ id: "create.done.tip.2" })}</li>
-            <li>{intl.formatMessage({ id: "create.done.tip.3" })}</li>
-          </ul>
-        </div>
+        <h2>
+          {intl.formatMessage({
+            id:
+              params.type == "create" ? "create.done.desc" : "import.done.desc",
+          })}
+        </h2>
+        {params.type == "create" ? (
+          <div className={classes.tip}>
+            <h4>{intl.formatMessage({ id: "create.done.tip" })}</h4>
+            <ul>
+              <li>{intl.formatMessage({ id: "create.done.tip.1" })}</li>
+              <li>{intl.formatMessage({ id: "create.done.tip.2" })}</li>
+              <li>{intl.formatMessage({ id: "create.done.tip.3" })}</li>
+            </ul>
+          </div>
+        ) : (
+          ""
+        )}
         <Button
           onClick={this.goto}
           color="primary"
