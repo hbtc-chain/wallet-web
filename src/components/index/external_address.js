@@ -255,11 +255,16 @@ class IndexRC extends React.Component {
   };
   check_address = async () => {
     const symbol = this.props.match.params.symbol.toLowerCase();
+    const address = this.props.store.accounts[this.props.store.account_index][
+      "address"
+    ];
     const external_address =
-      this.props.balance && this.props.balance[symbol]
-        ? this.props.balance[symbol]["external_address"]
-        : "";
-    if (external_address) {
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == symbol
+          ) || { external_address: "" }
+        : { external_address: "" };
+    if (external_address.external_address) {
       this.props.dispatch(routerRedux.goBack());
       return;
     } else {

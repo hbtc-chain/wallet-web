@@ -375,7 +375,9 @@ export default (theme) => ({
   btns: {
     position: "fixed",
     left: 0,
-    bottom: 10,
+    bottom: 0,
+    background: theme.palette.common.white,
+    padding: "0 0 10px",
     width: "100%",
     "& div": {
       textAlign: "center",

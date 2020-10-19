@@ -61,13 +61,13 @@ class IndexRC extends React.Component {
     let chain_external_address = "";
     balances.assets.map((item) => {
       balances_json[item.symbol] = item;
-      if (item.external_address) {
-        chain_external_address = item.external_address;
-      }
     });
     let tokens = [];
     this.props.tokens.map((item) => {
       if (item.chain.toUpperCase() == chainId.toUpperCase()) {
+        if (balances_json[item.symbol]) {
+          chain_external_address = balances_json[item.symbol].external_address;
+        }
         tokens.push({
           ...item,
           amount: balances_json[item.symbol]
@@ -125,7 +125,6 @@ class IndexRC extends React.Component {
     });
   };
   choose = (symbol, title, address) => () => {
-    console.log(symbol, title, address);
     this.qrcode(address);
     this.setState({
       choose: {
@@ -239,12 +238,13 @@ class IndexRC extends React.Component {
                   </Grid>
                   <Grid item>
                     <CopyToClipboard text={address} onCopy={this.copy}>
-                      <Iconfont type="copy" />
+                      <Iconfont type="copy" size={24} />
                     </CopyToClipboard>
                   </Grid>
                   <Grid item>
                     <Iconfont
                       type="QRcode"
+                      size={24}
                       onClick={this.choose(
                         symbol,
                         "HBC chain address",
@@ -292,7 +292,7 @@ class IndexRC extends React.Component {
                         text={chain_external_address}
                         onCopy={this.copy}
                       >
-                        <FileCopyIcon />
+                        <Iconfont type="copy" size={24} />
                       </CopyToClipboard>
                     </Grid>
                   ) : (
@@ -300,7 +300,9 @@ class IndexRC extends React.Component {
                   )}
                   {chain_external_address ? (
                     <Grid item>
-                      <GradientIcon
+                      <Iconfont
+                        type="QRcode"
+                        size={24}
                         onClick={this.choose(
                           symbol,
                           "external chain address",

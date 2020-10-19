@@ -371,8 +371,7 @@ class IndexRC extends React.Component {
             </strong>
             <CopyToClipboard text={address} onCopy={this.copy}>
               <em>
-                {this.filteraddress(address)} |{" "}
-                <Iconfont type="language" size={16} />
+                {this.filteraddress(address)} | <Iconfont type="copy" />
               </em>
             </CopyToClipboard>
           </div>

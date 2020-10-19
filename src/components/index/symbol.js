@@ -89,6 +89,13 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
+    const token = this.props.tokens.find((item) => item.symbol == symbol);
+    let tokens = [];
+    this.props.tokens.map((item) => {
+      if (item.chain == token.chain) {
+        tokens.push(item.symbol);
+      }
+    });
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
@@ -100,8 +107,18 @@ class IndexRC extends React.Component {
             amount: "",
           }
         : { amount: "" };
+    let external_address = "";
+    const assets =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address]["assets"]
+        : [];
+    assets.map((it) => {
+      const t = this.props.tokens.find((i) => i.symbol == it.symbol);
+      if (t && token && t.chain == token.chain && it.external_address) {
+        external_address = it.external_address;
+      }
+    });
     const rates = this.rates(balance.amount, symbol);
-    const token = this.props.tokens.find((item) => item.symbol == symbol);
     return (
       <div className={classes.symbol}>
         <Grid
@@ -284,7 +301,9 @@ class IndexRC extends React.Component {
               );
             }}
           >
-            <span>x</span>
+            <span>
+              <img src={require("../../assets/btn-1.png")} width={24} />
+            </span>
             <i>{this.props.intl.formatMessage({ id: "accept" })}</i>
           </Grid>
           <Grid
@@ -297,7 +316,9 @@ class IndexRC extends React.Component {
               );
             }}
           >
-            <span>xx</span>
+            <span>
+              <img src={require("../../assets/btn-2.png")} width={24} />
+            </span>
             <i>{this.props.intl.formatMessage({ id: "output" })}</i>
           </Grid>
           {token && !token.is_native ? (
@@ -310,7 +331,8 @@ class IndexRC extends React.Component {
               }}
             >
               <span className="cross">
-                xxx <ExpandMoreIcon />
+                <img src={require("../../assets/btn-3.png")} width={24} />{" "}
+                <ExpandMoreIcon />
               </span>
               <i>{this.props.intl.formatMessage({ id: "cross chain" })}</i>
             </Grid>
@@ -330,7 +352,7 @@ class IndexRC extends React.Component {
             onClick={() => {
               this.props.dispatch(
                 routerRedux.push({
-                  pathname: balance.external_address
+                  pathname: external_address
                     ? route_map.accept_by_type +
                       "/" +
                       symbol +
