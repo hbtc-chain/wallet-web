@@ -26,13 +26,14 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import message from "../public/message";
 import Qrcode from "qrcode";
 import CloseIcon from "@material-ui/icons/Close";
+import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
   constructor() {
     super();
     this.state = {
       tokens: [],
-      chain_external_address: {},
+      chain_external_address: "",
       open: false,
       choose: {
         logo: "",
@@ -57,10 +58,12 @@ class IndexRC extends React.Component {
         ? this.props.balance[address]
         : { assets: [] };
     const balances_json = {};
-    const chain_external_address = {};
+    let chain_external_address = "";
     balances.assets.map((item) => {
       balances_json[item.symbol] = item;
-      chain_external_address[item.chain] = item.external_address;
+      if (item.external_address) {
+        chain_external_address = item.external_address;
+      }
     });
     let tokens = [];
     this.props.tokens.map((item) => {
@@ -91,7 +94,7 @@ class IndexRC extends React.Component {
   };
   rates = (v, t) => {
     if (this.props.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.store.unit, this.state.rates);
+      const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
       return d;
     }
     return ["", this.props.store.unit];
@@ -147,10 +150,8 @@ class IndexRC extends React.Component {
       this.props.store.accounts && this.props.store.account_index > -1
         ? this.props.store.accounts[this.props.store.account_index]["address"]
         : "";
-    const chain_external_address =
-      this.state.chain_external_address && this.state.tokens.length
-        ? this.state.chain_external_address[this.state.tokens[0]["chain"]]
-        : "";
+    const chain_external_address = this.state.chain_external_address;
+
     return (
       <div className={classes.chain}>
         <Grid
@@ -192,11 +193,12 @@ class IndexRC extends React.Component {
                   </Grid>
                   <Grid item>
                     <CopyToClipboard text={address} onCopy={this.copy}>
-                      <FileCopyIcon />
+                      <Iconfont type="copy" />
                     </CopyToClipboard>
                   </Grid>
                   <Grid item>
-                    <GradientIcon
+                    <Iconfont
+                      type="QRcode"
                       onClick={this.choose(
                         symbol,
                         "HBC chain address",
@@ -237,11 +239,12 @@ class IndexRC extends React.Component {
                   </Grid>
                   <Grid item>
                     <CopyToClipboard text={address} onCopy={this.copy}>
-                      <FileCopyIcon />
+                      <Iconfont type="copy" />
                     </CopyToClipboard>
                   </Grid>
                   <Grid item>
-                    <GradientIcon
+                    <Iconfont
+                      type="QRcode"
                       onClick={this.choose(
                         symbol,
                         "HBC chain address",
@@ -262,9 +265,7 @@ class IndexRC extends React.Component {
                         {this.short_address(
                           this.state.chain_external_address &&
                             this.state.tokens.length
-                            ? this.state.chain_external_address[
-                                this.state.tokens[0]["chain"]
-                              ]
+                            ? this.state.chain_external_address
                             : ""
                         )}
                       </span>
@@ -323,13 +324,13 @@ class IndexRC extends React.Component {
                 1,
                 item.symbol,
                 this.props.store.unit,
-                this.state.rates
+                this.props.rates
               );
               const rates = this.rates(
                 item.amount,
                 item.symbol,
                 this.props.store.unit,
-                this.state.rates
+                this.props.rates
               );
               return (
                 <Grid

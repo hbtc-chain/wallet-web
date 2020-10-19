@@ -40,6 +40,10 @@ export default {
         payload: {},
       });
       dispatch({
+        type: "get_rates",
+        payload: {},
+      });
+      dispatch({
         type: "get_balance_loop",
         payload: {},
       });
@@ -186,6 +190,36 @@ export default {
       yield util.delay(1000);
       yield put({
         type: "get_balance_loop",
+        payload: {},
+      });
+    },
+    *get_rates({ payload }, { call, put, select }) {
+      const { tokens, store } = yield select((state) => state.layout);
+      if (tokens.length) {
+        try {
+          let symbols = [];
+          tokens.map((item) => symbols.push(item.symbol));
+          const result = yield call(
+            getData(store.chain[store.chain_index]["url"] + API.tokenprices),
+            { payload: { symbols: symbols.join(",") } }
+          );
+          let rates = {};
+          if (result.code == 200 && result.data) {
+            result.data.map((item) => {
+              rates[item.token] = item.rates;
+            });
+          }
+          yield put({
+            type: "save",
+            payload: {
+              rates,
+            },
+          });
+        } catch (e) {}
+      }
+      yield util.delay(5000);
+      yield put({
+        type: "get_rates",
         payload: {},
       });
     },

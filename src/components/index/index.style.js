@@ -197,13 +197,14 @@ export default (theme) => ({
     "& em": {
       display: "inline-flex",
       alignItems: "center",
-      justifyContent: "center",
+      justifyContent: "space-between",
       height: 24,
       lineHeight: "24px",
       background: "rgba(255,255,255,0.2)",
       width: 194,
       color: "rgba(255,255,255,.75)",
       borderRadius: 4,
+      padding: "0 6px",
     },
   },
   chain_choose_title: {

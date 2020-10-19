@@ -47,6 +47,7 @@ import AutorenewIcon from "@material-ui/icons/Autorenew";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { Iconfont } from "../../lib";
 import route_map from "../../config/route_map";
+import message from "../public/message";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -73,7 +74,6 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {
     this.get_balance();
-    this.get_rates();
   }
   componentDidUpdate() {
     if (!this.state.chains.length && this.props.tokens.length) {
@@ -89,32 +89,6 @@ class IndexRC extends React.Component {
       });
     }
   }
-  get_rates = async () => {
-    if (this.props.tokens.length) {
-      let tokens = [];
-      this.props.tokens.map((item) => tokens.push(item.symbol));
-      const result = await this.props.dispatch({
-        type: "layout/commReq",
-        payload: {
-          symbols: tokens.join(","),
-        },
-        url: API.tokenprices,
-      });
-      let rates = {};
-      if (result.code == 200 && result.data) {
-        result.data.map((item) => {
-          rates[item.token] = item.rates;
-        });
-      }
-      this.setState({
-        rates,
-      });
-      await util.delay(10000);
-    } else {
-      await util.delay(1000);
-    }
-    this.get_rates();
-  };
 
   get_balance = async () => {
     const address = this.props.store.accounts[this.props.store.account_index]
@@ -153,6 +127,7 @@ class IndexRC extends React.Component {
   };
   goto = () => {};
   copy = () => {
+    message.success(this.props.intl.formatMessage({ id: "copyed" }));
     this.setState(
       {
         copyed: !this.state.copyed,
@@ -191,8 +166,8 @@ class IndexRC extends React.Component {
     if (!str) {
       return "";
     }
-    return str.length > 16
-      ? str.replace(/^(.{8})(.{1,})(.{8})$/, ($1, $2, $3, $4) => {
+    return str.length > 20
+      ? str.replace(/^(.{10})(.{1,})(.{10})$/, ($1, $2, $3, $4) => {
           return $2 + "..." + $4;
         })
       : str;
@@ -305,7 +280,7 @@ class IndexRC extends React.Component {
   };
   rates = (v, t) => {
     if (this.props.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.store.unit, this.state.rates);
+      const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
       return d;
     }
     return ["", this.props.store.unit];
@@ -391,9 +366,10 @@ class IndexRC extends React.Component {
           <div className={classes.userinfo}>
             <span>{username}</span>
             <strong>
-              {this.state.total} {(this.props.store.unit || "").toUpperCase()}
+              {Number.isNaN(this.state.total) ? "--" : this.state.total}{" "}
+              {(this.props.store.unit || "").toUpperCase()}
             </strong>
-            <CopyToClipboard>
+            <CopyToClipboard text={address} onCopy={this.copy}>
               <em>
                 {this.filteraddress(address)} |{" "}
                 <Iconfont type="language" size={16} />
@@ -444,22 +420,22 @@ class IndexRC extends React.Component {
                   it.amount,
                   it.symbol,
                   this.props.store.unit,
-                  this.state.rates
+                  this.props.rates
                 );
-                amount += Number(rate[0] == "--" ? 0 : rate[0]);
+                amount += Number(it.amount);
               }
             });
             const rates = this.rates(
               amount,
               item,
               this.props.store.unit,
-              this.state.rates
+              this.props.rates
             );
             const rates2 = this.rates(
               1,
               item,
               this.props.store.unit,
-              this.state.rates
+              this.props.rates
             );
             return (
               <ListItem

@@ -76,8 +76,8 @@ class IndexRC extends React.Component {
     }
   };
   rates = (v, t) => {
-    if (this.props.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.store.unit, this.state.rates);
+    if (Number(v) && t) {
+      const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
       return d;
     }
     return ["", this.props.store.unit];
@@ -93,8 +93,12 @@ class IndexRC extends React.Component {
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
     const balance =
-      this.props.balance && this.props.balance.assets
-        ? this.props.balance.assets.find((item) => item.symbol == symbol)
+      this.props.balance && address && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == symbol
+          ) || {
+            amount: "",
+          }
         : { amount: "" };
     const rates = this.rates(balance.amount, symbol);
     const token = this.props.tokens.find((item) => item.symbol == symbol);
@@ -123,7 +127,7 @@ class IndexRC extends React.Component {
             <p>{this.props.intl.formatMessage({ id: "currently held" })}</p>
             <strong>{balance.amount || "--"}</strong>
             <span>
-              {rates[0]} {rates[1]}
+              {rates[0]} {(rates[1] || "").toUpperCase()}
             </span>
             {token && token.logo ? <img src={token.logo} /> : ""}
           </div>
@@ -180,8 +184,18 @@ class IndexRC extends React.Component {
             ""
           )}
         </Paper>
-        <div className={classes.token_list}>
+        <div className={classes.token_list} style={{ paddingBottom: 90 }}>
           {this.state.data.map((item) => {
+            const flow = item.balance_flows
+              ? item.balance_flows.find((it) => it.address == address) || {
+                  amount: "",
+                  symbol: "",
+                }
+              : { amount: "", symbol: "" };
+            const rates =
+              flow && Number(flow.amount) && flow.symbol
+                ? this.rates(Math.abs(Number(flow.amount)), flow.symbol)
+                : ["", ""];
             return (
               <Grid
                 container
@@ -211,7 +225,14 @@ class IndexRC extends React.Component {
                   </p>
                 </Grid>
                 <Grid item style={{ textAlign: "right" }}>
-                  <strong>{item.amount}</strong>
+                  <strong>
+                    {flow.amount} {(flow.symbol || "").toUpperCase()}
+                  </strong>
+                  <br />
+                  <span className={classes.grey500}>
+                    {rates[0]}
+                    {rates[1]}
+                  </span>
                 </Grid>
               </Grid>
             );

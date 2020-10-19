@@ -116,6 +116,7 @@ const initStore = async () => {
     {
       layout: {
         store: res || {},
+        rates: {},
         chain_id: "hbtc-testnet",
         balance: {},
         tokens: [],

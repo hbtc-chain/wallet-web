@@ -59,7 +59,7 @@ class IndexRC extends React.Component {
   };
   rates = (v, t) => {
     if (this.props.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.store.unit, this.state.rates);
+      const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
       return d;
     }
     return ["", this.props.store.unit];
@@ -89,9 +89,14 @@ class IndexRC extends React.Component {
   };
   submit = async () => {
     const symbol = this.props.match.params.symbol.toLowerCase();
+    const address = this.props.store.accounts[this.props.store.account_index][
+      "address"
+    ];
     const balance =
-      this.props.balance && this.props.balance.assets
-        ? this.props.balance.assets.find((item) => item.symbol == symbol)
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == symbol
+          ) || { amount: "" }
         : { amount: 0 };
     if (!this.state.to_address) {
       this.setState({
@@ -124,9 +129,6 @@ class IndexRC extends React.Component {
       });
       return;
     }
-    const address = this.props.store.accounts[this.props.store.account_index][
-      "address"
-    ];
 
     const result = await this.props.dispatch({
       type: "layout/commReq",
@@ -301,9 +303,14 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
     const balance =
-      this.props.balance && this.props.balance.assets
-        ? this.props.balance.assets.find((item) => item.symbol == symbol)
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == symbol
+          ) || { amount: 0 }
         : { amount: "" };
     const rates = this.rates(balance.amount, symbol);
     return (
@@ -371,62 +378,36 @@ class IndexRC extends React.Component {
             </Grid>
           </Grid>
           <div className={classes.form_input}>
-            {this.state.show_pwd ? (
-              <TextField
-                value={this.state.password}
-                onChange={this.handleChange("password")}
-                helperText={this.state.password_msg}
-                error={Boolean(this.state.password_msg)}
-                label={this.props.intl.formatMessage({
-                  id: "password is required",
-                })}
-                style={{ width: 260 }}
-                variant="outlined"
-                InputProps={{
-                  endAdornment: this.state.show_pwd ? (
-                    <VisibilityIcon
-                      onClick={() => {
-                        this.setState({ show_pwd: false });
-                      }}
-                    />
-                  ) : (
-                    <VisibilityOffIcon
-                      onClick={() => {
-                        this.setState({ show_pwd: true });
-                      }}
-                    />
-                  ),
-                }}
-              />
-            ) : (
-              <TextField
-                value={this.state.password}
-                onChange={this.handleChange("password")}
-                helperText={this.state.password_msg}
-                error={Boolean(this.state.password_msg)}
-                label={this.props.intl.formatMessage({
-                  id: "password is required",
-                })}
-                type="password"
-                style={{ width: 260 }}
-                variant="outlined"
-                InputProps={{
-                  endAdornment: this.state.show_pwd ? (
-                    <VisibilityIcon
-                      onClick={() => {
-                        this.setState({ show_pwd: false });
-                      }}
-                    />
-                  ) : (
-                    <VisibilityOffIcon
-                      onClick={() => {
-                        this.setState({ show_pwd: true });
-                      }}
-                    />
-                  ),
-                }}
-              />
-            )}
+            <TextField
+              placeholder={this.props.intl.formatMessage({
+                id: "input amount",
+              })}
+              value={this.state.amount}
+              onChange={this.handleChange("amount")}
+              fullWidth
+              error={Boolean(this.state.amount_msg)}
+              classes={{
+                root: classes.outline,
+              }}
+              variant="outlined"
+              helperText={this.state.amount_msg}
+              InputProps={{
+                endAdornment: (
+                  <span
+                    onClick={() => {
+                      this.setState({
+                        amount: balance.amount,
+                        amount_msg: "",
+                      });
+                    }}
+                    color="primary"
+                    className={classes.btn_all}
+                  >
+                    {this.props.intl.formatMessage({ id: "all" })}
+                  </span>
+                ),
+              }}
+            />
           </div>
           <Grid
             container
@@ -480,7 +461,7 @@ class IndexRC extends React.Component {
               fullWidth
               disabled
             >
-              <CircularProgress color="primary" size="small" />
+              <CircularProgress color="primary" />
             </Button>
           ) : (
             <Button

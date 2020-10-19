@@ -79,7 +79,7 @@ class IndexRC extends React.Component {
   };
   rates = (v, t) => {
     if (this.props.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.store.unit, this.state.rates);
+      const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
       return d;
     }
     return ["", this.props.store.unit];
@@ -109,9 +109,14 @@ class IndexRC extends React.Component {
   };
   submit = async () => {
     const symbol = this.props.match.params.symbol.toLowerCase();
+    const address = this.props.store.accounts[this.props.store.account_index][
+      "address"
+    ];
     const balance =
-      this.props.balance && this.props.balance.assets
-        ? this.props.balance.assets.find((item) => item.symbol == symbol)
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == symbol
+          ) || { amount: "" }
         : { amount: 0 };
     if (!this.state.to_address) {
       this.setState({
@@ -157,9 +162,6 @@ class IndexRC extends React.Component {
       });
       return;
     }
-    const address = this.props.store.accounts[this.props.store.account_index][
-      "address"
-    ];
 
     const result = await this.props.dispatch({
       type: "layout/commReq",
@@ -337,9 +339,14 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
     const balance =
-      this.props.balance && this.props.balance.assets
-        ? this.props.balance.assets.find((item) => item.symbol == symbol)
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == symbol
+          ) || { amount: "" }
         : { amount: "" };
     const rates = this.rates(balance.amount, symbol);
     return (
@@ -523,7 +530,7 @@ class IndexRC extends React.Component {
               fullWidth
               disabled
             >
-              <CircularProgress color="primary" size="small" />
+              <CircularProgress color="primary" />
             </Button>
           ) : (
             <Button

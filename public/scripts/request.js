@@ -1,6 +1,6 @@
 import store from "./store";
-export default function (url, options = {}) {
-  const datas = store.get();
+export default async function (url, options = {}) {
+  const datas = await store.get();
   const t = 10000;
 
   options = Object.assign(

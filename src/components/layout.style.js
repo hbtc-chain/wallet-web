@@ -5,6 +5,7 @@ export default (theme) => ({
   g_contentbox: {
     width: "100%",
     margin: "0 auto",
+    minHeight: 560,
   },
   g_header_box: {
     width: "100%",

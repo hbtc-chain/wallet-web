@@ -361,7 +361,9 @@ export default class MessageManager {
         if (result.code == 200) {
           this.balance.set(address, result.data);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
     }
     await util.delay(2000);
     this.get_balance_loop();

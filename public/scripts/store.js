@@ -119,27 +119,27 @@ function browserLang() {
 }
 
 const store = new ExtensionStore();
+const init_data = {
+  accounts: [],
+  account_index: -1,
+  sites: [],
+  signmsgs: {},
+  unit: "usd",
+  lang: browserLang(),
+  chain: [
+    { name: "main net", url: "https://juswap.io" },
+    { name: "test net", url: "https://juswap.io" },
+  ],
+  chain_index: 1, // 0 = main chain , 1 = test chain
+  pwd_rule: 0, // 0 = 每次都输入密码， 1 = 30分内输入一次
+};
 // 数据初始化
 const data_init = async () => {
   let data = await store.get();
   if (data) {
-    data = Object.assign(
-      {
-        accounts: [],
-        account_index: -1,
-        sites: [],
-        signmsgs: {},
-        unit: "usd",
-        lang: browserLang(),
-        chain: [
-          { name: "main net", url: "https://juswap.io" },
-          { name: "test net", url: "https://juswap.io" },
-        ],
-        chain_index: 1, // 0 = main chain , 1 = test chain
-        pwd_rule: 0, // 0 = 每次都输入密码， 1 = 30分内输入一次
-      },
-      data
-    );
+    data = Object.assign(init_data, data);
+  } else {
+    data = init_data;
   }
   store.set(data);
 };

@@ -150,7 +150,7 @@ export default (theme) => ({
     color: theme.palette.common.white,
   },
   accept: {
-    height: "100vh",
+    minHeight: "100vh",
   },
   accept_by_type_native: {
     background: theme.palette.primary.main,
@@ -179,7 +179,7 @@ export default (theme) => ({
     },
   },
   accept_content: {
-    height: "calc(100vh - 44px)",
+    // height: "calc(100vh - 44px)",
     background: theme.palette.primary.main,
     position: "relative",
     padding: 24,
@@ -275,7 +275,7 @@ export default (theme) => ({
     },
   },
   accept_content_type: {
-    height: "calc(100vh - 44px)",
+    //height: "calc(100vh - 44px)",
     background: "none",
     padding: "42px 24px 24px",
   },
