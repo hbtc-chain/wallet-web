@@ -47,18 +47,18 @@ class IndexRC extends React.Component {
     const params = querystring.parse(this.props.location.search || "");
     return (
       <div className={classes.step2}>
-        <div className={classes.step2_con_bg}>
-          <div className={classes.step2_con}>
-            <h1>{intl.formatMessage({ id: "create.title2" })}</h1>
-            <p>{intl.formatMessage({ id: "statemente.tip" })}</p>
-            <ul>
-              <li>{intl.formatMessage({ id: "statemente.desc1" })}</li>
-              <li>{intl.formatMessage({ id: "statemente.desc2" })}</li>
-              <li>{intl.formatMessage({ id: "statemente.desc3" })}</li>
-              <li>{intl.formatMessage({ id: "statemente.desc4" })}</li>
-            </ul>
-          </div>
+        {/* <div className={classes.step2_con_bg}> */}
+        <div className={classes.step2_con}>
+          <h1>{intl.formatMessage({ id: "create.title2" })}</h1>
+          <p>{intl.formatMessage({ id: "statemente.tip" })}</p>
+          <ul>
+            <li>{intl.formatMessage({ id: "statemente.desc1" })}</li>
+            <li>{intl.formatMessage({ id: "statemente.desc2" })}</li>
+            <li>{intl.formatMessage({ id: "statemente.desc3" })}</li>
+            <li>{intl.formatMessage({ id: "statemente.desc4" })}</li>
+          </ul>
         </div>
+        {/* </div> */}
         <div className={classes.footer}>
           <FormControlLabel
             checked={this.state.checked}
