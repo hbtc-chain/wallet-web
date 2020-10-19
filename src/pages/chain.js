@@ -6,6 +6,7 @@ import LoginRC from "../components/account/login";
 import withRoot from "../withRoot";
 
 function IndexPage({ layout, dispatch, location, history, match }) {
+  console.log(layout.logged);
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
       <div className="g_content">

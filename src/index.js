@@ -92,7 +92,6 @@ function start(initstore, lang) {
 }
 const initStore = async () => {
   let res = await Store.get();
-  console.log(res);
   // 数据在 /public/scripts/store.js中进行初始化，以下为本地开发用
   if (window.location.href.indexOf("localhost") > -1) {
     res = Object.assign(
@@ -102,12 +101,13 @@ const initStore = async () => {
         sites: [],
         signmsgs: {},
         unit: "usd",
+        pwd_rule: 0,
         lang: browserLang(),
         chain: [
           { name: "main net", url: "https://juswap.io" },
           { name: "test net", url: "https://juswap.io" },
         ],
-        chain_index: 0,
+        chain_index: 1,
       },
       res
     );
@@ -122,7 +122,7 @@ const initStore = async () => {
         units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
         langs: ["zh-cn", "en-us"],
         messageManager: null,
-        logged: true,
+        logged: false,
       },
     },
     res ? res.lang : "zh-cn"

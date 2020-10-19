@@ -11,6 +11,7 @@ export default function (url, options = {}) {
     },
     options
   );
+  const url_prefix = datas.chain[datas.chain_index]["url"];
   return Promise.race([
     new Promise((reslove, reject) => {
       setTimeout(() => {
@@ -18,7 +19,7 @@ export default function (url, options = {}) {
       }, t);
     }),
     window
-      .fetch(url, options)
+      .fetch(url_prefix + url, options)
       .then((response) => {
         if (response.status >= 200 && response.status < 502) {
           return response;

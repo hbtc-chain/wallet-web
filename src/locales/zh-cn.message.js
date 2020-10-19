@@ -201,4 +201,8 @@ export default {
   "support hbc fee":
     "提示：充值非主链代币需要HBTC Chain账户拥有一定的对应主链代币作为归集手续费才可以入账。",
   "choose chain": "选择网络",
+  setting: "设置",
+  "always need pwd": "每次操作都需要密码(默认)",
+  "30 min need pwd once": "30分钟内免输入密码",
+  pwd_rule: "安全设置",
 };

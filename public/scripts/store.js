@@ -107,20 +107,43 @@ function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
+function browserLang() {
+  var ls = navigator.languages ? navigator.languages.length : 0;
+  var res = (ls
+    ? navigator.languages[0]
+    : navigator.language || navigator.userLanguage
+  ).toLowerCase();
+  if (res != "zh-cn") {
+    res = "en-us";
+  }
+  return res;
+}
+
 const store = new ExtensionStore();
 // 数据初始化
-store.set({
-  accounts: [],
-  account_index: -1,
-  sites: [],
-  signmsgs: {},
-  unit: "usd",
-  lang: browserLang(),
-  chain: [
-    { name: "main net", url: "https://juswap.io" },
-    { name: "test net", url: "https://juswap.io" },
-  ],
-  chain_index: 0,
-});
+const data_init = async () => {
+  let data = await store.get();
+  if (data) {
+    data = Object.assign(
+      {
+        accounts: [],
+        account_index: -1,
+        sites: [],
+        signmsgs: {},
+        unit: "usd",
+        lang: browserLang(),
+        chain: [
+          { name: "main net", url: "https://juswap.io" },
+          { name: "test net", url: "https://juswap.io" },
+        ],
+        chain_index: 1, // 0 = main chain , 1 = test chain
+        pwd_rule: 0, // 0 = 每次都输入密码， 1 = 30分内输入一次
+      },
+      data
+    );
+  }
+  store.set(data);
+};
+data_init();
 
 export default store;

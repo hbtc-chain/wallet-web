@@ -175,6 +175,9 @@ export default (theme) => ({
         margin: "0 4px 0 0",
       },
     },
+    "& i": {
+      cursor: "pointer",
+    },
   },
   userinfo: {
     textAlign: "center",
@@ -396,6 +399,11 @@ export default (theme) => ({
       fontSize: 12,
     },
   },
+  btn_fixed: {
+    position: "fixed",
+    bottom: 10,
+    width: 336,
+  },
   back: {
     height: 44,
     margin: "0 0 12px",
@@ -506,5 +514,28 @@ export default (theme) => ({
       textAlign: "center",
       lineHeight: "72px",
     },
+  },
+  menuitem: {
+    borderTop: `1px solid ${theme.palette.grey[50]}`,
+  },
+  network_select: {
+    margin: "0 15px 0 0",
+  },
+  network: {
+    padding: "7px 32px 6px 10px",
+  },
+  network_select_icon: {
+    color: theme.palette.success.main,
+  },
+  borderTop: {
+    borderTop: `1px solid ${theme.palette.grey[50]}`,
+  },
+  option_item: {
+    textAlign: "right",
+    color: theme.palette.grey[500],
+    padding: "0 24px 0 0",
+  },
+  grey500: {
+    color: theme.palette.grey[500],
   },
 });

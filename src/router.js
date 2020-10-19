@@ -123,6 +123,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/accept_by_type"),
   });
+  // setting
+  const SettingRC = dynamic({
+    app,
+    component: () => import("./pages/setting"),
+  });
 
   return (
     <Router history={history}>
@@ -215,6 +220,8 @@ function RouterConfig({ history, app }) {
           path={route_map.accept_by_type + "/:symbol/:address/:type"}
           component={AccpetByTypeRC}
         />
+        {/* SettingRC */}
+        <Route exact path={route_map.setting} component={SettingRC} />
 
         <Route component={NotFountRC} />
       </Switch>

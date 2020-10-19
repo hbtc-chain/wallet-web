@@ -23,9 +23,12 @@ class IndexRC extends React.Component {
   }
   init = () => {
     const w = window.document.documentElement.offsetWidth;
-    if (!this.props.store.accounts.length && w == 360) {
-      window.open(window.location.href.split("#")[0] + "#/welcome");
-      window.close();
+    if (!this.props.store.accounts.length) {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.welcome,
+        })
+      );
     }
   };
   handleChange = (e) => {
