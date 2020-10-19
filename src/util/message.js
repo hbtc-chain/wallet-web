@@ -17,19 +17,6 @@ import { v4 } from "uuid";
 
 const env = window.location.hostname == "localhost" ? "local" : "server";
 
-function checkForError() {
-  const { lastError } = extension.runtime;
-  if (!lastError) {
-    return undefined;
-  }
-  // if it quacks like an Error, its an Error
-  if (lastError.stack && lastError.message) {
-    return lastError;
-  }
-  // repair incomplete error object (eg chromium v77)
-  return new Error(lastError.message);
-}
-
 class MessageManager {
   constructor(dispatch, history, routerRedux) {
     this.dispatch = dispatch;
@@ -50,31 +37,6 @@ class MessageManager {
         this.handleMsg(obj);
       });
     }
-  }
-  currentTab() {
-    return new Promise((resolve, reject) => {
-      extension.tabs.getCurrent((tab) => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve(tab);
-        }
-      });
-    });
-  }
-
-  switchToTab(tabId) {
-    return new Promise((resolve, reject) => {
-      extension.tabs.update(tabId, { highlighted: true }, (tab) => {
-        const err = checkForError();
-        if (err) {
-          reject(err);
-        } else {
-          resolve(tab);
-        }
-      });
-    });
   }
   async handleMsg(obj) {
     const data = await Store.get();
@@ -152,8 +114,6 @@ class MessageManager {
       type,
       data,
     });
-    console.warn("send msg to bg:");
-    console.warn(obj);
     if (window.location.hostname !== "localhost") {
       this.port.postMessage(JSON.stringify(obj));
     }

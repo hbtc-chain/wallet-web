@@ -311,6 +311,9 @@ class IndexRC extends React.Component {
     return ["", this.props.store.unit];
   };
   choose_chain = (i) => () => {
+    if (i == 0) {
+      return;
+    }
     this.props.dispatch({
       type: "layout/save",
       payload: {
@@ -374,7 +377,15 @@ class IndexRC extends React.Component {
               </span>
             </Grid>
             <Grid item>
-              <Iconfont type="setting" size={20} />
+              <Iconfont
+                type="setting"
+                size={20}
+                onClick={() => {
+                  this.props.dispatch(
+                    routerRedux.push({ pathname: route_map.setting })
+                  );
+                }}
+              />
             </Grid>
           </Grid>
           <div className={classes.userinfo}>
@@ -451,7 +462,18 @@ class IndexRC extends React.Component {
               this.state.rates
             );
             return (
-              <ListItem key={token.symbol} button className={classes.listItem}>
+              <ListItem
+                key={item}
+                button
+                className={classes.listItem}
+                onClick={() => {
+                  this.props.dispatch(
+                    routerRedux.push({
+                      pathname: route_map.chain + "/" + item,
+                    })
+                  );
+                }}
+              >
                 <ListItemIcon>
                   <img
                     src={token.logo || require("../../assets/default_icon.png")}
@@ -786,11 +808,15 @@ class IndexRC extends React.Component {
                 <ListItem key={item.name} button onClick={this.choose_chain(i)}>
                   <ListItemText>{item.name}</ListItemText>
                   <ListItemSecondaryAction>
-                    <Radio
-                      checked={Boolean(i == this.props.store.chain_index)}
-                      color="primary"
-                      onClick={this.choose_chain(i)}
-                    />
+                    {i > 0 ? (
+                      <Radio
+                        checked={Boolean(i == this.props.store.chain_index)}
+                        color="primary"
+                        onClick={this.choose_chain(i)}
+                      />
+                    ) : (
+                      ""
+                    )}
                   </ListItemSecondaryAction>
                 </ListItem>
               );

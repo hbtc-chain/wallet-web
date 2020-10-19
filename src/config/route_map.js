@@ -18,6 +18,7 @@ export default {
   index: `${local}/`,
   // 欢迎页
   welcome: `${local}/welcome`,
+  setting: `${local}/setting`,
   create_account_step1: `${local}/create_account_step1`,
   create_account_step2: `${local}/create_account_step2`,
   create_account_step3: `${local}/create_account_step3`,
