@@ -118,18 +118,6 @@ function browserLang() {
   return res;
 }
 
-function browserLang() {
-  var ls = navigator.languages ? navigator.languages.length : 0;
-  var res = (ls
-    ? navigator.languages[0]
-    : navigator.language || navigator.userLanguage
-  ).toLowerCase();
-  if (res != "zh-cn") {
-    res = "en-us";
-  }
-  return res;
-}
-
 const store = new ExtensionStore();
 // 数据初始化
 const data_init = async () => {
