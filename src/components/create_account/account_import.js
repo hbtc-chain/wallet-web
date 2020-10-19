@@ -219,6 +219,7 @@ class IndexRC extends React.Component {
                 className={classes.input}
                 onChange={this.handleChange("keyStorepwd")}
                 placeholder={intl.formatMessage({ id: "enter password" })}
+                variant="outlined"
               />
             </Grid>
           </Grid>

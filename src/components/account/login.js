@@ -114,6 +114,7 @@ class IndexRC extends React.Component {
               helperText={this.state.password_msg}
               type="password"
               fullWidth
+              variant="outlined"
               InputLabelProps={{
                 shrink: false,
               }}

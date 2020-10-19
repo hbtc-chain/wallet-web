@@ -22,6 +22,9 @@ export default (theme) => ({
       color: theme.palette.grey[500],
       fontSize: 16,
     },
+    "& .Mui-error": {
+      marginLeft: 0,
+    },
   },
   login_form: {
     margin: "56px 0 0",
@@ -272,6 +275,10 @@ export default (theme) => ({
         color: theme.palette.grey[500],
         fontSize: 14,
       },
+    },
+    "& fieldset": {
+      borderColor: "transparent",
+      borderWidth: "1px !important",
     },
   },
   accept_content_type: {

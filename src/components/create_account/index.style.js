@@ -463,6 +463,7 @@ export default (theme) => ({
       padding: "14px 16px",
       "& fieldset": {
         borderColor: theme.palette.grey[50],
+        borderWidth: "1px !important",
       },
     },
     "& textarea": {
@@ -482,7 +483,7 @@ export default (theme) => ({
     },
     "& input": {
       height: 24,
-      padding: "14px 16px",
+      padding: "12px 16px",
       color: theme.palette.grey[900],
       fontSize: 14,
       "&::placeholder": {
@@ -494,6 +495,10 @@ export default (theme) => ({
       margin: "8px 0 0",
       fontSize: 14,
       lineHeight: "16px",
+    },
+    "& fieldset": {
+      borderColor: "transparent",
+      borderWidth: "1px !important",
     },
   },
   account_select: {
