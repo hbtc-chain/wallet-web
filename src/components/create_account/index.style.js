@@ -482,7 +482,7 @@ export default (theme) => ({
     },
     "& input": {
       height: 24,
-      padding: "14px 16px",
+      padding: "12px 16px",
       color: theme.palette.grey[900],
       fontSize: 14,
       "&::placeholder": {

@@ -72,7 +72,7 @@ class IndexRC extends React.Component {
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
-          <ListItem alignItems="center" onClick={this.goto("keyStore")}>
+          {/* <ListItem alignItems="center" onClick={this.goto("keyStore")}>
             <ListItemAvatar>
               <Avatar>
                 <Iconfont type="importbykeystore" size={26} />
@@ -87,7 +87,7 @@ class IndexRC extends React.Component {
                 <NavigateNext />
               </IconButton>
             </ListItemSecondaryAction>
-          </ListItem>
+          </ListItem> */}
           <ListItem alignItems="center" onClick={this.goto("key")}>
             <ListItemAvatar>
               <Avatar>
