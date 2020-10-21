@@ -93,11 +93,10 @@ class IndexRC extends React.Component {
     this.get_balance();
   };
   rates = (v, t) => {
-    if (this.props.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
-      return d;
+    if (v && t && this.props.rates[t]) {
+      return helper.rates(v, t, this.props.store.unit, this.props.rates);
     }
-    return ["", this.props.store.unit];
+    return ["--", this.props.store.unit];
   };
   short_address = (str, n = 8) => {
     if (!str) {

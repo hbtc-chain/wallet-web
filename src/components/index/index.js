@@ -463,15 +463,15 @@ class IndexRC extends React.Component {
                   this.props.store.unit,
                   this.props.rates
                 );
-                amount += Number(it.amount);
+                amount += Number(rate[0]);
               }
             });
-            const rates = this.rates(
-              amount,
-              item,
-              this.props.store.unit,
-              this.props.rates
-            );
+            // const rates = this.rates(
+            //   amount,
+            //   item,
+            //   this.props.store.unit,
+            //   this.props.rates
+            // );
             const rates2 = this.rates(
               1,
               item,
@@ -503,10 +503,8 @@ class IndexRC extends React.Component {
                   </em>
                 </ListItemText>
                 <ListItemText style={{ textAlign: "right" }}>
-                  <strong>{amount}</strong>
-                  <em>
-                    {rates[0]} {rates[1]}
-                  </em>
+                  <strong style={{ display: "inline" }}>{amount}</strong>
+                  <em>{this.props.store.unit.toUpperCase()}</em>
                 </ListItemText>
               </ListItem>
             );

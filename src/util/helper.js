@@ -376,14 +376,12 @@ function jsonSort(obj) {
   return obj;
 }
 function rates(v, t, unit, rates = {}) {
-  if (
-    v === "" ||
-    v === undefined ||
-    Number.isNaN(Number(v)) ||
-    !t ||
-    !rates[t]
-  ) {
+  if (v === "" || v === undefined || Number.isNaN(Number(v)) || !t) {
     return ["--", (unit || "").toUpperCase()];
+  }
+  // 无汇率，返回0
+  if (!rates[t]) {
+    return [0, unit.toUpperCase()];
   }
   let u = unit;
   if (!rates[t][u]) {
