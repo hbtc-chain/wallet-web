@@ -56,7 +56,7 @@ export default (theme) => ({
   desc: {
     fontSize: 14,
     lineHeight: "22px",
-    color: theme.palette.grey[500],
+    color: theme.palette.grey[700],
     textAlign: "left",
     margin: "0 0 16px",
   },
@@ -103,7 +103,7 @@ export default (theme) => ({
     height: "100%",
     overflowX: "hidden",
     overflowY: "auto",
-    padding: "0 16px 16px",
+    padding: "0 16px 8px",
     "& h1": {
       fontSize: 20,
       lineHeight: "29px",
@@ -313,6 +313,7 @@ export default (theme) => ({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      fontSize: 14,
     },
   },
   seed_select: {
@@ -516,11 +517,8 @@ export default (theme) => ({
     overflowX: "hidden",
     overflowY: "auto",
     padding: "0 16px 8px",
-    "& p": {
-      fontSize: 14,
-      lineHeight: "20px",
-      color: theme.palette.grey[700],
-      margin: "0 0 16px",
+    "& ul": {
+      padding: 0,
     },
   },
   account_list: {
