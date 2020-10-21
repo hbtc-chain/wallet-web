@@ -38,6 +38,7 @@ export default {
   pwd_rule1: "密码至少8个字符",
   pwd_rule2: "确认密码与密码不一致",
   pwd_rule3: "需包含大写字母、小写字母及数字",
+  pwd_rule4: "密码错误",
   next: "下一步",
   "seed.new.title": "请务必",
   "seed.new.desc1": "牢记并妥善保管这12个单词,一旦遗失，您的资产将无法找回",
@@ -205,4 +206,10 @@ export default {
   "always need pwd": "每次操作都需要密码(默认)",
   "30 min need pwd once": "30分钟内免输入密码",
   pwd_rule: "安全设置",
+  "export account": "导出账户",
+  "export seed": "导出助记词",
+  "export Keystore": "导出Key store",
+  "private key": "私钥",
+  Keystore: "Keystore",
+  "export.key.desc": "请牢记并妥善保管钱包私钥，一旦遗失您的资产将无法找回",
 };

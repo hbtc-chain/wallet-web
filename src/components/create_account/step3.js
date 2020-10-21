@@ -32,6 +32,15 @@ class IndexRC extends React.Component {
       step2: false,
     };
   }
+  componentDidMount() {
+    if (this.props.store.account_index > -1) {
+      const arr = [].concat(this.state.password_msg_arr);
+      arr.push("pwd_rule4");
+      this.setState({
+        password_msg_arr: arr,
+      });
+    }
+  }
   handleChange = (key) => (e) => {
     let v = (e.target.value || "").replace(/\s/g, "");
     this.setState({
@@ -44,9 +53,6 @@ class IndexRC extends React.Component {
     const { intl } = this.props;
     const account = this.state.account;
     let password = this.state.password;
-    if (this.props.store.account_index > -1) {
-      password = this.props.store.accounts[0]["password"];
-    }
     // 创建账户
     await this.props.dispatch({
       type: "layout/create_account",
@@ -70,9 +76,6 @@ class IndexRC extends React.Component {
     const account = this.state.account;
     const state = this.props.location.state;
     let password = this.state.password;
-    if (this.props.store.account_index > -1) {
-      password = this.props.store.accounts[0]["password"];
-    }
     let obj = {};
     obj.account = account;
     obj.password = password;
@@ -121,7 +124,13 @@ class IndexRC extends React.Component {
       ) {
         arr1.push(1);
       }
-      if (password != confirmpwd) {
+      if (
+        this.props.store.account_index > -1 &&
+        helper.sha256(password) !== this.props.store.accounts[0]["password"]
+      ) {
+        arr1.push(2);
+      }
+      if (this.props.store.account_index == -1 && password != confirmpwd) {
         arr2.push(0);
       }
     }
@@ -142,18 +151,18 @@ class IndexRC extends React.Component {
   };
   next = () => {
     const params = querystring.parse(this.props.location.search || "");
-    if (this.props.store.account_index > -1) {
-      if (params.type == "create") {
-        this.submit();
-      } else {
-        this.import();
-      }
-    } else {
-      this.setState({
-        step1: false,
-        step2: true,
-      });
-    }
+    // if (this.props.store.account_index > -1) {
+    //   if (params.type == "create") {
+    //     this.submit();
+    //   } else {
+    //     this.import();
+    //   }
+    // } else {
+    this.setState({
+      step1: false,
+      step2: true,
+    });
+    // }
   };
   pre = () => {
     if (this.state.step1) {
@@ -164,6 +173,17 @@ class IndexRC extends React.Component {
         step2: false,
       });
     }
+  };
+  isDisabled = () => {
+    if (this.props.store.account_index > -1) {
+      return !this.state.password || this.state.password_msg_i.length;
+    }
+    return (
+      !this.state.password ||
+      !this.state.confirmpwd ||
+      this.state.password_msg_i.length ||
+      this.state.confirmpwd_msg_i.length
+    );
   };
   render() {
     const { classes, intl, ...otherProps } = this.props;
@@ -310,63 +330,62 @@ class IndexRC extends React.Component {
                 ""
               )}
             </Grid>
-            <Grid item xs={12} className={classes.item}>
-              <TextField
-                fullWidth
-                placeholder={intl.formatMessage({ id: "confirm.password" })}
-                value={this.state.confirmpwd}
-                onChange={this.handleChange("confirmpwd")}
-                type="password"
-                InputLabelProps={{
-                  shrink: false,
-                }}
-                InputProps={{
-                  endAdornment: this.state.confirmpwd ? (
-                    this.state.confirmpwd_msg_i.length > 0 ? (
-                      <Cancel className={classes.error} />
+            {this.props.store.account_index > -1 ? (
+              ""
+            ) : (
+              <Grid item xs={12} className={classes.item}>
+                <TextField
+                  fullWidth
+                  placeholder={intl.formatMessage({ id: "confirm.password" })}
+                  value={this.state.confirmpwd}
+                  onChange={this.handleChange("confirmpwd")}
+                  type="password"
+                  InputLabelProps={{
+                    shrink: false,
+                  }}
+                  InputProps={{
+                    endAdornment: this.state.confirmpwd ? (
+                      this.state.confirmpwd_msg_i.length > 0 ? (
+                        <Cancel className={classes.error} />
+                      ) : (
+                        <CheckCircle className={classes.right} />
+                      )
                     ) : (
-                      <CheckCircle className={classes.right} />
-                    )
-                  ) : (
-                    ""
-                  ),
-                  classes: {
-                    root: classes.input_root,
-                  },
-                }}
-              />
-              {this.state.confirmpwd &&
-              this.state.confirmpwd_msg_i.length > 0 ? (
-                <div className="tip">
-                  {this.state.confirmpwd_msg_arr.map((item, i) => {
-                    return (
-                      <p
-                        className={
-                          this.state.confirmpwd_msg_i.indexOf(i) > -1
-                            ? classes.error
-                            : ""
-                        }
-                        key={i}
-                      >
-                        {intl.formatMessage({ id: item })}
-                      </p>
-                    );
-                  })}
-                </div>
-              ) : (
-                ""
-              )}
-            </Grid>
+                      ""
+                    ),
+                    classes: {
+                      root: classes.input_root,
+                    },
+                  }}
+                />
+                {this.state.confirmpwd &&
+                this.state.confirmpwd_msg_i.length > 0 ? (
+                  <div className="tip">
+                    {this.state.confirmpwd_msg_arr.map((item, i) => {
+                      return (
+                        <p
+                          className={
+                            this.state.confirmpwd_msg_i.indexOf(i) > -1
+                              ? classes.error
+                              : ""
+                          }
+                          key={i}
+                        >
+                          {intl.formatMessage({ id: item })}
+                        </p>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  ""
+                )}
+              </Grid>
+            )}
           </Grid>
           {params.type == "create" ? (
             <Button
               onClick={this.submit}
-              disabled={
-                !this.state.password ||
-                !this.state.confirmpwd ||
-                this.state.password_msg_i.length ||
-                this.state.confirmpwd_msg_i.length
-              }
+              disabled={this.isDisabled()}
               color="primary"
               variant="contained"
               fullWidth
@@ -379,12 +398,7 @@ class IndexRC extends React.Component {
           ) : (
             <Button
               onClick={this.import}
-              disabled={
-                !this.state.password ||
-                !this.state.confirmpwd ||
-                this.state.password_msg_i.length ||
-                this.state.confirmpwd_msg_i.length
-              }
+              disabled={this.isDisabled()}
               color="primary"
               variant="contained"
               fullWidth

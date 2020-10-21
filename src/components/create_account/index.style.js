@@ -15,8 +15,8 @@ export default (theme) => ({
     },
   },
   nav: {
-    height: 42,
-    margin: "0 0 18px",
+    height: 44,
+    margin: "0 0 16px",
     fontSize: 16,
     lineHeight: "24px",
     display: "flex",

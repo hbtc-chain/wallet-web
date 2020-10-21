@@ -38,4 +38,6 @@ export default {
   keystore: `${local}/keystore`,
   accept: `${local}/accept`,
   accept_by_type: `${local}/accept_by_type`,
+  export: `${local}/export`,
+  export_list: `${local}/export_list`,
 };

@@ -108,8 +108,7 @@ export default {
         username:
           payload.account ||
           "Account" + (accounts && accounts.length ? accounts.length + 1 : 1),
-        password:
-          accounts && accounts.length ? password : helper.sha256(password),
+        password: helper.sha256(password),
         mnemonic: payload.key ? "" : encrypt_mnemonic,
         privateKey: encrypt_privateKey,
         publicKey: encrypt_publicKey,
