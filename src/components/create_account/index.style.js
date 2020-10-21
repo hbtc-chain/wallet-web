@@ -313,6 +313,7 @@ export default (theme) => ({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+      fontSize: 14,
     },
   },
   seed_select: {
