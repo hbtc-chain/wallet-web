@@ -231,7 +231,9 @@ class IndexRC extends React.Component {
 
     // 对amount进行精度处理
     let d = {
-      chain_id: this.props.chain_id,
+      chain_id: this.props.store.chain[this.props.store.chain_index][
+        "chain_id"
+      ],
       fee: this.state.fee,
       memo: this.state.memo,
       msgs: this.state.trade.msgs,

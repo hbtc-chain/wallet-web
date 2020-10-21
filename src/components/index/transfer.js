@@ -188,7 +188,9 @@ class IndexRC extends React.Component {
     const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
 
     let d = {
-      chain_id: this.props.chain_id,
+      chain_id: this.props.store.chain[this.props.store.chain_index][
+        "chain_id"
+      ],
       fee: {
         gas: "200000",
         amount: [

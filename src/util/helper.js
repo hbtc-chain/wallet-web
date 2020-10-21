@@ -113,19 +113,9 @@ function createKeystore(
         cipher: "aes-128-ctr",
       },
     };
-    console.log(JSON.stringify(data));
     return data;
   });
 }
-const data = createKeystore(
-  "4ba918eea7090958f02309ca9a10892f862b9d851ecd1489166a74b2ded903b5",
-  "HBCfJmfTLgxaXZFuanHT5RQnTXkWvfyH5AwS",
-  "Tiger412722"
-).then((res) => {
-  decryptKeyStore(JSON.stringify(res), "Tiger412722").then((result) => {
-    console.log(result);
-  });
-});
 
 /**
  * 解密keystore
