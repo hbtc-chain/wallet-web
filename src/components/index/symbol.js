@@ -158,7 +158,7 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "available" })}
                 </Grid>
-                <Grid item>{balance.amount}</Grid>
+                <Grid item>{balance.amount || "--"}</Grid>
               </Grid>
               <Grid
                 container
@@ -168,9 +168,7 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "bonded" })}
                 </Grid>
-                <Grid item>
-                  {this.props.balance ? this.props.balance.bonded : ""}
-                </Grid>
+                <Grid item>{this.props.balance.bonded || "--"}</Grid>
               </Grid>
               <Grid
                 container
@@ -180,9 +178,7 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "unbonding" })}
                 </Grid>
-                <Grid item>
-                  {this.props.balance ? this.props.balance.unbonding : ""}
-                </Grid>
+                <Grid item>{this.props.balance.unbonding || "--"}</Grid>
               </Grid>
               <Grid
                 container
@@ -192,9 +188,7 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "claimed_reward" })}
                 </Grid>
-                <Grid item>
-                  {this.props.balance ? this.props.balance.claimed_reward : ""}
-                </Grid>
+                <Grid item>{this.props.balance.claimed_reward || "--"}</Grid>
               </Grid>
             </div>
           ) : (
@@ -357,7 +351,7 @@ class IndexRC extends React.Component {
                       "/" +
                       symbol +
                       "/" +
-                      address +
+                      external_address +
                       "/chain_out"
                     : route_map.external_address + "/" + symbol,
                 })

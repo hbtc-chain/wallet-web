@@ -9,11 +9,10 @@ import BASE58 from "base-x";
 import secp256k1 from "secp256k1";
 import ecc from "tiny-secp256k1";
 import mathjs from "./mathjs";
-import {
-  decryptJsonWallet,
-  decryptJsonWalletSync,
-  encryptKeystore,
-} from "@ethersproject/json-wallets";
+import aes from "aes-js";
+import * as scrypt from "scrypt-js";
+import sha3 from "js-sha3";
+import { v4 } from "uuid";
 
 function checkForError() {
   const { lastError } = extension.runtime;
@@ -60,20 +59,123 @@ function sha256(str) {
  * @param {string} privateKey
  * @param {string} address
  * @param {string} password
+ * @param {function} progressCallback
  * @return {promise} promise, resolve({}) or reject('xxx')
  */
-function createKeystore(privateKey, address, password) {
-  return encryptKeystore({ privateKey, address }, password);
+function createKeystore(
+  privateKey,
+  address,
+  password,
+  progressCallback = () => {}
+) {
+  if (!address || !privateKey || !password) {
+    console.error("Missing parameters");
+    return Promise.reject("Missing parameters");
+  }
+  const pwd = Buffer.from(password);
+  const prikey = HexString2Bytes(privateKey); // arrayify(privateKey);
+  const salt = crypto.randomBytes(32); // Buffer.randomBytes(32); // randomBytes(32);
+  const iv = crypto.randomBytes(16); // Buffer.randomBytes(16); // randomBytes(16);
+  const N = 1024,
+    r = 8,
+    p = 1;
+  return scrypt.scrypt(pwd, salt, N, r, p, 64, progressCallback).then((key) => {
+    const derivedKey = key.slice(0, 16);
+    const macPrefix = key.slice(16, 32);
+
+    // Encrypt the private key
+    const counter = new aes.Counter(iv);
+    const aesCtr = new aes.ModeOfOperation.ctr(derivedKey, counter);
+    const ciphertext = HexString2Bytes(
+      Buffer.from(aesCtr.encrypt(prikey)).toString("hex")
+    );
+
+    // Compute the message authentication code, used to check the password
+    const mac = sha3.keccak_256([...macPrefix, ...ciphertext]);
+    const data = {
+      address: address.toLowerCase(),
+      id: v4().toUpperCase(),
+      version: 3,
+      Crypto: {
+        cipherparams: {
+          iv: Buffer.from(iv).toString("hex"), // hexlify(iv).substring(2),
+        },
+        ciphertext: Buffer.from(ciphertext).toString("hex"), // hexlify(ciphertext).substring(2),
+        kdf: "scrypt",
+        kdfparams: {
+          salt: Buffer.from(salt).toString("hex"), // hexlify(salt).substring(2),
+          n: N,
+          dklen: 32,
+          p: p,
+          r: r,
+        },
+        mac,
+        cipher: "aes-128-ctr",
+      },
+    };
+    return data;
+  });
 }
 
 /**
  * 解密keystore
- * @param {object} json
- * @param {str} password
- * @return {promise} promise, resolve({}) or reject('xxx')
+ * @param {string} data
+ * @param {string} password
+ * @return {promise} promise, resolve({privateKey:'', publicKey:'', address: ''}) or reject('xxx')
  */
-function decryptKeyStore(json, password) {
-  return decryptJsonWallet(json, password);
+async function decryptKeyStore(data, password) {
+  if (!data || !password) {
+    console.error("Missing parameters");
+    return Promise.reject("Missing parameters");
+  }
+  const json = JSON.parse(data);
+  const kdfparams = json.Crypto ? json.Crypto.kdfparams : {};
+  const r = parseInt(kdfparams.r),
+    p = parseInt(kdfparams.p),
+    n = parseInt(kdfparams.n),
+    dklen = parseInt(kdfparams.dklen),
+    salt = HexString2Bytes(kdfparams.salt); // Buffer.from(kdfparams.salt);
+  if (!r || !p || !n || !dklen || !salt) {
+    return Promise.reject("Missing kdfparams parameters");
+  }
+  if (dklen != 32) {
+    return Promise.reject("wrong dklen");
+  }
+  const pwd = Buffer.from(password); // new Uint8Array(HexString2Bytes(password.normalize("NFKC")));
+
+  const key = await scrypt.scrypt(pwd, salt, n, r, p, 64);
+  const ciphertext = HexString2Bytes(json.Crypto.ciphertext);
+
+  const computedMAC = sha3.keccak_256([...key.slice(16, 32), ...ciphertext]);
+
+  if (computedMAC != json.Crypto.mac) {
+    return Promise.reject("invalid password");
+  }
+  const privateKey = _decrypt(json, key.slice(0, 16), ciphertext);
+  if (!privateKey) {
+    return Promise.reject("unsupported cipher");
+  }
+  const keys = createKeyFromPrivateKey(privateKey);
+
+  const address = createAddress(keys.publicKey);
+  if (address.toLowerCase() != json.address) {
+    return Promise.reject("address mismatch");
+  }
+  return Promise.resolve({
+    ...keys,
+    address,
+  });
+}
+
+function _decrypt(data, key, ciphertext) {
+  const cipher = data.Crypto.cipher; // searchPath(data, "crypto/cipher");
+  if (cipher === "aes-128-ctr") {
+    const iv = HexString2Bytes(data.Crypto.cipherparams.iv); // looseArrayify(searchPath(data, "crypto/cipherparams/iv"));
+    const counter = new aes.Counter(iv);
+    const aesCtr = new aes.ModeOfOperation.ctr(key, counter);
+    return Buffer.from(aesCtr.decrypt(ciphertext)).toString("hex");
+  }
+  return null;
 }
 
 // 16进制转字节
@@ -84,7 +186,7 @@ function HexString2Bytes(str) {
     return null;
   }
   len /= 2;
-  var arrBytes = new Array();
+  var arrBytes = [];
   for (var i = 0; i < len; i++) {
     var s = str.substr(pos, 2);
     var v = parseInt(s, 16);
@@ -274,14 +376,12 @@ function jsonSort(obj) {
   return obj;
 }
 function rates(v, t, unit, rates = {}) {
-  if (
-    v === "" ||
-    v === undefined ||
-    Number.isNaN(Number(v)) ||
-    !t ||
-    !rates[t]
-  ) {
+  if (v === "" || v === undefined || Number.isNaN(Number(v)) || !t) {
     return ["--", (unit || "").toUpperCase()];
+  }
+  // 无汇率，返回0
+  if (!rates[t]) {
+    return [0, unit.toUpperCase()];
   }
   let u = unit;
   if (!rates[t][u]) {

@@ -40,7 +40,7 @@ export default {
         payload: {},
       });
       dispatch({
-        type: "get_rates",
+        type: "get_rates_loop",
         payload: {},
       });
       dispatch({
@@ -159,6 +159,10 @@ export default {
             tokens: result.data.items || [],
           },
         });
+        yield put({
+          type: "get_rates",
+          payload: {},
+        });
       }
     },
     /**
@@ -216,6 +220,14 @@ export default {
           });
         } catch (e) {}
       }
+    },
+    *get_rates_loop({ payload }, { put, call }) {
+      try {
+        yield put({
+          type: "get_rates",
+          payload: {},
+        });
+      } catch (e) {}
       yield util.delay(5000);
       yield put({
         type: "get_rates",
