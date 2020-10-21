@@ -79,7 +79,10 @@ class IndexRC extends React.Component {
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        <div className={classes.accept_content}>
+        <div
+          className={classes.accept_content}
+          style={{ height: "calc(100vh - 44px)" }}
+        >
           <p>{this.props.intl.formatMessage({ id: "support hbc account" })}</p>
           <Paper>
             {account.address ? <img src={this.state.img} /> : ""}

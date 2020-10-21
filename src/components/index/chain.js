@@ -55,7 +55,7 @@ class IndexRC extends React.Component {
       : "";
     const balances =
       this.props.balance && address && this.props.balance[address]
-        ? this.props.balance[address]
+        ? this.props.balance[address] || { assets: [] }
         : { assets: [] };
     const balances_json = {};
     let chain_external_address = "";

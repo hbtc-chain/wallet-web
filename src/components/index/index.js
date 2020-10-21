@@ -70,6 +70,7 @@ class IndexRC extends React.Component {
       mask: true,
       chain_choose: false,
       chains: [],
+      account_choose: false,
     };
   }
   componentDidMount() {
@@ -127,15 +128,17 @@ class IndexRC extends React.Component {
   };
   goto = () => {};
   copy = () => {
-    message.success(this.props.intl.formatMessage({ id: "copyed" }));
     this.setState(
       {
-        copyed: !this.state.copyed,
+        copyed: true,
       },
       () => {
         if (this.state.copyed) {
+          message.success(this.props.intl.formatMessage({ id: "copyed" }));
           setTimeout(() => {
-            this.copy();
+            this.setState({
+              copyed: false,
+            });
           }, 5000);
         }
       }
@@ -167,7 +170,7 @@ class IndexRC extends React.Component {
       return "";
     }
     return str.length > 20
-      ? str.replace(/^(.{10})(.{1,})(.{10})$/, ($1, $2, $3, $4) => {
+      ? str.replace(/^(.{9})(.{1,})(.{9})$/, ($1, $2, $3, $4) => {
           return $2 + "..." + $4;
         })
       : str;
@@ -285,6 +288,28 @@ class IndexRC extends React.Component {
     }
     return ["", this.props.store.unit];
   };
+  choose_account = (i) => () => {
+    if (i == -1) {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.create_account_step1,
+        })
+      );
+      return;
+    }
+    this.props.dispatch({
+      type: "layout/save",
+      payload: {
+        store: {
+          ...this.props.store,
+          account_index: i,
+        },
+      },
+    });
+    this.setState({
+      account_choose: false,
+    });
+  };
   choose_chain = (i) => () => {
     if (i == 0) {
       return;
@@ -352,15 +377,32 @@ class IndexRC extends React.Component {
               </span>
             </Grid>
             <Grid item>
-              <Iconfont
-                type="setting"
-                size={20}
-                onClick={() => {
-                  this.props.dispatch(
-                    routerRedux.push({ pathname: route_map.setting })
-                  );
-                }}
-              />
+              <Tooltip
+                title={this.props.intl.formatMessage({ id: "choose account" })}
+              >
+                <Iconfont
+                  type="exchange"
+                  size={20}
+                  onClick={() => {
+                    this.setState({
+                      account_choose: true,
+                    });
+                  }}
+                />
+              </Tooltip>
+            </Grid>
+            <Grid item>
+              <Tooltip title={this.props.intl.formatMessage({ id: "setting" })}>
+                <Iconfont
+                  type="setting"
+                  size={20}
+                  onClick={() => {
+                    this.props.dispatch(
+                      routerRedux.push({ pathname: route_map.setting })
+                    );
+                  }}
+                />
+              </Tooltip>
             </Grid>
           </Grid>
           <div className={classes.userinfo}>
@@ -796,6 +838,57 @@ class IndexRC extends React.Component {
                 </ListItem>
               );
             })}
+          </List>
+        </Drawer>
+        <Drawer
+          anchor="bottom"
+          open={this.state.account_choose}
+          onClose={() => {
+            this.setState({ account_choose: !this.state.account_choose });
+          }}
+          classes={{
+            paper: classes.drawer_paper,
+          }}
+        >
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            className={classes.chain_choose_title}
+          >
+            <Grid item xs={2}></Grid>
+            <Grid item xs={8}>
+              <h2>{this.props.intl.formatMessage({ id: "choose account" })}</h2>
+            </Grid>
+            <Grid item xs={2}>
+              <CloseIcon
+                onClick={() => {
+                  this.setState({ account_choose: !this.state.account_choose });
+                }}
+              />
+            </Grid>
+          </Grid>
+          <List className={classes.chains}>
+            {this.props.store.accounts.map((item, i) => {
+              return (
+                <ListItem
+                  key={item.address}
+                  button
+                  onClick={this.choose_account(i)}
+                >
+                  <ListItemText>{item.username}</ListItemText>
+                  <ListItemSecondaryAction>
+                    {i == this.props.store.account_index ? <CheckIcon /> : ""}
+                  </ListItemSecondaryAction>
+                </ListItem>
+              );
+            })}
+            <ListItem button onClick={this.choose_account(-1)}>
+              <ListItemText style={{ textAlign: "center" }}>
+                <Iconfont type="add" size={20} />
+                {this.props.intl.formatMessage({ id: "add account" })}
+              </ListItemText>
+            </ListItem>
           </List>
         </Drawer>
       </div>

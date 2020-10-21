@@ -126,8 +126,8 @@ class IndexRC extends React.Component {
     }
     if (
       !Number(this.state.amount) ||
-      /[^0-9\.]/.test(this.state.amount)
-      //|| Number(this.state.amount) > balance.amount
+      /[^0-9\.]/.test(this.state.amount) ||
+      Number(this.state.amount) > balance.amount
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(

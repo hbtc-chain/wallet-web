@@ -81,7 +81,7 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            <h2>{this.props.intl.formatMessage({ id: "accept" })}</h2>
+            <h2>{this.props.intl.formatMessage({ id: "receive payment" })}</h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
@@ -113,7 +113,11 @@ class IndexRC extends React.Component {
             </CopyToClipboard>
             <i></i>
             <i></i>
-            {token ? <img src={token.logo} className="token_logo" /> : ""}
+            {token && token.logo ? (
+              <img src={token.logo} className="token_logo" />
+            ) : (
+              ""
+            )}
           </Paper>
           <dl className={classes.tip}>
             <dt>{this.props.intl.formatMessage({ id: "tip" })}</dt>

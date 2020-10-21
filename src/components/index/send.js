@@ -110,8 +110,8 @@ class IndexRC extends React.Component {
     }
     if (
       !Number(this.state.amount) ||
-      /[^0-9\.]/.test(this.state.amount)
-      //|| Number(this.state.amount) > balance.amount
+      /[^0-9\.]/.test(this.state.amount) ||
+      Number(this.state.amount) > balance.amount
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
@@ -325,7 +325,7 @@ class IndexRC extends React.Component {
       this.props.balance && this.props.balance[address]
         ? this.props.balance[address].assets.find(
             (item) => item.symbol == this.state.symbol
-          )
+          ) || { amount: 0 }
         : { amount: 0 };
     const rates = this.rates(balance.amount, symbol);
     const account =
