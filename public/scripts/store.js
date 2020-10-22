@@ -127,8 +127,16 @@ const init_data = {
   unit: "usd",
   lang: browserLang(),
   chain: [
-    { name: "main net", url: "https://juswap.io", chain_id: "hbtc-testnet" },
-    { name: "test net", url: "https://juswap.io", chain_id: "hbtc-testnet" },
+    {
+      name: "main net",
+      url: "https://explorer.hbtcchain.io",
+      chain_id: "hbtc-testnet",
+    },
+    {
+      name: "test net",
+      url: "https://explorer.hbtcchain.io",
+      chain_id: "hbtc-testnet",
+    },
   ],
   chain_index: 1, // 0 = main chain , 1 = test chain
   pwd_rule: 0, // 0 = 每次都输入密码， 1 = 30分内输入一次
