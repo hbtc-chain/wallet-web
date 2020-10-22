@@ -426,7 +426,7 @@ class IndexRC extends React.Component {
               .sort((a, b) => (a.toUpperCase() > b.toUpperCase() ? 1 : -1))
               .map((item) => {
                 if (
-                  /amount|initial_deposit|coins|swap_path|expired_at|min_amount_out|max_amount_in|side|liquidity|token_a|token_b/i.test(
+                  /amount|initial_deposit|coins|swap_path|expired_at|min_amount_out|max_amount_in|side|liquidity|token_a|token_b|price|order_id/i.test(
                     item
                   )
                 ) {

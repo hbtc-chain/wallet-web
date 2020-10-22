@@ -376,12 +376,19 @@ function jsonSort(obj) {
   return obj;
 }
 function rates(v, t, unit, rates = {}) {
+  let fix = "";
+  if (unit === "usd") {
+    fix = "$";
+  }
+  if (unit === "cny") {
+    fix = "￥";
+  }
   if (v === "" || v === undefined || Number.isNaN(Number(v)) || !t) {
-    return ["--", (unit || "").toUpperCase()];
+    return ["--", "", ""];
   }
   // 无汇率，返回0
   if (!rates[t]) {
-    return [0, unit.toUpperCase()];
+    return ["--", "", ""];
   }
   let u = unit;
   if (!rates[t][u]) {
@@ -393,7 +400,11 @@ function rates(v, t, unit, rates = {}) {
     .multiply(rates[t][u])
     .format({ notation: "fixed", precision: 2 })
     .done();
-  return [d, u.toUpperCase()];
+
+  if (fix) {
+    return [d, "", fix];
+  }
+  return [d, u.toUpperCase(), fix];
 }
 
 export default {

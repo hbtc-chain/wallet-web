@@ -93,10 +93,7 @@ class IndexRC extends React.Component {
     this.get_balance();
   };
   rates = (v, t) => {
-    if (v && t && this.props.rates[t]) {
-      return helper.rates(v, t, this.props.store.unit, this.props.rates);
-    }
-    return ["--", this.props.store.unit];
+    return helper.rates(v, t, this.props.store.unit, this.props.rates);
   };
   short_address = (str, n = 8) => {
     if (!str) {
@@ -363,6 +360,7 @@ class IndexRC extends React.Component {
                       ""
                     )}
                     <p>
+                      {rates[2]}
                       {rates2[0]}
                       {(rates2[1] || "").toUpperCase()}
                     </p>
@@ -370,7 +368,7 @@ class IndexRC extends React.Component {
                   <Grid item style={{ textAlign: "right" }}>
                     <strong>{item.amount}</strong>
                     <p>
-                      ≈ {rates[0]} {(rates[1] || "").toUpperCase()}
+                      ≈ {rates[2]} {rates[0]} {(rates[1] || "").toUpperCase()}
                     </p>
                   </Grid>
                 </Grid>

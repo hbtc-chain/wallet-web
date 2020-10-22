@@ -226,4 +226,5 @@ export default {
   "address mismatch": "地址不匹配",
   backups: "我已安全备份",
   "enter original wallet password": "请输入原钱包密码",
+  "external token list": "跨链代币列表",
 };

@@ -37,7 +37,10 @@ export default {
       });
       dispatch({
         type: "tokens",
-        payload: {},
+        payload: {
+          page: 1,
+          page_size: 100,
+        },
       });
       dispatch({
         type: "get_rates_loop",
@@ -150,23 +153,44 @@ export default {
      */
     *tokens({ payload }, { call, put, select }) {
       const store = yield select((state) => state.layout.store);
+      const tokens = yield select((state) => state.layout.tokens);
       const result = yield call(
         getData(store.chain[store.chain_index]["url"] + API.tokens),
         {
-          payload: {},
+          payload,
           method: "get",
         }
       );
       if (result.code == 200 && result.data && result.data.items) {
+        if (result.data.page == payload.page) {
+          yield put({
+            type: "save",
+            payload: {
+              tokens: [...tokens, ...(result.data.items || [])],
+            },
+          });
+          yield put({
+            type: "get_rates",
+            payload: {},
+          });
+          if (
+            result.data.items &&
+            result.data.items.length == payload.page_size
+          ) {
+            yield put({
+              type: "tokens",
+              payload: {
+                page: 1 + Number(payload.page),
+                page_size: payload.page_size,
+              },
+            });
+          }
+        }
+      } else {
+        yield util.delay(2000);
         yield put({
-          type: "save",
-          payload: {
-            tokens: result.data.items || [],
-          },
-        });
-        yield put({
-          type: "get_rates",
-          payload: {},
+          type: "tokens",
+          payload,
         });
       }
     },

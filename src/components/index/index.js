@@ -104,7 +104,9 @@ class IndexRC extends React.Component {
     balances.assets.map((item) => {
       balances_json[item.symbol] = item.amount;
       const d = this.rates(item.amount, item.symbol);
-      total = total + Number(d[0]);
+      if (Number(d[0])) {
+        total += Number(d[0] || 0);
+      }
     });
     let tokens = [];
     this.props.tokens.map((item) => {
@@ -169,8 +171,8 @@ class IndexRC extends React.Component {
     if (!str) {
       return "";
     }
-    return str.length > 20
-      ? str.replace(/^(.{9})(.{1,})(.{9})$/, ($1, $2, $3, $4) => {
+    return str.length > 16
+      ? str.replace(/^(.{8})(.{1,})(.{8})$/, ($1, $2, $3, $4) => {
           return $2 + "..." + $4;
         })
       : str;
@@ -286,7 +288,7 @@ class IndexRC extends React.Component {
       const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
       return d;
     }
-    return ["", this.props.store.unit];
+    return ["", "", ""];
   };
   choose_account = (i) => () => {
     if (i == -1) {
@@ -408,8 +410,12 @@ class IndexRC extends React.Component {
           <div className={classes.userinfo}>
             <span>{username}</span>
             <strong>
+              {this.props.store.unit == "usd" ? "$" : ""}
+              {this.props.store.unit == "cny" ? "￥" : ""}
               {Number.isNaN(this.state.total) ? "--" : this.state.total}{" "}
-              {(this.props.store.unit || "").toUpperCase()}
+              {this.props.store.unit != "usd" && this.props.store.unit != "cny"
+                ? (this.props.store.unit || "").toUpperCase()
+                : ""}
             </strong>
             <CopyToClipboard text={address} onCopy={this.copy}>
               <em>
@@ -463,7 +469,9 @@ class IndexRC extends React.Component {
                   this.props.store.unit,
                   this.props.rates
                 );
-                amount += Number(rate[0]);
+                if (Number(rate[0])) {
+                  amount += Number(rate[0]);
+                }
               }
             });
             // const rates = this.rates(
@@ -497,14 +505,35 @@ class IndexRC extends React.Component {
                   />
                 </ListItemIcon>
                 <ListItemText>
-                  <strong>{(token.symbol || "").toUpperCase()}</strong>
+                  <strong>
+                    {(token.symbol || "").toUpperCase()}{" "}
+                    {token.is_native ? (
+                      ""
+                    ) : (
+                      <span className="external">
+                        {this.props.intl.formatMessage({
+                          id: "external token list",
+                        })}
+                      </span>
+                    )}
+                  </strong>
                   <em>
+                    {rates2[2]}
                     {rates2[0]} {rates2[1]}
                   </em>
                 </ListItemText>
                 <ListItemText style={{ textAlign: "right" }}>
-                  <strong style={{ display: "inline" }}>{amount}</strong>
-                  <em>{this.props.store.unit.toUpperCase()}</em>
+                  <strong style={{ display: "inline" }}>
+                    {this.props.store.unit == "usd" ? "$" : ""}
+                    {this.props.store.unit == "cny" ? "￥" : ""}
+                    {amount}
+                  </strong>
+                  <em>
+                    {this.props.store.unit != "usd" &&
+                    this.props.store.unit != "cny"
+                      ? this.props.store.unit.toUpperCase()
+                      : ""}
+                  </em>
                 </ListItemText>
               </ListItem>
             );
