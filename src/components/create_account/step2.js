@@ -17,24 +17,12 @@ class IndexRC extends React.Component {
     };
   }
   goto = () => {
-    const params = querystring.parse(this.props.location.search || "");
-    const search = this.props.location.search;
-    if (params.type == "create") {
-      this.props.dispatch(
-        routerRedux.push({
-          pathname: route_map.create_account_step3,
-          search,
-        })
-      );
-    }
-    if (params.type == "import") {
-      this.props.dispatch(
-        routerRedux.push({
-          pathname: route_map.create_account_step4,
-          // search,
-        })
-      );
-    }
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.create_account_step3,
+        search: "type=create",
+      })
+    );
   };
   radioChange = () => {
     const checked = this.state.checked;
@@ -44,7 +32,6 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes, intl } = this.props;
-    const params = querystring.parse(this.props.location.search || "");
     return (
       <div className={classes.step2}>
         {/* <div className={classes.step2_con_bg}> */}

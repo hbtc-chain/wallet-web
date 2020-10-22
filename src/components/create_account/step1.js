@@ -14,20 +14,36 @@ class IndexRC extends React.Component {
     super();
     this.state = {};
   }
+  componentDidMount() {
+    if (this.props.store.account_index > -1) {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.index,
+        })
+      );
+    }
+  }
   goto = (key) => (e) => {
-    this.props.dispatch(
-      routerRedux.push({
-        pathname: route_map.create_account_step2,
-        search: "type=" + key,
-      })
-    );
+    if (key == "create") {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.create_account_step2,
+        })
+      );
+    } else {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.create_account_step4,
+        })
+      );
+    }
   };
   render() {
-    const { classes } = this.props;
+    const { classes, intl } = this.props;
     return (
       <div className={classes.index}>
         <img className={classes.logo} src={require("../../assets/logo.png")} />
-        <h1>{this.props.intl.formatMessage({ id: "create.title" })}</h1>
+        <h1>{intl.formatMessage({ id: "create.title" })}</h1>
         <Button
           fullWidth
           onClick={this.goto("create")}
@@ -35,7 +51,7 @@ class IndexRC extends React.Component {
           variant="contained"
           className={classes.button}
         >
-          {this.props.intl.formatMessage({
+          {intl.formatMessage({
             id: "create.step1.btn.create",
           })}
         </Button>
@@ -46,7 +62,7 @@ class IndexRC extends React.Component {
           variant="outlined"
           className={classes.button}
         >
-          {this.props.intl.formatMessage({
+          {intl.formatMessage({
             id: "create.step1.btn.import",
           })}
         </Button>
@@ -55,12 +71,12 @@ class IndexRC extends React.Component {
             <Paper variant="outlined" className={classes.paper}>
               <VerticalAlignBottomIcon fontSize="large" />
               <h2>
-                {this.props.intl.formatMessage({
+                {intl.formatMessage({
                   id: "create.step1.desc.1",
                 })}
               </h2>
               <p>
-                {this.props.intl.formatMessage({
+                {intl.formatMessage({
                   id: "create.step1.desc.2",
                 })}
               </p>
@@ -69,7 +85,7 @@ class IndexRC extends React.Component {
                 color="primary"
                 variant="contained"
               >
-                {this.props.intl.formatMessage({
+                {intl.formatMessage({
                   id: "create.step1.btn.import",
                 })}
               </Button>
@@ -79,12 +95,12 @@ class IndexRC extends React.Component {
             <Paper variant="outlined" className={classes.paper}>
               <AddIcon fontSize="large" />
               <h2>
-                {this.props.intl.formatMessage({
+                {intl.formatMessage({
                   id: "create.step1.desc.3",
                 })}
               </h2>
               <p>
-                {this.props.intl.formatMessage({
+                {intl.formatMessage({
                   id: "create.step1.desc.4",
                 })}
               </p>
@@ -93,7 +109,7 @@ class IndexRC extends React.Component {
                 color="primary"
                 variant="contained"
               >
-                {this.props.intl.formatMessage({
+                {intl.formatMessage({
                   id: "create.step1.btn.create",
                 })}
               </Button>

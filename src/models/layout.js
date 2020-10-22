@@ -77,9 +77,11 @@ export default {
       const mnemonic = payload.mnemonic || helper.createMnemonic();
       const encrypt_mnemonic = helper.aes_encrypt(mnemonic, password);
       let keys = {};
-      if (payload.key) {
+      if (payload.way == "key") {
         // 根据私钥解公钥
         keys = helper.createKeyFromPrivateKey(payload.key);
+      } else if (payload.way == "keyStore") {
+        keys = payload.data;
       } else {
         // 生成公钥秘钥
         keys = helper.createKey(mnemonic, CONST.HBC_PATH);
@@ -98,7 +100,10 @@ export default {
       // );
 
       // 根据公钥计算address
-      const address = helper.createAddress(keys.publicKey);
+      const address =
+        payload.way == "keyStore"
+          ? keys.address
+          : helper.createAddress(keys.publicKey);
 
       // 保存加密后密码，12词，秘钥
       let store = yield select((state) => state.layout.store);
