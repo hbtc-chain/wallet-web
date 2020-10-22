@@ -107,12 +107,10 @@ class IndexRC extends React.Component {
       await helper
         .decryptKeyStore(keyStore, keyStorepwd)
         .then((res) => {
-          console.log(res);
           obj.data = res;
           keys = res;
         })
         .catch((reject) => {
-          console.log(reject);
           if (reject == "invalid password") {
             this.setState({
               keyStorepwd_msg: this.props.intl.formatMessage({
@@ -152,7 +150,6 @@ class IndexRC extends React.Component {
         key,
       };
     }
-    console.log(keys);
     // await this.props.dispatch({
     //   type: "layout/create_account",
     //   payload: obj,
@@ -273,7 +270,9 @@ class IndexRC extends React.Component {
                 value={this.state.keyStorepwd}
                 className={classes.input}
                 onChange={this.handleChange("keyStorepwd")}
-                placeholder={intl.formatMessage({ id: "enter password" })}
+                placeholder={intl.formatMessage({
+                  id: "enter original wallet password",
+                })}
                 error={Boolean(this.state.keyStorepwd_msg)}
                 helperText={this.state.keyStorepwd_msg}
                 variant="outlined"
