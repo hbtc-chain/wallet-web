@@ -222,4 +222,5 @@ export default {
   "invalid password": "密码不正确",
   "unsupported cipher": "cipher不正确",
   "address mismatch": "地址不匹配",
+  "external token list": "跨链代币列表",
 };

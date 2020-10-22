@@ -80,7 +80,7 @@ class IndexRC extends React.Component {
       const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
       return d;
     }
-    return ["", this.props.store.unit];
+    return ["", "", ""];
   };
   goto = (hash) => (e) => {
     // open window tab
@@ -144,7 +144,7 @@ class IndexRC extends React.Component {
             <p>{this.props.intl.formatMessage({ id: "currently held" })}</p>
             <strong>{balance.amount || "--"}</strong>
             <span>
-              {rates[0]} {(rates[1] || "").toUpperCase()}
+              {rates[2]} {rates[0]} {(rates[1] || "").toUpperCase()}
             </span>
             {token && token.logo ? <img src={token.logo} /> : ""}
           </div>
@@ -206,7 +206,7 @@ class IndexRC extends React.Component {
             const rates =
               flow && Number(flow.amount) && flow.symbol
                 ? this.rates(Math.abs(Number(flow.amount)), flow.symbol)
-                : ["", ""];
+                : ["", "", ""];
             return (
               <Grid
                 container
@@ -241,6 +241,7 @@ class IndexRC extends React.Component {
                   </strong>
                   <br />
                   <span className={classes.grey500}>
+                    {rates[2]}
                     {rates[0]}
                     {rates[1]}
                   </span>

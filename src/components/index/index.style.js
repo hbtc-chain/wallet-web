@@ -32,10 +32,20 @@ export default (theme) => ({
       margin: "0 10px 0 0",
     },
     "& strong": {
-      display: "block",
+      display: "flex",
+      alignItems: "flex-start",
     },
     "& em": {
       color: theme.palette.grey[500],
+    },
+    "& span.external": {
+      fontSize: 12,
+      color: theme.palette.grey[500],
+      background: theme.palette.grey[200],
+      padding: "0 2px",
+      margin: "0 0 0 4px",
+      borderRadius: 2,
+      fontWeight: 400,
     },
   },
   token: {
@@ -261,7 +271,7 @@ export default (theme) => ({
       padding: 2,
       fontSize: 14,
       margin: "0 0 0 6px",
-      lineheight: "18px",
+      lineHeight: "18px",
       background: theme.palette.grey[200],
       color: theme.palette.grey[500],
       "&.native": {
@@ -427,7 +437,7 @@ export default (theme) => ({
   form_label: {
     fontSize: 14,
     color: theme.palette.grey[700],
-    lineheight: "20px",
+    lineHeight: "20px",
     margin: "0 0 4px",
   },
   form_input: {
