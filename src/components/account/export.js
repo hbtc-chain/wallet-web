@@ -3,7 +3,13 @@ import React from "react";
 import styles from "./export.style";
 import { withStyles } from "@material-ui/core/styles";
 import { injectIntl } from "react-intl";
-import { Grid, Button, Divider } from "@material-ui/core";
+import {
+  Grid,
+  Button,
+  Divider,
+  Dialog,
+  DialogContent,
+} from "@material-ui/core";
 import route_map from "../../config/route_map";
 import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
@@ -12,6 +18,7 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { Iconfont } from "../../lib";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import message from "../public/message";
+import Qrcode from "qrcode";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -26,6 +33,8 @@ class IndexRC extends React.Component {
       mnemonic: "",
       copyed: false,
       copytext: "",
+      img: "",
+      open: false,
     };
   }
   componentDidMount() {
@@ -36,22 +45,34 @@ class IndexRC extends React.Component {
       ? this.props.location.state.password
       : "";
     if (params.way == "seed") {
-      const mnemonic = helper.aes_decrypt(account["mnemonic"], password) || "";
-      this.setState({
-        seeds: mnemonic ? mnemonic.split(" ") : [],
-        copytext: mnemonic,
-      });
+      this.getSeed(account, password);
     }
     if (params.way == "key") {
-      const key = helper.aes_decrypt(account["privateKey"], password) || "";
-      this.setState({
-        copytext: key,
-      });
+      this.getKey(account, password);
     }
     if (params.way == "Keystore") {
       this.getKeystore(account, password);
     }
   }
+  getSeed = async (account, password) => {
+    const mnemonic = helper.aes_decrypt(account["mnemonic"], password) || "";
+    const img = mnemonic
+      ? await Qrcode.toDataURL(mnemonic, { width: 520 })
+      : "";
+    this.setState({
+      seeds: mnemonic ? mnemonic.split(" ") : [],
+      copytext: mnemonic,
+      img,
+    });
+  };
+  getKey = async (account, password) => {
+    const key = helper.aes_decrypt(account["privateKey"], password) || "";
+    const img = key ? await Qrcode.toDataURL(key, { width: 520 }) : "";
+    this.setState({
+      copytext: key,
+      img,
+    });
+  };
   getKeystore = async (account, password) => {
     const key = helper.aes_decrypt(account["privateKey"], password) || "";
     let keystore = "";
@@ -60,8 +81,12 @@ class IndexRC extends React.Component {
       .then((res) => {
         keystore = JSON.stringify(res);
       });
+    const img = keystore
+      ? await Qrcode.toDataURL(keystore, { width: 520 })
+      : "";
     this.setState({
       copytext: keystore,
+      img,
     });
   };
   copy = () => {
@@ -162,7 +187,12 @@ class IndexRC extends React.Component {
               </div>
             </CopyToClipboard>
             <Divider orientation="vertical" flexItem />
-            <div className={classes.half}>
+            <div
+              className={classes.half}
+              onClick={() => {
+                this.setState({ open: true });
+              }}
+            >
               <Iconfont type="QRcode" size={20} />
               <span>{intl.formatMessage({ id: "qrcode" })}</span>
             </div>
@@ -185,6 +215,20 @@ class IndexRC extends React.Component {
             })}
           </Button>
         </div>
+        <Dialog
+          open={this.state.open}
+          onClose={() => {
+            this.setState({ open: false });
+          }}
+        >
+          <div>
+            <img
+              src={this.state.img}
+              width="180px"
+              style={{ display: "block" }}
+            />
+          </div>
+        </Dialog>
       </div>
     );
   }

@@ -175,7 +175,6 @@ class IndexRC extends React.Component {
               onClick={() => {
                 this.setState({ open: false, password: "", password_msg: "" });
               }}
-              // style={{ padding: 10 }}
             >
               {intl.formatMessage({ id: "cancel" })}
             </Button>
@@ -185,7 +184,6 @@ class IndexRC extends React.Component {
               color="primary"
               fullWidth
               disabled={!this.state.password}
-              // style={{ padding: 10 }}
             >
               {intl.formatMessage({ id: "confirm" })}
             </Button>

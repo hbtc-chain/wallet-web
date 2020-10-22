@@ -9,21 +9,21 @@ function IndexPage({ layout, dispatch, location, history }) {
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
       <div className="g_content">
-        {/* {layout.logged ? ( */}
-        <IndexRC
-          {...layout}
-          dispatch={dispatch}
-          location={location}
-          history={history}
-        />
-        {/* ) : (
+        {layout.logged ? (
+          <IndexRC
+            {...layout}
+            dispatch={dispatch}
+            location={location}
+            history={history}
+          />
+        ) : (
           <LoginRC
             {...layout}
             dispatch={dispatch}
             location={location}
             history={history}
           />
-        )} */}
+        )}
       </div>
     </LayoutRC>
   );
