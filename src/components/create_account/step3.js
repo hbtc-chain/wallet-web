@@ -76,15 +76,11 @@ class IndexRC extends React.Component {
     const account = this.state.account;
     const state = this.props.location.state;
     let password = this.state.password;
-    let obj = {};
-    obj.account = account;
-    obj.password = password;
-    if (state && state.way == "seed") {
-      obj.mnemonic = state.mnemonic;
-    }
-    if (state && state.way == "key") {
-      obj.key = state.key;
-    }
+    let obj = {
+      account,
+      password,
+    };
+    Object.assign(obj, state);
     // 创建账户
     await this.props.dispatch({
       type: "layout/create_account",

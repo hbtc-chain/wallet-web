@@ -12,6 +12,7 @@ import { routerRedux } from "dva/router";
 import CONST from "../../util/const";
 import Nav from "./nav";
 import classnames from "classnames";
+import helper from "../../util/helper";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -20,7 +21,9 @@ class IndexRC extends React.Component {
       seed: "",
       seed_msg: "",
       keyStore: "",
+      keyStore_msg: "",
       keyStorepwd: "",
+      keyStorepwd_msg: "",
       key: "",
       key_msg: "",
       // 展示信息
@@ -69,6 +72,7 @@ class IndexRC extends React.Component {
     const params = querystring.parse(search || "");
     const way = params.way;
     let obj = {};
+    let keys = {}; // 公钥私钥
     if (way == "seed") {
       const seed = this.state.seed
         .replace(/\s{2,}/, " ")
@@ -82,6 +86,8 @@ class IndexRC extends React.Component {
         });
         return;
       }
+      // 生成公钥秘钥
+      keys = helper.createKey(seed.join(" "), CONST.HBC_PATH);
       obj = {
         way: "seed",
         mnemonic: seed.join(" "),
@@ -90,11 +96,43 @@ class IndexRC extends React.Component {
     if (way == "keyStore") {
       const keyStore = this.state.keyStore.replace(/\s/g, "");
       const keyStorepwd = this.state.keyStorepwd.replace(/\s/g, "");
+      obj = {
+        way: "keyStore",
+      };
       if (!keyStore || !keyStorepwd) {
         return;
       }
-      // keyStore导入
-      // obj = {};
+      let err = false;
+      // 根据keystore解公钥私钥地址
+      await helper
+        .decryptKeyStore(keyStore, keyStorepwd)
+        .then((res) => {
+          console.log(res);
+          obj.data = res;
+          keys = res;
+        })
+        .catch((reject) => {
+          console.log(reject);
+          if (reject == "invalid password") {
+            this.setState({
+              keyStorepwd_msg: this.props.intl.formatMessage({
+                id: "password is wrong",
+              }),
+            });
+            err = true;
+          } else {
+            this.setState({
+              keyStore_msg: this.props.intl.formatMessage({
+                id: "keystore.error",
+              }),
+            });
+            err = true;
+          }
+          return;
+        });
+      if (err) {
+        return;
+      }
     }
     if (way == "key") {
       const key = this.state.key.replace(/\s/g, "");
@@ -107,16 +145,25 @@ class IndexRC extends React.Component {
         });
         return;
       }
+      // 根据私钥解公钥
+      keys = helper.createKeyFromPrivateKey(key);
       obj = {
         way: "key",
         key,
       };
     }
+    console.log(keys);
     // await this.props.dispatch({
     //   type: "layout/create_account",
     //   payload: obj,
     // });
-    if (way == "seed" || way == "key") {
+    // 检验地址是否重复
+    const address =
+      way == "keyStore" ? keys.address : helper.createAddress(keys.publicKey);
+    const repeat = this.props.store.accounts.filter(
+      (account) => account.address == address
+    ).length;
+    if (!repeat) {
       this.props.dispatch(
         routerRedux.push({
           pathname: route_map.create_account_step3,
@@ -124,6 +171,12 @@ class IndexRC extends React.Component {
           state: obj,
         })
       );
+    } else {
+      this.setState({
+        [way + "_msg"]: this.props.intl.formatMessage({
+          id: "account.import.repeat",
+        }),
+      });
     }
   };
   verif = () => {
@@ -201,6 +254,8 @@ class IndexRC extends React.Component {
                 value={this.state.keyStore}
                 className={classes.textarea}
                 onChange={this.handleChange("keyStore")}
+                error={Boolean(this.state.keyStore_msg)}
+                helperText={this.state.keyStore_msg}
                 multiline
                 rows={5}
                 variant="outlined"
@@ -219,6 +274,8 @@ class IndexRC extends React.Component {
                 className={classes.input}
                 onChange={this.handleChange("keyStorepwd")}
                 placeholder={intl.formatMessage({ id: "enter password" })}
+                error={Boolean(this.state.keyStorepwd_msg)}
+                helperText={this.state.keyStorepwd_msg}
                 variant="outlined"
               />
             </Grid>
