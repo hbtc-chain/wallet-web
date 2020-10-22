@@ -7,7 +7,7 @@
       "19": "logo192.png",
       "38": "logo192.png"
     },
-    "default_title": "HBC wallet",
+    "default_title": "HBTC wallet",
     "default_popup": "index.html#/index"
   },
   "content_scripts": [
@@ -19,7 +19,7 @@
     }
   ],
 
-  "description": "HBC WALLET",
+  "description": "HBTC WALLET",
 
   "icons": {
     "48": "logo192.png",
@@ -28,7 +28,7 @@
 
   "manifest_version": 2,
 
-  "name": "HBC wallet",
+  "name": "HBTC wallet",
 
   "permissions": ["webNavigation", "tabs", "activeTab", "storage"],
 
