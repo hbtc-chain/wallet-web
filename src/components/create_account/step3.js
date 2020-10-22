@@ -74,7 +74,7 @@ class IndexRC extends React.Component {
   };
   import = async () => {
     const account = this.state.account;
-    const state = this.props.location.state;
+    const state = this.props.location.state || {};
     let password = this.state.password;
     let obj = {
       account,
@@ -262,7 +262,11 @@ class IndexRC extends React.Component {
             variant="contained"
             fullWidth
             className={classes.button}
-            disabled={!this.state.account || this.state.account_msg_i.length}
+            disabled={
+              !this.state.account || this.state.account_msg_i.length
+                ? true
+                : false
+            }
             onClick={this.next}
           >
             {intl.formatMessage({

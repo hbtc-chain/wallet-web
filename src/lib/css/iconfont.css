@@ -28,6 +28,15 @@
   line-height: 24px;
   padding: 0 5px;
 }
+
+.bhex-icon-unhidden:before {
+  content: "\e61e";
+}
+
+.bhex-icon-hidden:before {
+  content: "\e61f";
+}
+
 .bhex-icon-last:before {
   content: "\e627";
 }

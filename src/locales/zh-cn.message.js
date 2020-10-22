@@ -99,7 +99,9 @@ export default {
   setting: "设置",
   logout: "登出",
   "copy to parse": "复制到剪切板",
+  copy: "复制",
   copyed: "已复制",
+  qrcode: "二维码",
   "no data": "暂无数据",
   "account info": "账户详情",
   "account link": "在链上查看",
@@ -222,5 +224,7 @@ export default {
   "invalid password": "密码不正确",
   "unsupported cipher": "cipher不正确",
   "address mismatch": "地址不匹配",
+  backups: "我已安全备份",
+  "enter original wallet password": "请输入原钱包密码",
   "external token list": "跨链代币列表",
 };
