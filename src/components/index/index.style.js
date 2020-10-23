@@ -1,4 +1,5 @@
 import util from "../../util/util";
+import helper from "../../util/helper";
 export default (theme) => ({
   indexpaper: {
     //height: "calc(100vh - 75px)",
@@ -197,8 +198,9 @@ export default (theme) => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
+    position: "relative",
     "& span": {
-      color: "rgba(255,255,255,0.6)",
+      color: theme.palette.common.white,
       fontSize: 12,
     },
     "& strong": {
@@ -211,9 +213,60 @@ export default (theme) => ({
       height: 24,
       lineHeight: "24px",
       background: "rgba(255,255,255,0.2)",
-      color: "rgba(255,255,255,.75)",
+      color: "rgba(255,255,255,.7)",
       borderRadius: 4,
       padding: "0 6px",
+      cursor: "pointer",
+      "&.copyed": {
+        color: theme.palette.common.white,
+        minWidth: 194,
+        background: theme.palette.error.main,
+        padding: "0 2px",
+        "& span:first-of-type": {
+          flex: 1,
+        },
+        "& span:last-of-type": {
+          display: "flex",
+          alignItems: "center",
+          "& hr": {
+            height: 12,
+            background: `${helper.hex_to_rgba(theme.palette.grey[100], 0.3)}`,
+            marginTop: 4,
+          },
+          "& svg": {
+            margin: "0 0 0 5px",
+          },
+        },
+      },
+    },
+  },
+  control_btn: {
+    position: "absolute",
+    right: 0,
+    top: 10,
+    width: 24,
+    height: 24,
+    borderRadius: 4,
+    "&:hover": {
+      background: `${helper.hex_to_rgba(theme.palette.grey[900], 0.2)}`,
+    },
+  },
+  control_list: {
+    minWidth: 200,
+    "& li": {
+      padding: "16px 24px",
+      color: theme.palette.grey[900],
+      lineHeight: "22px",
+      borderBottom: `1px solid ${theme.palette.grey[100]}`,
+      "& i": {
+        color: theme.palette.grey[200],
+      },
+      "& .MuiListItemIcon-root": {
+        minWidth: 25,
+      },
+      "& .MuiListItemText-root": {
+        margin: 0,
+      },
     },
   },
   chain_choose_title: {

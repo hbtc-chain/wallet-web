@@ -66,56 +66,6 @@ class IndexRC extends React.Component {
             id: "create.step1.btn.import",
           })}
         </Button>
-        {/* <Grid container justify="center">
-          <Grid item>
-            <Paper variant="outlined" className={classes.paper}>
-              <VerticalAlignBottomIcon fontSize="large" />
-              <h2>
-                {intl.formatMessage({
-                  id: "create.step1.desc.1",
-                })}
-              </h2>
-              <p>
-                {intl.formatMessage({
-                  id: "create.step1.desc.2",
-                })}
-              </p>
-              <Button
-                onClick={this.goto("import")}
-                color="primary"
-                variant="contained"
-              >
-                {intl.formatMessage({
-                  id: "create.step1.btn.import",
-                })}
-              </Button>
-            </Paper>
-          </Grid>
-          <Grid item>
-            <Paper variant="outlined" className={classes.paper}>
-              <AddIcon fontSize="large" />
-              <h2>
-                {intl.formatMessage({
-                  id: "create.step1.desc.3",
-                })}
-              </h2>
-              <p>
-                {intl.formatMessage({
-                  id: "create.step1.desc.4",
-                })}
-              </p>
-              <Button
-                onClick={this.goto("create")}
-                color="primary"
-                variant="contained"
-              >
-                {intl.formatMessage({
-                  id: "create.step1.btn.create",
-                })}
-              </Button>
-            </Paper>
-          </Grid>
-        </Grid> */}
       </div>
     );
   }

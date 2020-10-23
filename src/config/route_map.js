@@ -25,7 +25,7 @@ export default {
   create_account_step4: `${local}/create_account_step4`,
   account_seed: `${local}/account_seed`,
   account_import: `${local}/account_import`,
-  account_list: `${local}/account_list`,
+  account_import_list: `${local}/account_import_list`,
   create_account_done: `${local}/create_account_done`,
   sign: `${local}/sign`,
   connect: `${local}/connect`,

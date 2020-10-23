@@ -108,7 +108,7 @@ class IndexRC extends React.Component {
       const search = this.props.location.search;
       this.props.dispatch(
         routerRedux.push({
-          pathname: route_map.create_account_done,
+          pathname: route_map.index,
           search,
         })
       );
@@ -121,7 +121,7 @@ class IndexRC extends React.Component {
       step1 ? (
         <Nav
           key="nav"
-          title={intl.formatMessage({ id: "create.step1.btn.create" })}
+          title={intl.formatMessage({ id: "create account" })}
           {...otherProps}
         />
       ) : (

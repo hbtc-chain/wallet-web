@@ -209,6 +209,9 @@ export default {
   "choose chain": "选择网络",
   "choose account": "切换账户",
   "add account": "添加账户",
+  "create account": "创建账户",
+  "import account": "导入账户",
+  "export backup account": "导出备份账户",
   setting: "设置",
   "always need pwd": "每次操作都需要密码(默认)",
   "30 min need pwd once": "30分钟内免输入密码",
@@ -227,4 +230,6 @@ export default {
   backups: "我已安全备份",
   "enter original wallet password": "请输入原钱包密码",
   "external token list": "跨链代币列表",
+  "back up now": "立即备份",
+  "back up later": "稍后备份",
 };

@@ -47,7 +47,7 @@ class IndexRC extends React.Component {
     return [
       <Nav
         key="nav"
-        title={intl.formatMessage({ id: "create.step1.btn.import" })}
+        title={intl.formatMessage({ id: "import account" })}
         {...otherProps}
       />,
       <div

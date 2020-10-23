@@ -64,7 +64,7 @@ class IndexRC extends React.Component {
     const search = this.props.location.search;
     this.props.dispatch(
       routerRedux.push({
-        pathname: route_map.account_seed,
+        pathname: route_map.create_account_done,
         search,
         state: {
           password: password,
@@ -188,10 +188,7 @@ class IndexRC extends React.Component {
       <Nav
         key="nav"
         title={intl.formatMessage({
-          id:
-            params.type == "create"
-              ? "create.step1.btn.create"
-              : "create.step1.btn.import",
+          id: params.type == "create" ? "create account" : "import account",
         })}
         onClick={this.pre}
         {...otherProps}

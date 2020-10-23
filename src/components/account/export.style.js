@@ -37,6 +37,9 @@ export default (theme) => ({
   },
   button: {
     ...theme.typography.button,
+    "&.MuiButton-contained": {
+      color: theme.palette.common.white,
+    },
     "&.Mui-disabled": {
       color: theme.palette.common.white,
       background: theme.palette.grey[100],

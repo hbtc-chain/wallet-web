@@ -29,7 +29,7 @@ export default {
     },
     error: {
       light: "#e57373",
-      main: "#f44336",
+      main: "#ED3756",
       dark: "#d32f2f",
       contrastText: "#fff",
     },

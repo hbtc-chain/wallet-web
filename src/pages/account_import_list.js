@@ -3,7 +3,7 @@ import { connect } from "dva";
 import { routerRedux } from "dva/router";
 import LayoutRC from "../components/layout";
 import HeaderRC from "../components/header";
-import IndexRC from "../components/create_account/account_list";
+import IndexRC from "../components/create_account/account_import_list";
 import withRoot from "../withRoot";
 import route_map from "../config/route_map";
 import LoginRC from "../components/account/login";

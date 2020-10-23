@@ -27,6 +27,9 @@ import {
   TextField,
   Drawer,
   Radio,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -45,6 +48,7 @@ import util from "../../util/util";
 import API from "../../util/api";
 import AutorenewIcon from "@material-ui/icons/Autorenew";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { Iconfont } from "../../lib";
 import route_map from "../../config/route_map";
 import message from "../public/message";
@@ -55,6 +59,7 @@ class IndexRC extends React.Component {
     this.state = {
       copyed: false,
       anchorEl: false,
+      anchorEl2: false,
       info_dialog: false,
       dialog_sites: false,
       dialog_private_key: false,
@@ -129,14 +134,16 @@ class IndexRC extends React.Component {
     this.get_balance();
   };
   goto = () => {};
-  copy = () => {
+  copy = (showmessage) => () => {
     this.setState(
       {
         copyed: true,
       },
       () => {
         if (this.state.copyed) {
-          message.success(this.props.intl.formatMessage({ id: "copyed" }));
+          if (showmessage) {
+            message.success(this.props.intl.formatMessage({ id: "copyed" }));
+          }
           setTimeout(() => {
             this.setState({
               copyed: false,
@@ -165,6 +172,7 @@ class IndexRC extends React.Component {
   handleClose = () => {
     this.setState({
       anchorEl: null,
+      anchorEl2: null,
     });
   };
   filteraddress = (str) => {
@@ -417,11 +425,120 @@ class IndexRC extends React.Component {
                 ? (this.props.store.unit || "").toUpperCase()
                 : ""}
             </strong>
-            <CopyToClipboard text={address} onCopy={this.copy}>
-              <em>
-                {this.filteraddress(address)} | <Iconfont type="copy" />
+            {this.state.copyed ? (
+              <em className="copyed">
+                <span>
+                  {this.props.intl.formatMessage({ id: "copy to parse" })}
+                </span>
+                <span>
+                  <Divider orientation="vertical" flexItem />
+                  <CheckCircleIcon />
+                </span>
               </em>
-            </CopyToClipboard>
+            ) : (
+              <CopyToClipboard text={address} onCopy={this.copy(false)}>
+                <em>
+                  {this.filteraddress(address)} | <Iconfont type="copy" />
+                </em>
+              </CopyToClipboard>
+            )}
+            <div>
+              <IconButton
+                aria-controls={
+                  Boolean(this.state.anchorEl2) ? "customized-menu" : undefined
+                }
+                aria-haspopup="true"
+                onClick={(e) => {
+                  this.setState({
+                    anchorEl2: e.target,
+                  });
+                }}
+                className={classes.control_btn}
+              >
+                <MoreVertIcon />
+              </IconButton>
+            </div>
+            <Menu
+              id="customized-menu"
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              anchorEl={this.state.anchorEl2}
+              open={Boolean(this.state.anchorEl2)}
+              onClose={this.handleClose}
+              classes={{ list: classes.control_list }}
+            >
+              <MenuItem>
+                <ListItemIcon>
+                  <Iconfont type="language" size={22} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={this.props.intl.formatMessage({
+                    id: "choose account",
+                  })}
+                />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this.props.dispatch(
+                    routerRedux.push({
+                      pathname: route_map.create_account_step3,
+                      search: "type=create",
+                    })
+                  );
+                }}
+              >
+                <ListItemIcon>
+                  <Iconfont type="language" size={22} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={this.props.intl.formatMessage({
+                    id: "create account",
+                  })}
+                />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this.props.dispatch(
+                    routerRedux.push({
+                      pathname: route_map.create_account_step4,
+                    })
+                  );
+                }}
+              >
+                <ListItemIcon>
+                  <Iconfont type="language" size={22} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={this.props.intl.formatMessage({
+                    id: "import account",
+                  })}
+                />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this.props.dispatch(
+                    routerRedux.push({
+                      pathname: route_map.export_list,
+                    })
+                  );
+                }}
+              >
+                <ListItemIcon>
+                  <Iconfont type="language" size={22} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={this.props.intl.formatMessage({
+                    id: "export backup account",
+                  })}
+                />
+              </MenuItem>
+            </Menu>
           </div>
           <Grid
             container
@@ -761,7 +878,7 @@ class IndexRC extends React.Component {
                 {this.state.private_key ? (
                   <CopyToClipboard
                     text={this.state.private_key}
-                    onCopy={this.copy}
+                    onCopy={this.copy(true)}
                   >
                     <p className={classes.private_key}>
                       {this.state.private_key}
