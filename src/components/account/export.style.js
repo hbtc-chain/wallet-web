@@ -88,6 +88,7 @@ export default (theme) => ({
       "& li": {
         color: theme.palette.grey[900],
         fontSize: 14,
+        cursor: "pointer",
         "& .MuiListItem-root": {
           padding: "14px 16px",
         },

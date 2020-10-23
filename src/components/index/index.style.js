@@ -287,8 +287,12 @@ export default (theme) => ({
   index_top_btn: {
     margin: "0 -16px",
     width: "calc(100% + 32px)",
-    height: 40,
+    height: 48,
+    padding: "12px 0",
     borderTop: `1px solid rgba(255, 255, 255, 0.2)`,
+    "& hr": {
+      background: `${helper.hex_to_rgba(theme.palette.grey[100], 0.2)}`,
+    },
     "& div:nth-child(3n+1),& div:nth-child(3n)": {
       flex: 1,
       textAlign: "center",
