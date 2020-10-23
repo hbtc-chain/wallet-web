@@ -139,7 +139,8 @@ export default (theme) => ({
     flexDirection: "column",
   },
   chain: {
-    width: 336,
+    // width: 336,
+    padding: "0 16px",
     margin: "0 auto",
     position: "relative",
   },
@@ -372,7 +373,8 @@ export default (theme) => ({
     },
   },
   symbol: {
-    width: 336,
+    // width: 336,
+    padding: "0 16px",
     margin: "0 auto",
     position: "relative",
   },
@@ -471,7 +473,10 @@ export default (theme) => ({
   btn_fixed: {
     position: "fixed",
     bottom: 10,
-    width: 336,
+    left: 0,
+    right: 0,
+    padding: "0 16px",
+    // width: 336,
   },
   back: {
     height: 44,
@@ -530,7 +535,7 @@ export default (theme) => ({
     height: 48,
     position: "fixed",
     bottom: 10,
-    width: 336,
+    // width: 336,
   },
   drawer: {
     position: "relative",

@@ -73,6 +73,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/export"),
   });
+  //  account choose
+  const AccountChooseRC = dynamic({
+    app,
+    component: () => import("./pages/account_choose"),
+  });
   //  account import list
   const AccountImportListRC = dynamic({
     app,
@@ -190,6 +195,12 @@ function RouterConfig({ history, app }) {
         />
         {/*  account export */}
         <Route exact path={route_map.export} component={AccountExportRC} />
+        {/* account choose */}
+        <Route
+          exact
+          path={route_map.account_choose}
+          component={AccountChooseRC}
+        />
         {/* account import list */}
         <Route
           exact

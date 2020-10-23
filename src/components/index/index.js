@@ -473,7 +473,15 @@ class IndexRC extends React.Component {
               onClose={this.handleClose}
               classes={{ list: classes.control_list }}
             >
-              <MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this.props.dispatch(
+                    routerRedux.push({
+                      pathname: route_map.account_choose,
+                    })
+                  );
+                }}
+              >
                 <ListItemIcon>
                   <Iconfont type="language" size={22} />
                 </ListItemIcon>

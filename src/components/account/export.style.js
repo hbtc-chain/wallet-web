@@ -183,4 +183,53 @@ export default (theme) => ({
     borderRadius: 4,
     wordBreak: "break-all",
   },
+
+  account_choose: {
+    margin: "-16px 0 0",
+    "& ul": {
+      paddingLeft: 16,
+      "& li": {
+        borderBottom: `1px solid ${theme.palette.grey[50]}`,
+        cursor: "pointer",
+        "& .MuiListItem-root": {
+          padding: "16px 48px 16px 0",
+        },
+        "& .MuiListItemText-root": {
+          margin: 0,
+          "& span": {
+            fontSize: 14,
+            lineHeight: "24px",
+          },
+        },
+        "& em": {
+          display: "flex",
+          width: 16,
+          height: 16,
+          alignItems: "center",
+          justifyContent: "center",
+          border: `1.5px solid ${helper.hex_to_rgba(
+            theme.palette.primary.main,
+            0.3
+          )}`,
+          borderRadius: "100%",
+          overflow: "hidden",
+          cursor: "pointer",
+        },
+        "& svg": {
+          display: "none",
+          color: theme.palette.primary.main,
+          marginLeft: -1,
+          fontSize: 18,
+        },
+        "&.select": {
+          "& em": {
+            display: "none",
+          },
+          "& svg": {
+            display: "block",
+          },
+        },
+      },
+    },
+  },
 });
