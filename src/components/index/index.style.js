@@ -42,11 +42,22 @@ export default (theme) => ({
     "& span.external": {
       fontSize: 12,
       color: theme.palette.grey[500],
-      background: theme.palette.grey[200],
+      background: helper.hex_to_rgba(theme.palette.grey[200], 0.2),
       padding: "0 2px",
       margin: "0 0 0 4px",
       borderRadius: 2,
       fontWeight: 400,
+      transform: "scale3d(1,1,0.85)",
+    },
+    "& span.native": {
+      fontSize: 12,
+      color: theme.palette.grey[500],
+      background: helper.hex_to_rgba(theme.palette.grey[200], 0.2),
+      padding: "0 2px",
+      margin: "0 0 0 4px",
+      borderRadius: 2,
+      fontWeight: 400,
+      transform: "scale3d(1,1,0.85)",
     },
   },
   token: {
@@ -139,7 +150,7 @@ export default (theme) => ({
     flexDirection: "column",
   },
   chain: {
-    width: 336,
+    padding: "0 16px",
     margin: "0 auto",
     position: "relative",
   },

@@ -130,7 +130,7 @@ const initStore = async () => {
         units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
         langs: ["zh-cn", "en-us"],
         messageManager: null,
-        logged: false,
+        logged: window.location.href.indexOf("localhost") > -1 ? true : false,
       },
     },
     res ? res.lang : "zh-cn"

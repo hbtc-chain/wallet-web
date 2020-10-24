@@ -402,6 +402,21 @@ class IndexRC extends React.Component {
               </Tooltip>
             </Grid>
             <Grid item>
+              <Tooltip
+                title={this.props.intl.formatMessage({ id: "choose account" })}
+              >
+                <Iconfont
+                  type="locked"
+                  size={20}
+                  onClick={() => {
+                    this.setState({
+                      account_choose: true,
+                    });
+                  }}
+                />
+              </Tooltip>
+            </Grid>
+            <Grid item>
               <Tooltip title={this.props.intl.formatMessage({ id: "setting" })}>
                 <Iconfont
                   type="setting"
@@ -625,7 +640,11 @@ class IndexRC extends React.Component {
                   <strong>
                     {(token.symbol || "").toUpperCase()}{" "}
                     {token.is_native ? (
-                      ""
+                      <span className="native">
+                        {this.props.intl.formatMessage({
+                          id: "native test token list",
+                        })}
+                      </span>
                     ) : (
                       <span className="external">
                         {this.props.intl.formatMessage({
@@ -640,12 +659,11 @@ class IndexRC extends React.Component {
                   </em>
                 </ListItemText>
                 <ListItemText style={{ textAlign: "right" }}>
-                  <strong style={{ display: "inline" }}>
+                  <strong style={{ display: "inline" }}></strong>
+                  <em>
                     {this.props.store.unit == "usd" ? "$" : ""}
                     {this.props.store.unit == "cny" ? "￥" : ""}
                     {amount}
-                  </strong>
-                  <em>
                     {this.props.store.unit != "usd" &&
                     this.props.store.unit != "cny"
                       ? this.props.store.unit.toUpperCase()

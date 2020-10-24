@@ -232,4 +232,5 @@ export default {
   "external token list": "跨链代币列表",
   "back up now": "立即备份",
   "back up later": "稍后备份",
+  "native test token list": "原生测试代币列表",
 };
