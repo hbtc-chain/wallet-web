@@ -278,15 +278,16 @@ class IndexRC extends React.Component {
             </List>
           </Collapse> */}
         </List>
-        <Button
-          color="primary"
-          variant="contained"
-          onClick={this.logout}
-          fullWidth
-          className={classes.btn_fixed}
-        >
-          {this.props.intl.formatMessage({ id: "logout" })}
-        </Button>
+        <div className={classes.btn_fixed}>
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={this.logout}
+            fullWidth
+          >
+            {this.props.intl.formatMessage({ id: "logout" })}
+          </Button>
+        </div>
       </div>
     );
   }

@@ -488,7 +488,15 @@ class IndexRC extends React.Component {
               onClose={this.handleClose}
               classes={{ list: classes.control_list }}
             >
-              <MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this.props.dispatch(
+                    routerRedux.push({
+                      pathname: route_map.account_choose,
+                    })
+                  );
+                }}
+              >
                 <ListItemIcon>
                   <Iconfont type="language" size={22} />
                 </ListItemIcon>
@@ -571,9 +579,9 @@ class IndexRC extends React.Component {
                 );
               }}
             >
-              {this.props.intl.formatMessage({ id: "send" })}
+              {this.props.intl.formatMessage({ id: "receive payment" })}
             </Grid>
-            <Grid item>|</Grid>
+            <Divider orientation="vertical" flexItem />
             <Grid
               item
               onClick={() => {
@@ -584,7 +592,9 @@ class IndexRC extends React.Component {
                 );
               }}
             >
-              {this.props.intl.formatMessage({ id: "accept" })}
+              {this.props.intl.formatMessage({
+                id: "hbtcchain/transfer/MsgSend",
+              })}
             </Grid>
           </Grid>
         </div>

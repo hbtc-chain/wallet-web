@@ -40,4 +40,5 @@ export default {
   accept_by_type: `${local}/accept_by_type`,
   export: `${local}/export`,
   export_list: `${local}/export_list`,
+  account_choose: `${local}/account_choose`,
 };

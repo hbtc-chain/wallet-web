@@ -180,6 +180,7 @@ export default (theme) => ({
       border: `2px solid ${theme.palette.primary.main}`,
       borderRadius: 6,
       marginBottom: 16,
+      cursor: "pointer",
       "& .MuiListItem-root": {
         padding: "16px 48px 16px 16px",
       },
