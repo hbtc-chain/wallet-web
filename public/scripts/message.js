@@ -86,9 +86,7 @@ export default class MessageManager {
     if (Object.keys(obj).length == 0) {
       return;
     }
-    if (obj.to) {
-      // console.log("background 接收到消息：" + msg);
-    }
+    console.warn("background 接收到消息：" + msg);
     // 发送到background
     if (obj.to == CONST.MESSAGE_FROM_BACKGROUND) {
       if (obj.type == CONST.METHOD_LOGGED_STATUS_QUERY) {
@@ -415,6 +413,7 @@ export default class MessageManager {
           );
         }
       } catch (e) {
+        delete this.signmsgs[obj.id];
         this.sendMsgToPage(
           { ...sign_obj, data: { code: 400, msg: e.message } },
           port
@@ -428,11 +427,11 @@ export default class MessageManager {
    * @param {*} port
    */
   async sign_result(obj, port) {
-    if (obj.id && !this.signmsgs[obj.id]) {
-      console.warn(`sign message has no id = ${obj.id}`);
-      return;
-    }
-    if (this.signmsgs && obj.id && this.signmsgs[obj.id]) {
+    // if (!obj.id && !this.signmsgs[obj.id]) {
+    //   console.warn(`sign message has no id = ${obj.id}`);
+    //   return;
+    // }
+    if (this.signmsgs && obj.id) {
       delete this.signmsgs[obj.id];
     }
     store.set({ signmsgs: this.signmsgs });
@@ -590,8 +589,10 @@ export default class MessageManager {
     this.reset_pwd(obj.data.no_pwd, obj.data.password);
     if (obj.data.no_pwd) {
       this.clear_pwd_timer = setTimeout(() => {
-        this.clear_pwd(false, "");
+        this.reset_pwd(false, "");
       }, 30 * 60 * 1000);
+    } else {
+      this.reset_pwd(false, "");
     }
   }
   // reset_pwd

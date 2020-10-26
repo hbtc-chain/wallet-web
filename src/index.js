@@ -92,6 +92,7 @@ function start(initstore, lang) {
 }
 const initStore = async () => {
   let res = await Store.get();
+
   // 数据在 /public/scripts/store.js中进行初始化，以下为本地开发用
   if (window.location.href.indexOf("localhost") > -1) {
     res = Object.assign(
