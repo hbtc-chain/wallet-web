@@ -187,7 +187,7 @@ export default (theme) => ({
   account_choose: {
     margin: "-16px 0 0",
     "& ul": {
-      paddingLeft: 16,
+      padding: "0 0 0 16px",
       "& li": {
         borderBottom: `1px solid ${theme.palette.grey[50]}`,
         cursor: "pointer",
