@@ -350,7 +350,11 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            <h2>{this.props.intl.formatMessage({ id: "send" })}</h2>
+            <h2>
+              {this.props.intl.formatMessage({
+                id: "hbtcchain/transfer/MsgSend",
+              })}
+            </h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
