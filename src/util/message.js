@@ -105,6 +105,7 @@ class MessageManager {
    * @param {*} obj
    */
   sendMessage({ id, type, data }) {
+    console.log(id, type);
     let obj = util.packmsg({
       from: CONST.MESSAGE_FROM_POPUP,
       to: CONST.MESSAGE_FROM_BACKGROUND,
