@@ -72,8 +72,6 @@ class MessageManager {
           search: "?id=" + obj.id + "&tabId=" + obj.tabId,
         })
       );
-      const tabid = await this.currentTab();
-      console.log(tabid);
     }
     // connect
     if (
@@ -107,6 +105,7 @@ class MessageManager {
    * @param {*} obj
    */
   sendMessage({ id, type, data }) {
+    console.log(id, type);
     let obj = util.packmsg({
       from: CONST.MESSAGE_FROM_POPUP,
       to: CONST.MESSAGE_FROM_BACKGROUND,

@@ -52,6 +52,7 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { Iconfont } from "../../lib";
 import route_map from "../../config/route_map";
 import message from "../public/message";
+import extension from "extensionizer";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -337,6 +338,28 @@ class IndexRC extends React.Component {
       chain_choose: false,
     });
   };
+  logout = async () => {
+    if (this.props.messageManager) {
+      await this.props.messageManager.sendMessage({
+        type: CONST.METHOD_LOGOUT,
+        data: {},
+      });
+      await this.props.dispatch({
+        type: "layout/save",
+        payload: {
+          store: {
+            ...this.props.store,
+            account_index: -1,
+          },
+        },
+      });
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.login,
+        })
+      );
+    }
+  };
   render() {
     const { classes } = this.props;
     const address =
@@ -386,47 +409,67 @@ class IndexRC extends React.Component {
                 <ExpandMoreIcon />
               </span>
             </Grid>
-            <Grid item>
-              <Tooltip
-                title={this.props.intl.formatMessage({ id: "choose account" })}
-              >
-                <Iconfont
-                  type="exchange"
-                  size={20}
-                  onClick={() => {
-                    this.setState({
-                      account_choose: true,
-                    });
-                  }}
-                />
+
+            <Grid
+              item
+              style={{
+                padding: "0 10px 0 0",
+                borderRight: "1px solid rgba(255,255,255,.3)",
+              }}
+            >
+              <Tooltip title={this.props.intl.formatMessage({ id: "exc" })}>
+                <div>
+                  <Iconfont
+                    type="exc-fa"
+                    size={24}
+                    onClick={() => {
+                      extension.tabs.create({
+                        url: this.props.store.chain[
+                          this.props.store.chain_index
+                        ]["exc"],
+                      });
+                      // window.open(
+                      //   this.props.store.chain[this.props.chain_index]["exc"],
+                      //   "_blank"
+                      // );
+                    }}
+                  />
+                </div>
               </Tooltip>
             </Grid>
-            <Grid item>
-              <Tooltip
-                title={this.props.intl.formatMessage({ id: "choose account" })}
-              >
-                <Iconfont
-                  type="locked"
-                  size={20}
-                  onClick={() => {
-                    this.setState({
-                      account_choose: true,
-                    });
-                  }}
-                />
+            <Grid item style={{ padding: "0 4px" }}>
+              <Tooltip title={this.props.intl.formatMessage({ id: "refresh" })}>
+                <div>
+                  <Iconfont
+                    type="refresh"
+                    size={24}
+                    onClick={() => {
+                      window.location.reload();
+                    }}
+                  />
+                </div>
+              </Tooltip>
+            </Grid>
+            <Grid item style={{ padding: "0 8px 0 4px" }}>
+              <Tooltip title={this.props.intl.formatMessage({ id: "logout" })}>
+                <div>
+                  <Iconfont type="locked" size={24} onClick={this.logout} />
+                </div>
               </Tooltip>
             </Grid>
             <Grid item>
               <Tooltip title={this.props.intl.formatMessage({ id: "setting" })}>
-                <Iconfont
-                  type="setting"
-                  size={20}
-                  onClick={() => {
-                    this.props.dispatch(
-                      routerRedux.push({ pathname: route_map.setting })
-                    );
-                  }}
-                />
+                <div>
+                  <Iconfont
+                    type="setting"
+                    size={24}
+                    onClick={() => {
+                      this.props.dispatch(
+                        routerRedux.push({ pathname: route_map.setting })
+                      );
+                    }}
+                  />
+                </div>
               </Tooltip>
             </Grid>
           </Grid>
