@@ -34,10 +34,8 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {
     if (this.props.store.account_index > -1) {
-      const arr = [].concat(this.state.password_msg_arr);
-      arr.push("pwd_rule4");
       this.setState({
-        password_msg_arr: arr,
+        password_msg_arr: ["pwd_rule4"],
       });
     }
   }
@@ -284,7 +282,12 @@ class IndexRC extends React.Component {
             <Grid item xs={12} className={classes.item}>
               <TextField
                 fullWidth
-                placeholder={intl.formatMessage({ id: "new.password" })}
+                placeholder={intl.formatMessage({
+                  id:
+                    this.props.store.account_index > -1
+                      ? "password"
+                      : "new.password",
+                })}
                 value={this.state.password}
                 onChange={this.handleChange("password")}
                 type="password"

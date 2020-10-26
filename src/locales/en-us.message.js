@@ -164,7 +164,7 @@ export default {
   "confirmed password": "Input password to confirm",
   swap: "Convert",
   lang: "Language",
-  "zh-cn": "Chinese",
+  "zh-cn": "中文",
   "en-us": "English",
   "next time to backup": "Back up later",
   native: "Native tokens",
