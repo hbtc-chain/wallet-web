@@ -72,8 +72,6 @@ class MessageManager {
           search: "?id=" + obj.id + "&tabId=" + obj.tabId,
         })
       );
-      const tabid = await this.currentTab();
-      console.log(tabid);
     }
     // connect
     if (

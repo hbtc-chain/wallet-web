@@ -233,4 +233,7 @@ export default {
   "back up now": "立即备份",
   "back up later": "稍后备份",
   "native test token list": "原生测试代币列表",
+  "no need password in 30m": "30分钟内免密",
+  refresh: "刷新",
+  exc: "JuSwap快速兑换通证",
 };

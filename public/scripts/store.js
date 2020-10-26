@@ -131,13 +131,17 @@ const init_data = {
       name: "main net",
       url: "https://explorer.hbtcchain.io",
       chain_id: "hbtc-testnet",
+      exc: "https://juswap.io/",
     },
     {
       name: "test net",
       url: "https://explorer.hbtcchain.io",
       chain_id: "hbtc-testnet",
+      exc: "https://juswap.io/",
     },
   ],
+  no_pwd: false, // 30m内免密
+  password: "",
   chain_index: 1, // 0 = main chain , 1 = test chain
   pwd_rule: 0, // 0 = 每次都输入密码， 1 = 30分内输入一次
 };

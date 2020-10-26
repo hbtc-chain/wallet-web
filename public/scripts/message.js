@@ -21,6 +21,9 @@ export default class MessageManager {
 
     // 登录状态
     this.logged = false;
+    // password, 30分钟免密
+    this.password = "";
+    this.clear_pwd_timer = null;
 
     // 启动资产查询loop
     this.get_balance_loop();
@@ -163,6 +166,11 @@ export default class MessageManager {
       // request get_balance
       if (obj.type == CONST.METHOD_GET_BALANCE) {
         this.get_balance(obj, port);
+      }
+
+      // 保存免密配置
+      if (obj.type == CONST.METHOD_SAVE_PASSWORD) {
+        this.save_password(obj, port);
       }
     }
   }
@@ -571,5 +579,28 @@ export default class MessageManager {
     datas.account_index = -1;
     this.signmsgs = {};
     store.set({ ...datas, signmsgs: {} });
+  }
+  /**
+   * save_password 30分钟免密状态记录
+   */
+  async save_password(obj, port) {
+    this.no_pwd = obj.data.no_pwd;
+    this.password = obj.data.password;
+    clearTimeout(this.clear_pwd_timer);
+    this.reset_pwd(obj.data.no_pwd, obj.data.password);
+    if (obj.data.no_pwd) {
+      this.clear_pwd_timer = setTimeout(() => {
+        this.clear_pwd(false, "");
+      }, 30 * 60 * 1000);
+    }
+  }
+  // reset_pwd
+  async reset_pwd(no_pwd, pwd) {
+    this.no_pwd = no_pwd;
+    this.password = pwd;
+    let datas = await store.get();
+    datas.no_pwd = no_pwd;
+    datas.password = pwd;
+    store.set(datas);
   }
 }

@@ -29,6 +29,14 @@
   padding: 0 5px;
 }
 
+.bhex-icon-refresh:before {
+  content: "\e620";
+}
+
+.bhex-icon-exc-fa:before {
+  content: "\e621";
+}
+
 .bhex-icon-unhidden:before {
   content: "\e61e";
 }

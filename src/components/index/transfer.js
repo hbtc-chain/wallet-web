@@ -29,6 +29,7 @@ import math from "../../util/mathjs";
 import message from "../public/message";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
+import PassowrdRC from "../public/password";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -159,27 +160,27 @@ class IndexRC extends React.Component {
       .done();
     return a;
   };
-  transfer = async () => {
-    if (!this.state.password) {
-      this.setState({
-        password_msg: this.props.intl.formatMessage({
-          id: "password is required",
-        }),
-      });
-      return;
-    }
-    let pwd = helper.sha256(this.state.password);
-    if (
-      pwd !=
-      this.props.store.accounts[this.props.store.account_index]["password"]
-    ) {
-      this.setState({
-        password_msg: this.props.intl.formatMessage({
-          id: "password is wrong",
-        }),
-      });
-      return;
-    }
+  transfer = async (res) => {
+    // if (!this.state.password) {
+    //   this.setState({
+    //     password_msg: this.props.intl.formatMessage({
+    //       id: "password is required",
+    //     }),
+    //   });
+    //   return;
+    // }
+    // let pwd = helper.sha256(this.state.password);
+    // if (
+    //   pwd !=
+    //   this.props.store.accounts[this.props.store.account_index]["password"]
+    // ) {
+    //   this.setState({
+    //     password_msg: this.props.intl.formatMessage({
+    //       id: "password is wrong",
+    //     }),
+    //   });
+    //   return;
+    // }
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
@@ -223,8 +224,8 @@ class IndexRC extends React.Component {
     let privateKey = account.privateKey;
     let publicKey = account.publicKey;
 
-    privateKey = helper.aes_decrypt(privateKey, this.state.password);
-    publicKey = helper.aes_decrypt(publicKey, this.state.password);
+    privateKey = helper.aes_decrypt(privateKey, res.password);
+    publicKey = helper.aes_decrypt(publicKey, res.password);
 
     const sign = helper.sign(obj, privateKey, publicKey);
 
@@ -303,7 +304,7 @@ class IndexRC extends React.Component {
     this.check(txhash);
   };
   render() {
-    const { classes } = this.props;
+    const { classes, ...otherProps } = this.props;
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
@@ -477,7 +478,19 @@ class IndexRC extends React.Component {
             </Button>
           )}
         </div>
-        <Dialog open={this.state.open}>
+        <PassowrdRC
+          {...otherProps}
+          open={this.state.open}
+          cancel={() => {
+            this.setState({
+              open: false,
+
+              loading: false,
+            });
+          }}
+          submit={this.transfer}
+        />
+        {/* <Dialog open={this.state.open}>
           <DialogTitle>
             {this.props.intl.formatMessage({ id: "confirmed password" })}
           </DialogTitle>
@@ -521,7 +534,7 @@ class IndexRC extends React.Component {
               {this.props.intl.formatMessage({ id: "confirm" })}
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
       </div>
     );
   }

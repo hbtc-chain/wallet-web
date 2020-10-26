@@ -9,6 +9,7 @@ import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
 import querystring from "query-string";
 import CONST from "../../util/const";
+import tools from "../../util/address";
 
 class IndexRC extends React.Component {
   constructor() {
