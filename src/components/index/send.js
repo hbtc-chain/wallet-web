@@ -342,7 +342,7 @@ class IndexRC extends React.Component {
           alignItems="center"
           className={classes.back}
         >
-          <Grid item xs={2} style={{ padding: "0 0 0 10px" }}>
+          <Grid item xs={2}>
             <ArrowBackIosIcon
               onClick={() => {
                 this.props.dispatch(routerRedux.goBack());
@@ -536,27 +536,22 @@ class IndexRC extends React.Component {
               max={1}
             />
           </div>
-          {this.state.loading ? (
-            <Button
-              color="primary"
-              variant="contained"
-              fullWidth
-              disabled
-              className={classes.submit}
-            >
-              <CircularProgress color="primary" />
-            </Button>
-          ) : (
-            <Button
-              color="primary"
-              variant="contained"
-              fullWidth
-              onClick={this.submit}
-              className={classes.submit}
-            >
-              {this.props.intl.formatMessage({ id: "transfer" })}
-            </Button>
-          )}
+          <div className={classes.submit}>
+            {this.state.loading ? (
+              <Button color="primary" variant="contained" fullWidth disabled>
+                <CircularProgress color="primary" />
+              </Button>
+            ) : (
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                onClick={this.submit}
+              >
+                {this.props.intl.formatMessage({ id: "transfer" })}
+              </Button>
+            )}
+          </div>
         </div>
         <PasswordRC
           {...otherProps}

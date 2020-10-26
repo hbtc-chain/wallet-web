@@ -383,7 +383,6 @@ export default (theme) => ({
     },
   },
   symbol: {
-    // width: 336,
     padding: "0 16px",
     margin: "0 auto",
     position: "relative",
@@ -486,7 +485,8 @@ export default (theme) => ({
     left: 0,
     right: 0,
     padding: "0 16px",
-    // width: 336,
+    maxWidth: 700,
+    margin: "0 auto",
   },
   back: {
     height: 44,
@@ -545,7 +545,11 @@ export default (theme) => ({
     height: 48,
     position: "fixed",
     bottom: 10,
-    // width: 336,
+    left: 0,
+    right: 0,
+    padding: "0 16px",
+    maxWidth: 700,
+    margin: "0 auto",
   },
   drawer: {
     position: "relative",
@@ -599,8 +603,13 @@ export default (theme) => ({
       lineHeight: "72px",
     },
   },
+  menulist: {
+    margin: "-12px -16px 0",
+    padding: 0,
+  },
   menuitem: {
     borderTop: `1px solid ${theme.palette.grey[50]}`,
+    padding: "13px 16px",
   },
   network_select: {
     margin: "0 15px 0 0",

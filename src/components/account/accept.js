@@ -67,7 +67,7 @@ class IndexRC extends React.Component {
           alignItems="center"
           className={classes.back}
         >
-          <Grid item xs={2} style={{ padding: "0 0 0 10px" }}>
+          <Grid item xs={2} style={{ padding: "0 0 0 16px" }}>
             <ArrowBackIosIcon
               onClick={() => {
                 this.props.dispatch(routerRedux.goBack());
