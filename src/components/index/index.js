@@ -410,7 +410,13 @@ class IndexRC extends React.Component {
               </span>
             </Grid>
 
-            <Grid item>
+            <Grid
+              item
+              style={{
+                padding: "0 10px 0 0",
+                borderRight: "1px solid rgba(255,255,255,.3)",
+              }}
+            >
               <Tooltip title={this.props.intl.formatMessage({ id: "exc" })}>
                 <div>
                   <Iconfont
@@ -431,7 +437,7 @@ class IndexRC extends React.Component {
                 </div>
               </Tooltip>
             </Grid>
-            <Grid item>
+            <Grid item style={{ padding: "0 4px" }}>
               <Tooltip title={this.props.intl.formatMessage({ id: "refresh" })}>
                 <div>
                   <Iconfont
@@ -444,7 +450,7 @@ class IndexRC extends React.Component {
                 </div>
               </Tooltip>
             </Grid>
-            <Grid item>
+            <Grid item style={{ padding: "0 8px 0 4px" }}>
               <Tooltip title={this.props.intl.formatMessage({ id: "logout" })}>
                 <div>
                   <Iconfont type="locked" size={24} onClick={this.logout} />
