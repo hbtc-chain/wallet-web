@@ -75,7 +75,7 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            <h2>{this.props.intl.formatMessage({ id: "accept" })}</h2>
+            <h2>{this.props.intl.formatMessage({ id: "receive payment" })}</h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>

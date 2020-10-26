@@ -143,7 +143,7 @@ export default (theme) => ({
   },
   back: {
     height: 44,
-    maxWidth: 375,
+    // maxWidth: 375,
     margin: "0 auto",
     "& h2": {
       fontSize: 16,
@@ -173,7 +173,7 @@ export default (theme) => ({
   tip: {
     color: helper.hex_to_rgba(theme.palette.common.white, 0.45),
     margin: "40px auto 0",
-    maxWidth: 375,
+    // maxWidth: 375,
     padding: "0 0 20px",
     lineHeight: "20px",
     fontSize: 12,
@@ -205,7 +205,7 @@ export default (theme) => ({
       padding: "40px 0 0",
       textAlign: "center",
       position: "relative",
-      maxWidth: 375,
+      // maxWidth: 375,
       margin: "0 auto",
     },
     "& img": {
