@@ -6,6 +6,48 @@
   "description": "App",
   "glyphs": [
     {
+      "icon_id": "17873828",
+      "name": "inport account",
+      "font_class": "inportaccount",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "17873829",
+      "name": "switch account",
+      "font_class": "switchaccount",
+      "unicode": "e623",
+      "unicode_decimal": 58915
+    },
+    {
+      "icon_id": "17873840",
+      "name": "add account",
+      "font_class": "addaccount",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "17873841",
+      "name": "export account",
+      "font_class": "exportaccount",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "17846872",
+      "name": "refresh",
+      "font_class": "refresh",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "17846873",
+      "name": "exc-fa",
+      "font_class": "exc-fa",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
       "icon_id": "17800039",
       "name": "unhidden",
       "font_class": "unhidden",

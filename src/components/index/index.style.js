@@ -264,6 +264,7 @@ export default (theme) => ({
   },
   control_list: {
     minWidth: 200,
+    maxWidth: 240,
     "& li": {
       padding: "16px 24px",
       color: theme.palette.grey[900],
@@ -274,9 +275,16 @@ export default (theme) => ({
       },
       "& .MuiListItemIcon-root": {
         minWidth: 25,
+        "& i": { marginRight: 6 },
       },
       "& .MuiListItemText-root": {
         margin: 0,
+      },
+      "& .MuiTypography-root": {
+        whiteSpace: "nowrap",
+        textOverflow: "ellipsis",
+        overflow: "hidden",
+        wordBreak: "break-all",
       },
     },
   },

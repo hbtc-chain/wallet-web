@@ -541,7 +541,7 @@ class IndexRC extends React.Component {
                 }}
               >
                 <ListItemIcon>
-                  <Iconfont type="language" size={22} />
+                  <Iconfont type="switchaccount" size={22} />
                 </ListItemIcon>
                 <ListItemText
                   primary={this.props.intl.formatMessage({
@@ -560,7 +560,7 @@ class IndexRC extends React.Component {
                 }}
               >
                 <ListItemIcon>
-                  <Iconfont type="language" size={22} />
+                  <Iconfont type="addaccount" size={22} />
                 </ListItemIcon>
                 <ListItemText
                   primary={this.props.intl.formatMessage({
@@ -578,7 +578,7 @@ class IndexRC extends React.Component {
                 }}
               >
                 <ListItemIcon>
-                  <Iconfont type="language" size={22} />
+                  <Iconfont type="inportaccount" size={22} />
                 </ListItemIcon>
                 <ListItemText
                   primary={this.props.intl.formatMessage({
@@ -596,7 +596,7 @@ class IndexRC extends React.Component {
                 }}
               >
                 <ListItemIcon>
-                  <Iconfont type="language" size={22} />
+                  <Iconfont type="exportaccount" size={22} />
                 </ListItemIcon>
                 <ListItemText
                   primary={this.props.intl.formatMessage({

@@ -29,6 +29,22 @@
   padding: 0 5px;
 }
 
+.bhex-icon-inportaccount:before {
+  content: "\e622";
+}
+
+.bhex-icon-switchaccount:before {
+  content: "\e623";
+}
+
+.bhex-icon-addaccount:before {
+  content: "\e624";
+}
+
+.bhex-icon-exportaccount:before {
+  content: "\e625";
+}
+
 .bhex-icon-refresh:before {
   content: "\e620";
 }
