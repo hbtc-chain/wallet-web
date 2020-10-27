@@ -86,7 +86,7 @@ export default class MessageManager {
     if (Object.keys(obj).length == 0) {
       return;
     }
-    console.warn("background 接收到消息：" + msg);
+    // console.warn("background 接收到消息：" + msg);
     // 发送到background
     if (obj.to == CONST.MESSAGE_FROM_BACKGROUND) {
       if (obj.type == CONST.METHOD_LOGGED_STATUS_QUERY) {

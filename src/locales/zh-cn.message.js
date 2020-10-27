@@ -250,4 +250,5 @@ export default {
   "no need password in 30m": "30分钟内免密",
   refresh: "刷新",
   exc: "JuSwap快速兑换通证",
+  locked: "锁定",
 };

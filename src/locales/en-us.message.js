@@ -271,4 +271,5 @@ export default {
   "no need password in 30m": "No need of password within 30 minutes",
   refresh: "Refresh",
   exc: "JuSwap Quick token converstion ",
+  locked: "Locked",
 };
