@@ -129,7 +129,7 @@ class IndexRC extends React.Component {
     // });
     this.setState({
       tokens,
-      total: total,
+      total: util.fix_digits(total, 2),
     });
     await util.delay(2000);
     this.get_balance();

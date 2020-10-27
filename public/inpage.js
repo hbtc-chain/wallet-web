@@ -36,8 +36,8 @@ class MessageManager {
       return;
     }
     if (obj.to == CONST.MESSAGE_FROM_PAGE) {
-      console.log("page get msg:");
-      console.log(obj);
+      // console.log("page get msg:");
+      // console.log(obj);
       let id = obj.id;
       let d = this.msgs.get(id);
       if (d) {
