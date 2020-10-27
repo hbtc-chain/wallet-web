@@ -10,6 +10,7 @@ import { routerRedux } from "dva/router";
 import querystring from "query-string";
 import CONST from "../../util/const";
 import tools from "../../util/address";
+import Language from "../public/language";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -99,9 +100,10 @@ class IndexRC extends React.Component {
     );
   };
   render() {
-    const { classes, intl } = this.props;
+    const { classes, intl, ...otherProps } = this.props;
     return (
       <div className={classes.login}>
+        <Language {...otherProps} />
         <img src={require("../../assets/logo.png")} />
         <h1>{intl.formatMessage({ id: "hbtc.wallet" })}</h1>
         <h1>{intl.formatMessage({ id: "login.title" })}</h1>

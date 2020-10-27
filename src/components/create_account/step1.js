@@ -3,11 +3,13 @@ import React from "react";
 import styles from "./index.style";
 import { withStyles } from "@material-ui/core/styles";
 import { injectIntl } from "react-intl";
-import { Button, Grid, Paper } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import VerticalAlignBottomIcon from "@material-ui/icons/VerticalAlignBottom";
 import AddIcon from "@material-ui/icons/Add";
 import { routerRedux } from "dva/router";
+import { Iconfont } from "../../lib";
+import Language from "../public/language";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -39,9 +41,10 @@ class IndexRC extends React.Component {
     }
   };
   render() {
-    const { classes, intl } = this.props;
+    const { classes, intl, ...otherProps } = this.props;
     return (
       <div className={classes.index}>
+        <Language {...otherProps} />
         <img className={classes.logo} src={require("../../assets/logo.png")} />
         <h1>{intl.formatMessage({ id: "create.title" })}</h1>
         <Button

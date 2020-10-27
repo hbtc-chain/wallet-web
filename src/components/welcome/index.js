@@ -6,6 +6,7 @@ import { injectIntl } from "react-intl";
 import { Button } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import { routerRedux } from "dva/router";
+import Language from "../public/language";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -20,9 +21,10 @@ class IndexRC extends React.Component {
     );
   };
   render() {
-    const { classes, intl } = this.props;
+    const { classes, intl, ...otherProps } = this.props;
     return (
       <div className={classes.index}>
+        <Language {...otherProps} />
         <img className={classes.logo} src={require("../../assets/logo.png")} />
         <h1>{intl.formatMessage({ id: "hbtc.wallet" })}</h1>
         <p
