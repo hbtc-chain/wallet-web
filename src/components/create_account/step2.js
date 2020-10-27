@@ -39,10 +39,76 @@ class IndexRC extends React.Component {
           <h1>{intl.formatMessage({ id: "create.title2" })}</h1>
           <p>{intl.formatMessage({ id: "statemente.tip" })}</p>
           <ul>
-            <li>{intl.formatMessage({ id: "statemente.desc1" })}</li>
-            <li>{intl.formatMessage({ id: "statemente.desc2" })}</li>
-            <li>{intl.formatMessage({ id: "statemente.desc3" })}</li>
-            <li>{intl.formatMessage({ id: "statemente.desc4" })}</li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc1",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc2",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc3",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc4",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc5",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc6",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc7",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc8",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc9",
+                }),
+              }}
+            ></li>
+            <li
+              dangerouslySetInnerHTML={{
+                __html: this.props.intl.formatMessage({
+                  id: "statemente.desc10",
+                }),
+              }}
+            ></li>
           </ul>
         </div>
         {/* </div> */}

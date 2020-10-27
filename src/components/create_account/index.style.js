@@ -115,8 +115,8 @@ export default (theme) => ({
     },
     "& p": {
       fontSize: 12,
-      LineHeight: "17px",
-      minHeight: 24,
+      lineHeight: "18px",
+      minHeight: 18,
       color: theme.palette.grey[500],
     },
     "& ul": {
@@ -127,6 +127,17 @@ export default (theme) => ({
     },
     "& li": {
       margin: "0 0 10px",
+    },
+    "& em": {
+      paddingLeft: 16,
+      display: "inline-block",
+      position: "relative",
+      "&::before": {
+        position: "absolute",
+        content: `"•"`,
+        top: 0,
+        left: 4,
+      },
     },
   },
   footer: {
