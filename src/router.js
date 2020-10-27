@@ -123,11 +123,6 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/withdrawal"),
   });
-  // keystore
-  const KeystoreRC = dynamic({
-    app,
-    component: () => import("./pages/keystore"),
-  });
   // accept
   const AcceptRC = dynamic({
     app,
@@ -243,8 +238,6 @@ function RouterConfig({ history, app }) {
           path={route_map.withdrawal + "/:symbol"}
           component={WithdrawalRC}
         />
-        {/* KeystoreRC */}
-        <Route exact path={route_map.keystore} component={KeystoreRC} />
         {/* AcceptRC */}
         <Route exact path={route_map.accept} component={AcceptRC} />
         {/* AccpetByTypeRC */}
