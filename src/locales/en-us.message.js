@@ -2,7 +2,8 @@ export default {
   "hbtc.wallet": "HBTC Wallet",
   continue: "Continue",
   "welcome.title": "Welcome to Bata Version of HBTC Wallet",
-  "welcome.desc": "Welcome to HBTC Wallet Bata Version<br/>Glad to have you with us",
+  "welcome.desc":
+    "Welcome to HBTC Wallet Bata Version<br/>Glad to have you with us",
   "welcome.btn.start": "Start",
   "create.step1.desc.1": "No, I've had a seed encryption already ",
   "create.step1.desc.2":
@@ -55,7 +56,8 @@ export default {
     "Download backup encryption, please keep it safe by external hard drives or storage device.",
   "seed.word.mask": "Click to show encryption info",
   "seed.confirm.title": "Confirm mnemonic phrase",
-  "seed.confirm.desc": "Please click and fill in the mnemonic phrase in following boxes by orders ",
+  "seed.confirm.desc":
+    "Please click and fill in the mnemonic phrase in following boxes by orders ",
   "seed.error": "Please the right and complete mnemonic phrase ",
   seed_error:
     "Mnemonic are not correct, please check if there are 12 words, and separated by space",
@@ -246,7 +248,8 @@ export default {
   "unsupported cipher": "wrong cipher",
   "address mismatch": "address mismatch",
   backups: "I have backed up",
-  "enter original wallet password": "Please enter the original password of wallet",
+  "enter original wallet password":
+    "Please enter the original password of wallet",
   "external token list": "Cross-chain token list",
   "back up now": "Back up now",
   "back up later": "Back up later",
@@ -254,4 +257,5 @@ export default {
   "no need password in 30m": "No need of password within 30 minutes",
   refresh: "Refresh",
   exc: "JuSwap Quick token converstion ",
+  locked: "Locked",
 };

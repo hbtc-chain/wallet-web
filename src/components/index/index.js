@@ -451,7 +451,7 @@ class IndexRC extends React.Component {
               </Tooltip>
             </Grid>
             <Grid item style={{ padding: "0 8px 0 4px" }}>
-              <Tooltip title={this.props.intl.formatMessage({ id: "logout" })}>
+              <Tooltip title={this.props.intl.formatMessage({ id: "locked" })}>
                 <div>
                   <Iconfont type="locked" size={24} onClick={this.logout} />
                 </div>
