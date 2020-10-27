@@ -106,7 +106,7 @@ export default {
       const address =
         payload.way == "keyStore"
           ? keys.address
-          : helper.createAddress(Buffer.from(keys.publicKey).toString("hex"));
+          : helper.createAddress(keys.publicKey);
 
       // 保存加密后密码，12词，秘钥
       let store = yield select((state) => state.layout.store);
