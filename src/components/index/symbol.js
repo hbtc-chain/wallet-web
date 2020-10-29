@@ -197,6 +197,15 @@ class IndexRC extends React.Component {
         </Paper>
         <div className={classes.token_list} style={{ paddingBottom: 90 }}>
           {this.state.data.map((item) => {
+            // 过滤自己给自己转账的记录
+            if (
+              item.balance_flows.length == 1 &&
+              item.balance_flows[0]["amount"] == 0 &&
+              item.balance_flows[0]["address"] == address &&
+              item.balance_flows[0]["symbol"] == symbol
+            ) {
+              return "";
+            }
             const flow = item.balance_flows
               ? item.balance_flows.find((it) => it.address == address) || {
                   amount: "",

@@ -60,14 +60,17 @@ class IndexRC extends React.Component {
     const balances_json = {};
     let chain_external_address = "";
     balances.assets.map((item) => {
+      if (item.chain == chainId && item.external_address) {
+        chain_external_address = item.external_address;
+      }
       balances_json[item.symbol] = item;
     });
     let tokens = [];
     this.props.tokens.map((item) => {
       if (item.chain.toUpperCase() == chainId.toUpperCase()) {
-        if (balances_json[item.symbol]) {
-          chain_external_address = balances_json[item.symbol].external_address;
-        }
+        // if (balances_json[item.symbol]) {
+        //   chain_external_address = balances_json[item.symbol].external_address;
+        // }
         tokens.push({
           ...item,
           amount: balances_json[item.symbol]

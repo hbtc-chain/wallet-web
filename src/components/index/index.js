@@ -437,20 +437,7 @@ class IndexRC extends React.Component {
                 </div>
               </Tooltip>
             </Grid>
-            <Grid item style={{ padding: "0 4px" }}>
-              <Tooltip title={this.props.intl.formatMessage({ id: "refresh" })}>
-                <div>
-                  <Iconfont
-                    type="refresh"
-                    size={24}
-                    onClick={() => {
-                      window.location.reload();
-                    }}
-                  />
-                </div>
-              </Tooltip>
-            </Grid>
-            <Grid item style={{ padding: "0 8px 0 4px" }}>
+            <Grid item style={{ padding: "0 4px 0 8px" }}>
               <Tooltip title={this.props.intl.formatMessage({ id: "locked" })}>
                 <div>
                   <Iconfont type="locked" size={24} onClick={this.logout} />

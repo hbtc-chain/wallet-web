@@ -521,7 +521,7 @@ class IndexRC extends React.Component {
               value={Number(this.state.fee)}
               onChange={this.sliderChange}
               step={0.001}
-              min={0}
+              min={0.002}
               max={1}
             />
           </div>
