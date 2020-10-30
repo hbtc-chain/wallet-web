@@ -9,7 +9,6 @@ import route_map from "../config/route_map";
 import LoginRC from "../components/account/login";
 
 function IndexPage({ layout, dispatch, location }) {
-  console.log(layout.logged);
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
       {/* <HeaderRC {...layout} dispatch={dispatch} location={location} /> */}

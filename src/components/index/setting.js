@@ -41,13 +41,11 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {}
   changeRule = (k) => (e) => {
-    this.props.dispatch({
-      type: "layout/save",
-      payload: {
-        store: {
-          ...this.props.store,
-          pwd_rule: k,
-        },
+    this.props.messageManager.sendMessage({
+      type: CONST.METHOD_SAVE_PASSWORD,
+      data: {
+        no_pwd: Boolean(k),
+        password: this.props.password,
       },
     });
     this.setState({
@@ -218,7 +216,7 @@ class IndexRC extends React.Component {
             </List>
           </Collapse>
 
-          {/* <ListItem
+          <ListItem
             className={classes.menuitem}
             onClick={() => {
               this.setState({
@@ -233,16 +231,11 @@ class IndexRC extends React.Component {
               className={classes.grey500}
               style={{ textAlign: "right" }}
             >
-              {
-                [
-                  this.props.intl.formatMessage({
-                    id: "always need pwd",
-                  }),
-                  this.props.intl.formatMessage({
-                    id: "30 min need pwd once",
-                  }),
-                ][this.props.store.pwd_rule]
-              }
+              {this.props.intl.formatMessage({
+                id: this.props.no_pwd
+                  ? "30 min need pwd once"
+                  : "always need pwd",
+              })}
             </ListItemText>
             {this.state.open3 ? (
               <ExpandLess className={classes.grey500} />
@@ -276,7 +269,7 @@ class IndexRC extends React.Component {
                 );
               })}
             </List>
-          </Collapse> */}
+          </Collapse>
         </List>
         <div className={classes.btn_fixed}>
           <Button

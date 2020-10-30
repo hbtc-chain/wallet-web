@@ -27,18 +27,13 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {
     this.setState({
-      no_pwd: this.props.store.no_pwd,
+      no_pwd: this.props.no_pwd,
     });
   }
   componentDidUpdate() {
     // 唤起password, 处在免密期
-    if (
-      this.props.store.no_pwd &&
-      this.props.store.password &&
-      this.props.open
-    ) {
-      this.props.submit &&
-        this.props.submit({ password: this.props.store.password });
+    if (this.props.no_pwd && this.props.password && this.props.open) {
+      this.props.submit && this.props.submit({ password: this.props.password });
       return;
     }
   }
@@ -82,16 +77,6 @@ class IndexRC extends React.Component {
       return;
     }
     // 保存免密配置
-    this.props.dispatch({
-      type: "layout/save",
-      payload: {
-        store: {
-          ...this.props.store,
-          no_pwd: this.state.no_pwd,
-          password: this.state.password,
-        },
-      },
-    });
     this.props.messageManager.sendMessage({
       type: CONST.METHOD_SAVE_PASSWORD,
       data: {
@@ -132,7 +117,7 @@ class IndexRC extends React.Component {
                 <Checkbox
                   color="primary"
                   onChange={this.savepwd}
-                  checked={this.state.no_pwd}
+                  checked={this.state.no_pwd ? "checked" : false}
                 />
               }
               label={this.props.intl.formatMessage({

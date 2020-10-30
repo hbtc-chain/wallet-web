@@ -32,8 +32,8 @@ class MessageManager {
         if (Object.keys(obj).length == 0) {
           return;
         }
-        console.warn("popup get msg:");
-        console.warn(obj);
+        // console.warn("popup get msg:");
+        // console.warn(obj);
         this.handleMsg(obj);
       });
     }
@@ -98,6 +98,19 @@ class MessageManager {
           },
         });
       }
+    }
+    if (
+      (obj.type == CONST.METHOD_SAVE_PASSWORD ||
+        obj.type == CONST.METHOD_QUERY_PASSWORD) &&
+      obj.to == CONST.MESSAGE_FROM_POPUP
+    ) {
+      this.dispatch({
+        type: "layout/save",
+        payload: {
+          no_pwd: obj.data.no_pwd,
+          password: obj.data.password,
+        },
+      });
     }
   }
   /**

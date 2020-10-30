@@ -140,8 +140,6 @@ const init_data = {
       exc: "https://juswap.io/",
     },
   ],
-  no_pwd: false, // 30m内免密
-  password: "",
   chain_index: 1, // 0 = main chain , 1 = test chain
   pwd_rule: 0, // 0 = 每次都输入密码， 1 = 30分内输入一次
 };
@@ -153,7 +151,7 @@ const data_init = async () => {
   } else {
     data = init_data;
   }
-  store.set(data);
+  await store.set(init_data);
 };
 data_init();
 

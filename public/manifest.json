@@ -7,7 +7,7 @@
       "16": "icon_32.png",
       "32": "icon_96.png"
     },
-    "default_title": "HBTC wallet",
+    "default_title": "HBTC Wallet",
     "default_popup": "index.html#/index"
   },
   "content_scripts": [
@@ -19,7 +19,7 @@
     }
   ],
 
-  "description": "HBTC WALLET",
+  "description": "HBTC Wallet 是真正意义上的第一款去中心化跨链钱包，去中心化跨链资产安全托管，高效可扩展的共识清算，丰富的API支持，是您目前使用管理HBTC Chain资产的最佳钱包工具。",
 
   "icons": {
     "48": "icon_48.png",
@@ -28,7 +28,7 @@
 
   "manifest_version": 2,
 
-  "name": "HBTC wallet",
+  "name": "HBTC Wallet",
   "author": "https://hbtcchain.io/",
 
   "permissions": ["webNavigation", "tabs", "activeTab", "storage"],

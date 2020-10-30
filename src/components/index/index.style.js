@@ -333,7 +333,7 @@ export default (theme) => ({
     },
     "& strong": {
       color: theme.palette.grey[900],
-      fontSize: 18,
+      fontSize: 16,
       lineHeight: "18px",
       fontWeight: 500,
     },
@@ -345,11 +345,13 @@ export default (theme) => ({
     "& i": {
       display: "inline-block",
       padding: 2,
-      fontSize: 14,
       margin: "0 0 0 6px",
       lineHeight: "18px",
-      background: theme.palette.grey[200],
+      fontSize: 12,
       color: theme.palette.grey[500],
+      background: helper.hex_to_rgba(theme.palette.grey[200], 0.2),
+      fontWeight: 400,
+      transform: "scale3d(1,1,0.85)",
       "&.native": {
         background: "rgba(81,211,114,.2)",
         color: theme.palette.success.main,
@@ -388,6 +390,10 @@ export default (theme) => ({
     },
     "& svg": {
       width: 20,
+    },
+    "& a": {
+      color: theme.palette.common.white,
+      margin: "0 10px 0 0",
     },
   },
   symbol: {
@@ -500,7 +506,7 @@ export default (theme) => ({
     height: 44,
     margin: "0 0 12px",
     "& h2": {
-      fontSize: 16,
+      fontSize: 14,
     },
   },
   external_content: {

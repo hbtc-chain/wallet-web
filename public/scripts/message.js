@@ -23,6 +23,7 @@ export default class MessageManager {
     this.logged = false;
     // password, 30分钟免密
     this.password = "";
+    this.no_pwd = false;
     this.clear_pwd_timer = null;
 
     // 启动资产查询loop
@@ -169,6 +170,10 @@ export default class MessageManager {
       // 保存免密配置
       if (obj.type == CONST.METHOD_SAVE_PASSWORD) {
         this.save_password(obj, port);
+      }
+      // 查询免密配置
+      if (obj.type == CONST.METHOD_QUERY_PASSWORD) {
+        this.query_password();
       }
     }
   }
@@ -483,7 +488,7 @@ export default class MessageManager {
     return;
   }
   // 发送数据到popup
-  async sendMsgToPopup(data, port) {
+  async sendMsgToPopup(data) {
     if (!this.popupIsOpen) {
       await this.openPopup();
     }
@@ -582,7 +587,7 @@ export default class MessageManager {
   /**
    * save_password 30分钟免密状态记录
    */
-  async save_password(obj, port) {
+  async save_password(obj) {
     this.no_pwd = obj.data.no_pwd;
     this.password = obj.data.password;
     clearTimeout(this.clear_pwd_timer);
@@ -594,14 +599,24 @@ export default class MessageManager {
     } else {
       this.reset_pwd(false, "");
     }
+    this.sendMsgToPopup({ type: obj.type, data: obj.data });
   }
   // reset_pwd
   async reset_pwd(no_pwd, pwd) {
     this.no_pwd = no_pwd;
     this.password = pwd;
-    let datas = await store.get();
-    datas.no_pwd = no_pwd;
-    datas.password = pwd;
-    store.set(datas);
+    this.sendMsgToPopup({
+      type: CONST.METHOD_SAVE_PASSWORD,
+      data: { no_pwd, password: pwd },
+    });
+  }
+  async query_password() {
+    this.sendMsgToPopup({
+      type: CONST.METHOD_QUERY_PASSWORD,
+      data: {
+        no_pwd: this.no_pwd,
+        password: this.password,
+      },
+    });
   }
 }

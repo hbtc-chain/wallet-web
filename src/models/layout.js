@@ -24,6 +24,11 @@ export default {
         type: CONST.METHOD_LOGGED_STATUS_QUERY,
         data: {},
       });
+      // 查询免密设置
+      messageManager.sendMessage({
+        type: CONST.METHOD_QUERY_PASSWORD,
+        data: {},
+      });
       dispatch({
         type: "save",
         payload: {

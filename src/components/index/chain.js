@@ -189,6 +189,24 @@ class IndexRC extends React.Component {
                         : ""
                     )}
                   </Grid>
+                  {symbol == "hbc" &&
+                  this.props.store.chain[this.props.store.chain_index] &&
+                  this.props.store.chain[this.props.store.chain_index][
+                    "name"
+                  ] == "test net" ? (
+                    <Grid item>
+                      <a
+                        href="https://explorer.hbtcchain.io/receive"
+                        target="_blank"
+                      >
+                        {this.props.intl.formatMessage({
+                          id: "get test token",
+                        })}
+                      </a>
+                    </Grid>
+                  ) : (
+                    ""
+                  )}
                   <Grid item>
                     <CopyToClipboard text={address} onCopy={this.copy}>
                       <Iconfont type="copy" />

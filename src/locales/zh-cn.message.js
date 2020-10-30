@@ -251,4 +251,5 @@ export default {
   refresh: "刷新",
   exc: "JuSwap快速兑换通证",
   locked: "锁定",
+  "get test token": "获取测试币",
 };

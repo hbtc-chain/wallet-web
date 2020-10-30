@@ -272,4 +272,5 @@ export default {
   refresh: "Refresh",
   exc: "JuSwap Quick token converstion ",
   locked: "Locked",
+  "get test token": "Claim Testnet Tokens",
 };

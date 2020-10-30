@@ -14,4 +14,5 @@ export default {
   METHOD_LOGOUT: "logout",
   METHOD_LOGGED_STATUS_QUERY: "logged_status_query",
   METHOD_SAVE_PASSWORD: "save_password",
+  METHOD_QUERY_PASSWORD: "query_password",
 };

@@ -16,7 +16,6 @@ class IndexRC extends React.Component {
   }
 
   toggleDrawer = (open) => (e) => {
-    console.log(open);
     this.setState({
       open,
     });

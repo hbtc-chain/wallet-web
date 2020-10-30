@@ -92,7 +92,7 @@ class IndexRC extends React.Component {
     const token = this.props.tokens.find((item) => item.symbol == symbol);
     let tokens = [];
     this.props.tokens.map((item) => {
-      if (item.chain == token.chain) {
+      if (token && item.chain == token.chain) {
         tokens.push(item.symbol);
       }
     });
@@ -168,7 +168,11 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "bonded" })}
                 </Grid>
-                <Grid item>{this.props.balance.bonded || "--"}</Grid>
+                <Grid item>
+                  {this.props.balance && this.props.balance[address]
+                    ? this.props.balance[address].bonded
+                    : "--"}
+                </Grid>
               </Grid>
               <Grid
                 container
@@ -178,7 +182,11 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "unbonding" })}
                 </Grid>
-                <Grid item>{this.props.balance.unbonding || "--"}</Grid>
+                <Grid item>
+                  {this.props.balance && this.props.balance[address]
+                    ? this.props.balance[address].unbonding
+                    : "--"}
+                </Grid>
               </Grid>
               <Grid
                 container
@@ -188,7 +196,11 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {this.props.intl.formatMessage({ id: "claimed_reward" })}
                 </Grid>
-                <Grid item>{this.props.balance.claimed_reward || "--"}</Grid>
+                <Grid item>
+                  {this.props.balance && this.props.balance[address]
+                    ? this.props.balance[address].claimed_reward
+                    : "--"}
+                </Grid>
               </Grid>
             </div>
           ) : (
@@ -245,7 +257,7 @@ class IndexRC extends React.Component {
                   </p>
                 </Grid>
                 <Grid item style={{ textAlign: "right" }}>
-                  <strong>
+                  <strong style={{ fontSize: 14 }}>
                     {flow.amount} {(flow.symbol || "").toUpperCase()}
                   </strong>
                   <br />

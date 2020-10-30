@@ -103,6 +103,8 @@ const initStore = async () => {
         signmsgs: {},
         unit: "usd",
         pwd_rule: 0,
+        no_pwd: false, // 30m内免密
+        password: "",
         lang: browserLang(),
         chain: [
           {
@@ -127,6 +129,8 @@ const initStore = async () => {
     {
       layout: {
         store: res || {},
+        no_pwd: false, // 30m内免密
+        password: "",
         rates: {},
         balance: {},
         tokens: [],
