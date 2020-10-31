@@ -490,51 +490,6 @@ class IndexRC extends React.Component {
           }}
           submit={this.transfer}
         />
-        {/* <Dialog open={this.state.open}>
-          <DialogTitle>
-            {this.props.intl.formatMessage({ id: "confirmed password" })}
-          </DialogTitle>
-          <DialogContent>
-            <TextField
-              value={this.state.password}
-              onChange={this.handleChange("password")}
-              helperText={this.state.password_msg}
-              error={Boolean(this.state.password_msg)}
-              label={this.props.intl.formatMessage({
-                id: "password is required",
-              })}
-              style={{ width: 260 }}
-              variant="outlined"
-              type="password"
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              variant="contained"
-              fullWidth
-              onClick={() => {
-                this.setState({
-                  open: false,
-                  password: "",
-                  password_msg: "",
-                  loading: false,
-                });
-              }}
-              style={{ padding: 10 }}
-            >
-              {this.props.intl.formatMessage({ id: "cancel" })}
-            </Button>
-            <Button
-              onClick={this.transfer}
-              variant="contained"
-              color="primary"
-              fullWidth
-              style={{ padding: 10 }}
-            >
-              {this.props.intl.formatMessage({ id: "confirm" })}
-            </Button>
-          </DialogActions>
-        </Dialog> */}
       </div>
     );
   }

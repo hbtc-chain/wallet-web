@@ -15,8 +15,6 @@ import {
   ListItemIcon,
   ListItemSecondaryAction,
   IconButton,
-  Tabs,
-  Tab,
   Popper,
   Fade,
   ClickAwayListener,
@@ -43,10 +41,8 @@ import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import CloseIcon from "@material-ui/icons/Close";
 import helper from "../../util/helper";
 import CONST from "../../util/const";
-import { v4 } from "uuid";
 import util from "../../util/util";
 import API from "../../util/api";
-import AutorenewIcon from "@material-ui/icons/Autorenew";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { Iconfont } from "../../lib";
@@ -80,19 +76,28 @@ class IndexRC extends React.Component {
     };
   }
   componentDidMount() {
+    this.chains();
     this.get_balance();
   }
-  componentDidUpdate() {
-    if (!this.state.chains.length && this.props.tokens.length) {
-      let chain = [];
-      this.props.tokens.map((item) => {
-        const index = chain.findIndex((it) => it == item.chain);
-        if (index == -1) {
-          chain.push(item.chain);
-        }
-      });
+  async chains() {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.chains,
+    });
+    if (result.code == 200 && result.data) {
       this.setState({
-        chains: chain,
+        chains: result.data,
+      });
+      let symbols = [];
+      result.data.map((item) => {
+        symbols.push(item.chain);
+      });
+      this.props.dispatch({
+        type: "layout/tokens",
+        payload: {
+          symbols: symbols.join(","),
+        },
       });
     }
   }
@@ -134,7 +139,6 @@ class IndexRC extends React.Component {
     await util.delay(2000);
     this.get_balance();
   };
-  goto = () => {};
   copy = (showmessage) => () => {
     this.setState(
       {
@@ -154,22 +158,6 @@ class IndexRC extends React.Component {
       }
     );
   };
-  choose = (i) => (e) => {
-    this.setState({
-      i,
-    });
-  };
-  tabChange = (e, v) => {
-    this.setState({
-      tab: v,
-    });
-  };
-  setanchorEl = (e) => {
-    this.setState({
-      anchorEl: e.target,
-    });
-  };
-  change = (key, v) => (e) => {};
   handleClose = () => {
     this.setState({
       anchorEl: null,
@@ -372,13 +360,12 @@ class IndexRC extends React.Component {
       this.props.store.account_index != -1
         ? this.props.store.accounts[this.props.store.account_index]["username"]
         : "";
-    const chains = [];
     this.props.tokens.map((item) => {});
+    let balance = {};
     const balances =
       this.props.balance && address && this.props.balance[address]
         ? this.props.balance[address]
         : { assets: [] };
-    let balance = { amount: "" };
     balances.assets.map((item) => {
       if (
         this.props.tokens[this.state.i] &&
@@ -631,10 +618,12 @@ class IndexRC extends React.Component {
         <List component="nav">
           {this.state.chains.map((item, i) => {
             let amount = 0;
-            let token = this.state.tokens.find((it) => it.symbol == item);
+            let prefix = "";
+            let unit = "";
+            let token = this.state.tokens.find((it) => it.symbol == item.chain);
             token = token || {};
             this.state.tokens.map((it) => {
-              if (it.chain == item) {
+              if (it.chain == item.chain) {
                 const rate = this.rates(
                   it.amount,
                   it.symbol,
@@ -643,6 +632,8 @@ class IndexRC extends React.Component {
                 );
                 if (Number(rate[0])) {
                   amount += Number(rate[0]);
+                  prefix = rate[2];
+                  unit = rate[1];
                 }
               }
             });
@@ -654,19 +645,19 @@ class IndexRC extends React.Component {
             // );
             const rates2 = this.rates(
               1,
-              item,
+              item.chain,
               this.props.store.unit,
               this.props.rates
             );
             return (
               <ListItem
-                key={item}
+                key={item.chain}
                 button
                 className={classes.listItem}
                 onClick={() => {
                   this.props.dispatch(
                     routerRedux.push({
-                      pathname: route_map.chain + "/" + item,
+                      pathname: route_map.chain + "/" + item.chain,
                     })
                   );
                 }}
@@ -701,13 +692,9 @@ class IndexRC extends React.Component {
                 <ListItemText style={{ textAlign: "right" }}>
                   <strong style={{ display: "inline" }}></strong>
                   <em>
-                    {this.props.store.unit == "usd" ? "$" : ""}
-                    {this.props.store.unit == "cny" ? "￥" : ""}
+                    {prefix}
                     {amount}
-                    {this.props.store.unit != "usd" &&
-                    this.props.store.unit != "cny"
-                      ? this.props.store.unit.toUpperCase()
-                      : ""}
+                    {unit.toUpperCase()}
                   </em>
                 </ListItemText>
               </ListItem>

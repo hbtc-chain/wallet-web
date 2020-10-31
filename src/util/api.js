@@ -1,7 +1,11 @@
 export default {
   liquidity: `/api/v1/swap/liquidity`,
+  chains: `/api/v1/chains`,
+  batch_tokens: `/api/v1/batch_tokens`,
   pairs: `/api/v1/swap/pairs`,
   cus: `/api/v1/cus`,
+  cus_v2: `/api/v2/cus`,
+  default_tokens: `/api/v1/default_tokens`,
   tokens: `/api/v1/tokens`,
   token_txs: "/api/v1/tokens/${token}/txs", // 币 资产变动记录
   txs: `/api/v1/txs`,

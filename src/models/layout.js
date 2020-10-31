@@ -8,7 +8,6 @@ import getData from "../service/getData";
 import API from "../util/api";
 import { v4 } from "uuid";
 import util from "../util/util";
-const secp256k1 = require("secp256k1");
 
 export default {
   namespace: "layout",
@@ -39,13 +38,6 @@ export default {
         type: "init",
         payload: {},
         dispatch,
-      });
-      dispatch({
-        type: "tokens",
-        payload: {
-          page: 1,
-          page_size: 100,
-        },
       });
       dispatch({
         type: "get_rates_loop",
@@ -158,44 +150,39 @@ export default {
      */
     *tokens({ payload }, { call, put, select }) {
       const store = yield select((state) => state.layout.store);
-      const tokens = yield select((state) => state.layout.tokens);
+      let tokens = yield select((state) => state.layout.tokens);
       const result = yield call(
-        getData(store.chain[store.chain_index]["url"] + API.tokens),
+        getData(
+          store.chain[store.chain_index]["url"] +
+            API.batch_tokens +
+            "/" +
+            payload.symbols
+        ),
         {
           payload,
           method: "get",
         }
       );
-      if (result.code == 200 && result.data && result.data.items) {
-        if (result.data.page == payload.page) {
-          yield put({
-            type: "save",
-            payload: {
-              tokens: [...tokens, ...(result.data.items || [])],
-            },
-          });
-          yield put({
-            type: "get_rates",
-            payload: {},
-          });
-          if (
-            result.data.items &&
-            result.data.items.length == payload.page_size
-          ) {
-            yield put({
-              type: "tokens",
-              payload: {
-                page: 1 + Number(payload.page),
-                page_size: payload.page_size,
-              },
-            });
+      if (result.code == 200 && result.data) {
+        tokens = tokens.concat(Object.values(result.data));
+        let newtokens = [];
+        let k = {};
+        tokens.map((item) => {
+          if (!k[item.symbol]) {
+            newtokens.push(item);
+            k[item.symbol] = 1;
           }
-        }
-      } else {
-        yield util.delay(2000);
+        });
+        console.log(newtokens);
         yield put({
-          type: "tokens",
-          payload,
+          type: "save",
+          payload: {
+            tokens: newtokens,
+          },
+        });
+        yield put({
+          type: "get_rates",
+          payload: {},
         });
       }
     },
@@ -234,11 +221,9 @@ export default {
       const { tokens, store } = yield select((state) => state.layout);
       if (tokens.length) {
         try {
-          let symbols = [];
-          tokens.map((item) => symbols.push(item.symbol));
           const result = yield call(
             getData(store.chain[store.chain_index]["url"] + API.tokenprices),
-            { payload: { symbols: symbols.join(",") } }
+            { payload: { symbols: "" } }
           );
           let rates = {};
           if (result.code == 200 && result.data) {

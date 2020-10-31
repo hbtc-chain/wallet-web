@@ -27,6 +27,7 @@ import message from "../public/message";
 import Qrcode from "qrcode";
 import CloseIcon from "@material-ui/icons/Close";
 import { Iconfont } from "../../lib";
+import API from "../../util/api";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -46,7 +47,27 @@ class IndexRC extends React.Component {
   componentDidMount() {
     this.get_balance();
     this.qrcode(this.state.choose.address);
+    this.get_external_address();
   }
+  get_external_address = async () => {
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.cus_v2 + "/" + address,
+    });
+    if (result.code == 200 && result.data) {
+      const chainId = this.props.match.params.chainId;
+      let chain_external_address = result.data.external_address
+        ? result.data.external_address[chainId]
+        : "";
+      this.setState({
+        chain_external_address,
+      });
+    }
+  };
   get_balance = async () => {
     const chainId = this.props.match.params.chainId;
 
@@ -58,19 +79,12 @@ class IndexRC extends React.Component {
         ? this.props.balance[address] || { assets: [] }
         : { assets: [] };
     const balances_json = {};
-    let chain_external_address = "";
     balances.assets.map((item) => {
-      if (item.chain == chainId && item.external_address) {
-        chain_external_address = item.external_address;
-      }
       balances_json[item.symbol] = item;
     });
     let tokens = [];
     this.props.tokens.map((item) => {
       if (item.chain.toUpperCase() == chainId.toUpperCase()) {
-        // if (balances_json[item.symbol]) {
-        //   chain_external_address = balances_json[item.symbol].external_address;
-        // }
         tokens.push({
           ...item,
           amount: balances_json[item.symbol]
@@ -90,7 +104,6 @@ class IndexRC extends React.Component {
     });
     this.setState({
       tokens,
-      chain_external_address,
     });
     await util.delay(1000);
     this.get_balance();

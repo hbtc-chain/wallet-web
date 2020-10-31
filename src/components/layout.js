@@ -11,9 +11,33 @@ class LayoutRC extends React.Component {
     super();
     this.state = {};
   }
-  componentDidMount() {}
-
-  componentWillUnmount() {}
+  componentDidMount() {
+    this.default_tokens();
+  }
+  default_tokens = async () => {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.default_tokens,
+    });
+    if (result.code == 200) {
+      let tokens = this.props.tokens.concat(result.data);
+      let newtokens = [];
+      let k = {};
+      tokens.map((item) => {
+        if (!k[item.symbol]) {
+          newtokens.push(item);
+          k[item.symbol] = 1;
+        }
+      });
+      this.props.dispatch({
+        type: "layout/save",
+        payload: {
+          tokens: newtokens,
+        },
+      });
+    }
+  };
 
   render() {
     const { classes } = this.props;
