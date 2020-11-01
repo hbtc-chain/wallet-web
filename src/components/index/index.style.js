@@ -549,6 +549,23 @@ export default (theme) => ({
   outline_outline: {
     borderColor: theme.palette.grey[50],
   },
+  search_input: {
+    color: theme.palette.grey[500],
+    border: 0,
+    padding: 0,
+    "& i": {
+      color: theme.palette.grey[500],
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: theme.palette.grey[50],
+    },
+    "& .MuiOutlinedInput-inputAdornedStart": {
+      padding: "6px 10px 6px 0",
+    },
+    "& .MuiOutlinedInput-root": {
+      background: theme.palette.grey[50],
+    },
+  },
   btn_all: {
     textAlign: "right",
     color: theme.palette.primary.main,

@@ -173,7 +173,6 @@ export default {
             k[item.symbol] = 1;
           }
         });
-        console.log(newtokens);
         yield put({
           type: "save",
           payload: {
@@ -272,6 +271,15 @@ export default {
       // 同步数据到background store
       const data = { ...state, ...action.payload };
       store.set(data.store);
+      if (action.payload.tokens) {
+        action.payload.tokens.sort((a, b) => {
+          return a.symbol.toUpperCase() > b.symbol.toUpperCase() ? 1 : -1;
+        });
+        window.localStorage.setItem(
+          "hbc_wallet_tokens",
+          JSON.stringify(action.payload.tokens)
+        );
+      }
       return data;
     },
   },

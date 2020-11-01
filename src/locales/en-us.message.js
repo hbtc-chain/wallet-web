@@ -273,4 +273,6 @@ export default {
   exc: "JuSwap Quick token converstion ",
   locked: "Locked",
   "get test token": "Claim Testnet Tokens",
+  "add token": "添加资产",
+  "search token name": "输入币种名称",
 };

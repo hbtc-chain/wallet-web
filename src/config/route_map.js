@@ -32,6 +32,7 @@ export default {
   chain: `${local}/chain`,
   symbol: `${local}/symbol`,
   transfer: `${local}/transfer`,
+  add_token: `${local}/add_token`,
   send: `${local}/send`,
   external_address: `${local}/external_address`,
   withdrawal: `${local}/withdrawal`,

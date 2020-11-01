@@ -29,6 +29,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { Iconfont } from "../../lib";
 import API from "../../util/api";
 
+let timer = null;
 class IndexRC extends React.Component {
   constructor() {
     super();
@@ -45,9 +46,13 @@ class IndexRC extends React.Component {
     };
   }
   componentDidMount() {
+    timer = true;
     this.get_balance();
     this.qrcode(this.state.choose.address);
     this.get_external_address();
+  }
+  componentWillUnmount() {
+    timer = false;
   }
   get_external_address = async () => {
     const address = this.props.store.accounts[this.props.store.account_index]
@@ -69,6 +74,9 @@ class IndexRC extends React.Component {
     }
   };
   get_balance = async () => {
+    if (!timer) {
+      return;
+    }
     const chainId = this.props.match.params.chainId;
 
     const address = this.props.store.accounts[this.props.store.account_index]
@@ -171,7 +179,7 @@ class IndexRC extends React.Component {
           alignItems="center"
           className={classes.back}
         >
-          <Grid item xs={2}>
+          <Grid item xs={4}>
             <ArrowBackIosIcon
               onClick={() => {
                 this.props.dispatch(routerRedux.goBack());
@@ -181,7 +189,20 @@ class IndexRC extends React.Component {
           <Grid item>
             <h2>{symbol.toUpperCase()}</h2>
           </Grid>
-          <Grid item xs={2}></Grid>
+          <Grid item xs={4} style={{ textAlign: "right" }}>
+            <span
+              onClick={() => {
+                this.props.dispatch(
+                  routerRedux.push({
+                    pathname: route_map.add_token,
+                  })
+                );
+              }}
+            >
+              <Iconfont type="addaccount" />
+              {this.props.intl.formatMessage({ id: "add token" })}
+            </span>
+          </Grid>
         </Grid>
         <div className={classes.form}>
           {this.state.tokens.length && this.state.tokens[0].is_native ? (

@@ -252,4 +252,6 @@ export default {
   exc: "JuSwap快速兑换通证",
   locked: "锁定",
   "get test token": "获取测试币",
+  "add token": "添加资产",
+  "search token name": "输入币种名称",
 };

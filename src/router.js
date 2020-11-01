@@ -98,6 +98,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/chain"),
   });
+  // add token
+  const AddTokenRC = dynamic({
+    app,
+    component: () => import("./pages/add_token"),
+  });
   // external address
   const ExternalAddressRC = dynamic({
     app,
@@ -213,6 +218,8 @@ function RouterConfig({ history, app }) {
         {/* chain */}
         <Route exact path={route_map.chain + "/:chainId"} component={ChainRC} />
         <Redirect exact from={route_map.chain} to={route_map.chain + "/hbc"} />
+        {/* AddTokenRC */}
+        <Route exact path={route_map.add_token} component={AddTokenRC} />
         {/* external address */}
         <Route
           exact

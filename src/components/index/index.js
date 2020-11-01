@@ -50,6 +50,7 @@ import route_map from "../../config/route_map";
 import message from "../public/message";
 import extension from "extensionizer";
 
+let timer = null;
 class IndexRC extends React.Component {
   constructor() {
     super();
@@ -76,8 +77,12 @@ class IndexRC extends React.Component {
     };
   }
   componentDidMount() {
+    timer = true;
     this.chains();
     this.get_balance();
+  }
+  componentWillUnmount() {
+    timer = false;
   }
   async chains() {
     const result = await this.props.dispatch({
@@ -103,6 +108,9 @@ class IndexRC extends React.Component {
   }
 
   get_balance = async () => {
+    if (!timer) {
+      return;
+    }
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";

@@ -15,6 +15,9 @@ class LayoutRC extends React.Component {
     this.default_tokens();
   }
   default_tokens = async () => {
+    if (this.props.default_tokens.length) {
+      return;
+    }
     const result = await this.props.dispatch({
       type: "layout/commReq",
       payload: {},
@@ -33,7 +36,8 @@ class LayoutRC extends React.Component {
       this.props.dispatch({
         type: "layout/save",
         payload: {
-          tokens: newtokens,
+          tokens: this.props.tokens.length ? this.props.tokens : newtokens,
+          default_tokens: result.data,
         },
       });
     }

@@ -133,7 +133,10 @@ const initStore = async () => {
         password: "",
         rates: {},
         balance: {},
-        tokens: [],
+        tokens: JSON.parse(
+          window.localStorage.getItem("hbc_wallet_tokens") || "[]"
+        ),
+        default_tokens: [],
         units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
         langs: ["zh-cn", "en-us"],
         messageManager: null,
