@@ -57,6 +57,26 @@ class IndexRC extends React.Component {
     let tokens = [...this.props.tokens];
     let tokens_state = [...this.state.tokens];
     if (index > -1) {
+      const address = this.props.store.accounts[this.props.store.account_index]
+        ? this.props.store.accounts[this.props.store.account_index]["address"]
+        : "";
+      const balance =
+        this.props.balance && address && this.props.balance[address]
+          ? this.props.balance[address].assets.find(
+              (item) => item.symbol == symbol
+            ) || {
+              amount: "",
+            }
+          : { amount: "" };
+      if (balance.amount) {
+        message.info(
+          this.props.intl.formatMessage(
+            { id: "${token} has assets" },
+            { token: symbol.toUpperCase() }
+          )
+        );
+        return;
+      }
       tokens.splice(index, 1);
       tokens_state[i]["hide"] = true;
     } else {
