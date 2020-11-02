@@ -275,5 +275,5 @@ export default {
   "get test token": "Claim Testnet Tokens",
   "add token": "添加资产",
   "search token name": "输入币种名称",
-  "${token} has assets": "${token}存在资产，不可隐藏",
+  "{token} has assets": "{token}存在资产，不可隐藏",
 };

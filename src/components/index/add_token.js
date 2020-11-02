@@ -71,7 +71,7 @@ class IndexRC extends React.Component {
       if (balance.amount) {
         message.info(
           this.props.intl.formatMessage(
-            { id: "${token} has assets" },
+            { id: "{token} has assets" },
             { token: symbol.toUpperCase() }
           )
         );
