@@ -68,7 +68,8 @@ class IndexRC extends React.Component {
     if (this.props.messageManager) {
       await this.props.messageManager.sendMessage(msg);
     }
-    window.close();
+    // 由background关闭tab
+    //window.close();
   };
   reject = async (reson) => {
     // 发送到网页
@@ -83,7 +84,8 @@ class IndexRC extends React.Component {
     if (this.props.messageManager) {
       await this.props.messageManager.sendMessage(msg);
     }
-    window.close();
+    // 由background关闭tab
+    //window.close();
   };
   render() {
     const { classes } = this.props;

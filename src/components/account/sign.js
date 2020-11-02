@@ -36,6 +36,7 @@ import message from "../public/message";
 import math from "../../util/mathjs";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import PasswordRC from "../public/password";
+import extension from "extensionizer";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -202,7 +203,8 @@ class IndexRC extends React.Component {
     if (this.props.messageManager) {
       await this.props.messageManager.sendMessage(msg);
     }
-    window.close();
+    // 由background关闭tab
+    //window.close();
   };
   sign = async (res) => {
     // if (!this.state.password) {
@@ -276,7 +278,8 @@ class IndexRC extends React.Component {
     if (this.props.messageManager) {
       await this.props.messageManager.sendMessage(msg);
     }
-    window.close();
+    // 由background关闭tab
+    //this.close();
   };
 
   tabChange = (e, v) => {
@@ -448,7 +451,7 @@ class IndexRC extends React.Component {
           : ""}
         <Grid container justify="space-between" className={classes.item}>
           <Grid item>
-            <em>GAS FEE</em>
+            <em>{this.props.intl.formatMessage({ id: "GAS FEE" })}</em>
           </Grid>
           <Grid item style={{ textAlign: "right" }}>
             <strong>

@@ -159,6 +159,9 @@ export default class MessageManager {
         obj.type == CONST.MEHTOD_CONNECT &&
         obj.from == CONST.MESSAGE_FROM_POPUP
       ) {
+        if (port.name == "popup" && port.sender && port.sender.tab) {
+          this.platform.closeTab(port.sender.tab.id);
+        }
         this.sendMsgToPage(obj, port);
       }
 
@@ -436,6 +439,9 @@ export default class MessageManager {
     //   console.warn(`sign message has no id = ${obj.id}`);
     //   return;
     // }
+    if (port.name == "popup" && port.sender && port.sender.tab) {
+      this.platform.closeTab(port.sender.tab.id);
+    }
     if (this.signmsgs && obj.id) {
       delete this.signmsgs[obj.id];
     }
@@ -497,14 +503,16 @@ export default class MessageManager {
       this.port.forEach((item) => {
         try {
           if (
+            item.name == "popup" &&
             item.sender &&
             item.sender.tab &&
             !back_to_front &&
             (data.type == CONST.METHOD_SIGN ||
               data.type == CONST.MEHTOD_CONNECT)
           ) {
-            this.platform.switchToTab(item.sender.tab.id);
+            console.log(item);
             back_to_front = true;
+            this.platform.switchToTab(item.sender.tab.id);
           }
           item.postMessage(
             JSON.stringify({
