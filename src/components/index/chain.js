@@ -49,36 +49,16 @@ class IndexRC extends React.Component {
     timer = true;
     this.get_balance();
     this.qrcode(this.state.choose.address);
-    this.get_external_address();
   }
   componentWillUnmount() {
     timer = false;
   }
-  get_external_address = async () => {
-    const address = this.props.store.accounts[this.props.store.account_index]
-      ? this.props.store.accounts[this.props.store.account_index]["address"]
-      : "";
-    const result = await this.props.dispatch({
-      type: "layout/commReq",
-      payload: {},
-      url: API.cus_v2 + "/" + address,
-    });
-    if (result.code == 200 && result.data) {
-      const chainId = this.props.match.params.chainId;
-      let chain_external_address = result.data.external_address
-        ? result.data.external_address[chainId]
-        : "";
-      this.setState({
-        chain_external_address,
-      });
-    }
-  };
   get_balance = async () => {
     if (!timer) {
       return;
     }
     const chainId = this.props.match.params.chainId;
-
+    let chain_external_address = "";
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
@@ -88,6 +68,9 @@ class IndexRC extends React.Component {
         : { assets: [] };
     const balances_json = {};
     balances.assets.map((item) => {
+      if (item.chain == chainId && item.external_address) {
+        chain_external_address = item.external_address;
+      }
       balances_json[item.symbol] = item;
     });
     let tokens = [];
@@ -112,6 +95,7 @@ class IndexRC extends React.Component {
     });
     this.setState({
       tokens,
+      chain_external_address,
     });
     await util.delay(1000);
     this.get_balance();
