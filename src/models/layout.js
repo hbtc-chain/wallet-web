@@ -34,11 +34,11 @@ export default {
           messageManager,
         },
       });
-      dispatch({
-        type: "init",
-        payload: {},
-        dispatch,
-      });
+      // dispatch({
+      //   type: "init",
+      //   payload: {},
+      //   dispatch,
+      // });
       dispatch({
         type: "get_rates_loop",
         payload: {},
@@ -47,27 +47,33 @@ export default {
         type: "get_balance_loop",
         payload: {},
       });
-      history.listen((location) => {});
+      history.listen((location) => {
+        // 查询signmsgs
+        messageManager.sendMessage({
+          type: CONST.METHOD_QUERY_SIGN,
+          data: {},
+        });
+      });
     },
   },
 
   effects: {
     // 判断是否要登录
-    *init({ dispatch }, { select }) {
-      let layout = yield select((state) => state.layout);
-      // 已登录，有sign请求,跳转sign
-      if (
-        Object.keys(layout.store.signmsgs || {}).length != 0 &&
-        window.location.href.indexOf(route_map.sign) == -1
-      ) {
-        dispatch(
-          routerRedux.push({
-            pathname: route_map.sign,
-            search: "?id=" + Object.keys(layout.store.signmsgs || {})[0],
-          })
-        );
-      }
-    },
+    // *init({ dispatch }, { select }) {
+    //   let layout = yield select((state) => state.layout);
+    //   // 已登录，有sign请求,跳转sign
+    //   if (
+    //     Object.keys(layout.signmsgs || {}).length != 0 &&
+    //     window.location.href.indexOf(route_map.sign) == -1
+    //   ) {
+    //     dispatch(
+    //       routerRedux.push({
+    //         pathname: route_map.sign,
+    //         search: "?id=" + Object.keys(layout.signmsgs || {})[0],
+    //       })
+    //     );
+    //   }
+    // },
     // 创建账户
     *create_account({ payload }, { put, select }) {
       let password = payload.password;
@@ -264,6 +270,26 @@ export default {
         },
       });
     },
+    /**
+     * query sign
+     */
+    *sign({ payload }, { put }) {
+      const msgs = Object.keys(payload.signmsgs || {});
+      yield put({
+        type: "save",
+        payload: {
+          signmsgs: payload.signmsgs,
+        },
+      });
+      if (msgs.length && window.location.href.indexOf(route_map.sign) == -1) {
+        yield put(
+          routerRedux.push({
+            pathname: route_map.sign,
+            search: "?id=" + msgs[0],
+          })
+        );
+      }
+    },
   },
 
   reducers: {
@@ -281,6 +307,10 @@ export default {
         );
       }
       return data;
+    },
+    // 接收广播消息
+    broadcast(state, action) {
+      return { ...state, ...action.payload };
     },
   },
 };

@@ -67,13 +67,13 @@ class IndexRC extends React.Component {
         ? this.props.balance[address] || { assets: [] }
         : { assets: [] };
     const balances_json = {};
+    let tokens = [];
     balances.assets.map((item) => {
       if (item.chain == chainId && item.external_address) {
         chain_external_address = item.external_address;
       }
       balances_json[item.symbol] = item;
     });
-    let tokens = [];
     this.props.tokens.map((item) => {
       if (item.chain.toUpperCase() == chainId.toUpperCase()) {
         tokens.push({
@@ -178,7 +178,7 @@ class IndexRC extends React.Component {
               onClick={() => {
                 this.props.dispatch(
                   routerRedux.push({
-                    pathname: route_map.add_token,
+                    pathname: route_map.add_token + "/" + symbol,
                   })
                 );
               }}
@@ -357,6 +357,9 @@ class IndexRC extends React.Component {
 
           <div className={classes.token_list}>
             {this.state.tokens.map((item) => {
+              if (item.hide) {
+                return "";
+              }
               const rates2 = this.rates(
                 1,
                 item.symbol,

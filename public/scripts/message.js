@@ -6,7 +6,9 @@ import querystring from "query-string";
 import request from "./request";
 import API from "../../src/util/api";
 import Sign from "../../src/util/sign";
+import { v4 } from "uuid";
 
+let that;
 export default class MessageManager {
   constructor(opts) {
     // 存储sign请求，直到用户通过或拒绝
@@ -31,6 +33,9 @@ export default class MessageManager {
 
     // sign消息数量监听
     this.updateBadge();
+    that = this;
+
+    store.set_broadcast((res) => this.broadcast(res));
 
     this.port = new Map();
     extension.runtime.onConnect.addListener((port) => {
@@ -171,12 +176,25 @@ export default class MessageManager {
       }
 
       // 保存免密配置
-      if (obj.type == CONST.METHOD_SAVE_PASSWORD) {
+      if (
+        obj.type == CONST.METHOD_SAVE_PASSWORD &&
+        obj.from == CONST.MESSAGE_FROM_POPUP
+      ) {
         this.save_password(obj, port);
       }
       // 查询免密配置
-      if (obj.type == CONST.METHOD_QUERY_PASSWORD) {
+      if (
+        obj.type == CONST.METHOD_QUERY_PASSWORD &&
+        obj.from == CONST.MESSAGE_FROM_POPUP
+      ) {
         this.query_password();
+      }
+      // 查询sign msgs
+      if (
+        obj.type == CONST.METHOD_QUERY_SIGN &&
+        obj.from == CONST.MESSAGE_FROM_POPUP
+      ) {
+        this.query_signmsgs();
       }
     }
   }
@@ -412,7 +430,8 @@ export default class MessageManager {
         if (result.code == 200) {
           sign_obj.data.sequence = result.data.sequence;
           this.signmsgs[obj.id] = sign_obj;
-          store.set({ signmsgs: this.signmsgs });
+          //store.set({ signmsgs: this.signmsgs });
+          console.log(sign_obj);
           this.sendMsgToPopup(sign_obj, port);
         } else {
           this.sendMsgToPage(
@@ -435,17 +454,16 @@ export default class MessageManager {
    * @param {*} port
    */
   async sign_result(obj, port) {
-    // if (!obj.id && !this.signmsgs[obj.id]) {
-    //   console.warn(`sign message has no id = ${obj.id}`);
-    //   return;
-    // }
     if (port.name == "popup" && port.sender && port.sender.tab) {
       this.platform.closeTab(port.sender.tab.id);
+    }
+    if (!obj.id || !this.signmsgs[obj.id]) {
+      console.warn(`sign message has no id = ${obj.id}`);
+      return;
     }
     if (this.signmsgs && obj.id) {
       delete this.signmsgs[obj.id];
     }
-    store.set({ signmsgs: this.signmsgs });
     // 用户拒绝
     if (obj.data && obj.data.code == 400) {
       this.sendMsgToPage(obj, port);
@@ -510,7 +528,6 @@ export default class MessageManager {
             (data.type == CONST.METHOD_SIGN ||
               data.type == CONST.MEHTOD_CONNECT)
           ) {
-            console.log(item);
             back_to_front = true;
             this.platform.switchToTab(item.sender.tab.id);
           }
@@ -613,10 +630,18 @@ export default class MessageManager {
   async reset_pwd(no_pwd, pwd) {
     this.no_pwd = no_pwd;
     this.password = pwd;
-    this.sendMsgToPopup({
-      type: CONST.METHOD_SAVE_PASSWORD,
-      data: { no_pwd, password: pwd },
+    let haspopup = false;
+    this.port.forEach((item) => {
+      if (item.name == "popup") {
+        haspopup = true;
+      }
     });
+    if (haspopup) {
+      this.sendMsgToPopup({
+        type: CONST.METHOD_SAVE_PASSWORD,
+        data: { no_pwd, password: pwd },
+      });
+    }
   }
   async query_password() {
     this.sendMsgToPopup({
@@ -625,6 +650,32 @@ export default class MessageManager {
         no_pwd: this.no_pwd,
         password: this.password,
       },
+    });
+  }
+  async query_signmsgs() {
+    this.sendMsgToPopup({
+      type: CONST.METHOD_QUERY_SIGN,
+      data: {
+        signmsgs: this.signmsgs,
+      },
+    });
+  }
+  /**
+   * store data change
+   * broadcast new data to popup
+   */
+  async broadcast(data) {
+    this.port.forEach((item) => {
+      item.postMessage(
+        JSON.stringify({
+          from: CONST.MESSAGE_FROM_BACKGROUND,
+          to: CONST.MESSAGE_FROM_POPUP,
+          time: new Date().getTime(),
+          type: CONST.METHOD_BROADCAST,
+          id: v4(),
+          data,
+        })
+      );
     });
   }
 }

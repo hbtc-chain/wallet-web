@@ -29,6 +29,14 @@
   padding: 0 5px;
 }
 
+.bhex-icon-expandview:before {
+  content: "\e62a";
+}
+
+.bhex-icon-exchange-dex:before {
+  content: "\e626";
+}
+
 .bhex-icon-inportaccount:before {
   content: "\e622";
 }

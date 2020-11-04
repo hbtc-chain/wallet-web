@@ -112,6 +112,27 @@ class MessageManager {
         },
       });
     }
+
+    if (
+      obj.type == CONST.METHOD_QUERY_SIGN &&
+      obj.to == CONST.MESSAGE_FROM_POPUP
+    ) {
+      this.dispatch({
+        type: "layout/sign",
+        payload: {
+          signmsgs: obj.data.signmsgs,
+        },
+      });
+    }
+    if (
+      obj.type == CONST.METHOD_BROADCAST &&
+      obj.to == CONST.MESSAGE_FROM_POPUP
+    ) {
+      this.dispatch({
+        type: "layout/broadcast",
+        payload: obj.data,
+      });
+    }
   }
   /**
    * 发送消息到background

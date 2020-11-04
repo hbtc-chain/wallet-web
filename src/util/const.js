@@ -5,6 +5,7 @@ export default {
   MESSAGE_FROM_BACKGROUND: "background",
   MESSAGE_FROM_POPUP: "popup",
   METHOD_SIGN: "sign",
+  METHOD_QUERY_SIGN: "query_sign",
   METHOD_GET_ACCOUNT: "get_account",
   MEHTOD_CONNECT: "connect",
   METHOD_SET_STORE: "set_store",
@@ -15,4 +16,5 @@ export default {
   METHOD_LOGGED_STATUS_QUERY: "logged_status_query",
   METHOD_SAVE_PASSWORD: "save_password",
   METHOD_QUERY_PASSWORD: "query_password",
+  METHOD_BROADCAST: "broadcast",
 };

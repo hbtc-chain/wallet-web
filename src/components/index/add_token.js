@@ -37,48 +37,55 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {
     this.setState({
-      tokens: this.props.tokens,
+      tokens: this.props.verified_tokens,
     });
   }
   componentDidUpdate() {
     if (
       this.state.tokens.length == 0 &&
-      this.props.tokens.length &&
+      this.props.verified_tokens.length &&
       !this.state.v
     ) {
       this.setState({
-        tokens: this.props.tokens,
+        tokens: this.props.verified_tokens,
       });
     }
   }
 
   handleChange = (symbol, token, i) => () => {
     const index = this.props.tokens.findIndex((item) => item.symbol == symbol);
+    const default_index = this.props.verified_tokens.findIndex(
+      (item) => item.symbol == symbol
+    );
     let tokens = [...this.props.tokens];
     let tokens_state = [...this.state.tokens];
     if (index > -1) {
-      const address = this.props.store.accounts[this.props.store.account_index]
-        ? this.props.store.accounts[this.props.store.account_index]["address"]
-        : "";
-      const balance =
-        this.props.balance && address && this.props.balance[address]
-          ? this.props.balance[address].assets.find(
-              (item) => item.symbol == symbol
-            ) || {
-              amount: "",
-            }
-          : { amount: "" };
-      if (balance.amount) {
-        message.info(
-          this.props.intl.formatMessage(
-            { id: "{token} has assets" },
-            { token: symbol.toUpperCase() }
-          )
-        );
-        return;
+      // const address = this.props.store.accounts[this.props.store.account_index]
+      //   ? this.props.store.accounts[this.props.store.account_index]["address"]
+      //   : "";
+      // const balance =
+      //   this.props.balance && address && this.props.balance[address]
+      //     ? this.props.balance[address].assets.find(
+      //         (item) => item.symbol == symbol
+      //       ) || {
+      //         amount: "",
+      //       }
+      //     : { amount: "" };
+      // if (balance.amount) {
+      //   message.info(
+      //     this.props.intl.formatMessage(
+      //       { id: "{token} has assets" },
+      //       { token: symbol.toUpperCase() }
+      //     )
+      //   );
+      //   return;
+      // }
+      if (default_index == -1) {
+        tokens.splice(index, 1);
+        tokens_state[i]["hide"] = true;
+      } else {
+        tokens_state[i]["hide"] = !Boolean(tokens_state[i]["hide"]);
       }
-      tokens.splice(index, 1);
-      tokens_state[i]["hide"] = true;
     } else {
       tokens.push(token);
       tokens_state[i]["hide"] = false;
@@ -112,6 +119,7 @@ class IndexRC extends React.Component {
         type: "layout/commReq",
         payload: {
           token: this.state.v,
+          chain: this.props.match.params.chainId,
         },
         url: API.search_tokens,
       });
@@ -135,7 +143,7 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes } = this.props;
-
+    const chain = this.props.match.params.chainId;
     return (
       <div className={classes.chain}>
         <Grid
@@ -203,6 +211,9 @@ class IndexRC extends React.Component {
                 a.symbol.toUpperCase() > b.symbol.toUpperCase() ? 1 : -1
               )
               .map((item, i) => {
+                if (item.chain != chain) {
+                  return "";
+                }
                 return (
                   <Grid
                     container

@@ -57,10 +57,24 @@ class IndexRC extends React.Component {
       password: "",
       password_msg: "",
       open: false,
+      close: false,
     };
   }
   componentDidMount() {
     this.init();
+  }
+  componentDidUpdate(preProps) {
+    let params = querystring.parse(this.props.location.search);
+    let id = params.id;
+    if (!preProps.signmsgs[id] && this.props.signmsgs[id]) {
+      this.init();
+    }
+    // 当前sign已结束
+    if (!this.props.signmsgs[id] && this.state.close) {
+      this.setState({
+        close: true,
+      });
+    }
   }
   /**
    * 根据token精度对amount值进行处理
@@ -110,8 +124,7 @@ class IndexRC extends React.Component {
   init = async () => {
     let params = querystring.parse(this.props.location.search);
     let id = params.id;
-    let all_data = await Store.get();
-    let datas = (all_data.signmsgs || {})[id];
+    let datas = (this.props.signmsgs || {})[id];
     // || {
     //   from: "page",
     //   to: "background",
@@ -470,31 +483,45 @@ class IndexRC extends React.Component {
           </Grid>
         </Grid>
 
-        <Grid container justify="space-around" style={{ margin: "10px 0 0" }}>
-          <Grid item xs={5}>
-            <Button
-              fullWidth
-              variant="contained"
-              className={classes.btn_large}
-              onClick={this.reject}
-            >
-              {this.props.intl.formatMessage({ id: "reject" })}
-            </Button>
+        {this.state.close ? (
+          <Grid container justify="space-around" style={{ margin: "10px 0 0" }}>
+            <Grid item xs={5}>
+              <Button
+                fullWidth
+                variant="contained"
+                className={classes.btn_large}
+              >
+                {this.props.intl.formatMessage({ id: "sign closed" })}
+              </Button>
+            </Grid>
           </Grid>
-          <Grid item xs={5}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.btn_large}
-              onClick={() => {
-                this.setState({ open: true });
-              }}
-            >
-              {this.props.intl.formatMessage({ id: "confirm" })}
-            </Button>
+        ) : (
+          <Grid container justify="space-around" style={{ margin: "10px 0 0" }}>
+            <Grid item xs={5}>
+              <Button
+                fullWidth
+                variant="contained"
+                className={classes.btn_large}
+                onClick={this.reject}
+              >
+                {this.props.intl.formatMessage({ id: "reject" })}
+              </Button>
+            </Grid>
+            <Grid item xs={5}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.btn_large}
+                onClick={() => {
+                  this.setState({ open: true });
+                }}
+              >
+                {this.props.intl.formatMessage({ id: "confirm" })}
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
         <PasswordRC
           {...otherProps}
           open={this.state.open}

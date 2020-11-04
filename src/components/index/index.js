@@ -508,11 +508,48 @@ class IndexRC extends React.Component {
                 vertical: "top",
                 horizontal: "center",
               }}
+              getContentAnchorEl={null}
+              keepMounted
               anchorEl={this.state.anchorEl2}
               open={Boolean(this.state.anchorEl2)}
               onClose={this.handleClose}
               classes={{ list: classes.control_list }}
             >
+              <MenuItem
+                onClick={() => {
+                  window.open(
+                    "chrome-extension://dblgdkbnafbmiegdhjemadfokcccemch/index.html#/",
+                    "_blank"
+                  );
+                }}
+              >
+                <ListItemIcon>
+                  <Iconfont type="expandview" size={22} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={this.props.intl.formatMessage({
+                    id: "Expand view",
+                  })}
+                />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  window.open(
+                    "https://explorer.hbtcchain.io/account/" + address,
+                    "_blank"
+                  );
+                }}
+              >
+                <ListItemIcon>
+                  <Iconfont type="explorer" size={22} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={this.props.intl.formatMessage({
+                    id: "View on Explorer",
+                  })}
+                />
+              </MenuItem>
+
               <MenuItem
                 onClick={() => {
                   this.props.dispatch(

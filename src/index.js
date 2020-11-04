@@ -100,7 +100,6 @@ const initStore = async () => {
         accounts: [],
         account_index: -1,
         sites: [],
-        signmsgs: {},
         unit: "usd",
         pwd_rule: 0,
         no_pwd: false, // 30m内免密
@@ -131,12 +130,14 @@ const initStore = async () => {
         store: res || {},
         no_pwd: false, // 30m内免密
         password: "",
+        signmsgs: {},
         rates: {},
         balance: {},
         tokens: JSON.parse(
           window.localStorage.getItem("hbc_wallet_tokens") || "[]"
         ),
         default_tokens: [],
+        verified_tokens: [],
         units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
         langs: ["zh-cn", "en-us"],
         messageManager: null,

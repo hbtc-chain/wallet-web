@@ -13,7 +13,26 @@ class LayoutRC extends React.Component {
   }
   componentDidMount() {
     this.default_tokens();
+    this.verified_tokens();
   }
+  verified_tokens = async () => {
+    if (this.props.verified_tokens.length) {
+      return;
+    }
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.verified_tokens,
+    });
+    if (result.code == 200) {
+      this.props.dispatch({
+        type: "layout/save",
+        payload: {
+          verified_tokens: result.data,
+        },
+      });
+    }
+  };
   default_tokens = async () => {
     if (this.props.default_tokens.length) {
       return;

@@ -272,7 +272,7 @@ export default {
   locked: "Locked",
   "get test token": "Claim Testnet Tokens",
   "add token": "添加资产",
-  "search token name": "输入币种名称",
+  "search token name": "更多币种请输入名称检索",
   "{token} has assets": "{token}存在资产，不可隐藏",
   "GAS FEE": "Gas fee",
   from: "Promoter",
@@ -289,4 +289,5 @@ export default {
   min_token_b_amount: "Token B Amount",
   "enter current wallet password":
     "Please enter the current password of wallet",
+  "sign closed": "本次交易已结束",
 };

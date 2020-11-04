@@ -28,8 +28,8 @@ class ExtensionStore {
     if (!this.isSupported) {
       log.error("Storage local API not available.");
     }
+    this.broadcast = null;
   }
-
   /**
    * Returns all of the keys currently saved
    * @returns {Promise<*>}
@@ -91,10 +91,14 @@ class ExtensionStore {
         if (err) {
           reject(err);
         } else {
+          this.broadcast && this.broadcast({ store: data });
           resolve();
         }
       });
     });
+  }
+  set_broadcast(cb) {
+    this.broadcast = cb;
   }
 }
 
@@ -123,7 +127,6 @@ const init_data = {
   accounts: [],
   account_index: -1,
   sites: [],
-  signmsgs: {},
   unit: "usd",
   lang: browserLang(),
   chain: [

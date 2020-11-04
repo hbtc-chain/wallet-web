@@ -219,7 +219,11 @@ function RouterConfig({ history, app }) {
         <Route exact path={route_map.chain + "/:chainId"} component={ChainRC} />
         <Redirect exact from={route_map.chain} to={route_map.chain + "/hbc"} />
         {/* AddTokenRC */}
-        <Route exact path={route_map.add_token} component={AddTokenRC} />
+        <Route
+          exact
+          path={route_map.add_token + "/:chainId"}
+          component={AddTokenRC}
+        />
         {/* external address */}
         <Route
           exact

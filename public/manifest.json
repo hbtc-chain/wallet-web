@@ -31,7 +31,7 @@
   "name": "HBTC Wallet",
   "author": "https://hbtcchain.io/",
 
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": ["storage"],
 
   "version": "1.0"
 }

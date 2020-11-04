@@ -253,7 +253,7 @@ export default {
   locked: "锁定",
   "get test token": "获取测试币",
   "add token": "添加资产",
-  "search token name": "输入币种名称",
+  "search token name": "更多币种请输入名称检索",
   "{token} has assets": "{token}存在资产，不可隐藏",
   "GAS FEE": "手续费",
   from: "发起人",
@@ -268,4 +268,7 @@ export default {
   token_b: "币种B",
   min_token_a_amount: "A币种的最小数量",
   min_token_b_amount: "B币种的最小数量",
+  "sign closed": "本次交易已结束",
+  "View on Explorer": "在链浏览器查看",
+  "Expand view": "展开视图",
 };
