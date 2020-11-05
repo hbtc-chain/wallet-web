@@ -15,7 +15,7 @@ export default async function (url, options = {}) {
   return Promise.race([
     new Promise((reslove, reject) => {
       setTimeout(() => {
-        reject("timeoute " + url);
+        reject("timeout " + url);
       }, t);
     }),
     window

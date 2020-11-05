@@ -535,7 +535,9 @@ class IndexRC extends React.Component {
               <MenuItem
                 onClick={() => {
                   window.open(
-                    "https://explorer.hbtcchain.io/account/" + address,
+                    this.props.store.chain[this.props.store.chain_index][
+                      "explorer"
+                    ] + address,
                     "_blank"
                   );
                 }}

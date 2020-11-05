@@ -135,12 +135,14 @@ const init_data = {
       url: "https://explorer.hbtcchain.io",
       chain_id: "hbtc-testnet",
       exc: "https://juswap.io/",
+      explorer: "https://explorer.hbtcchain.io/account/",
     },
     {
       name: "test net",
       url: "https://explorer.hbtcchain.io",
       chain_id: "hbtc-testnet",
       exc: "https://juswap.io/",
+      explorer: "https://explorer.hbtcchain.io/account/",
     },
   ],
   chain_index: 1, // 0 = main chain , 1 = test chain
