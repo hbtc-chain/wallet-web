@@ -36,9 +36,7 @@ class IndexRC extends React.Component {
     };
   }
   componentDidMount() {
-    this.setState({
-      tokens: this.props.verified_tokens,
-    });
+    this.initToken();
   }
   componentDidUpdate() {
     if (
@@ -46,50 +44,56 @@ class IndexRC extends React.Component {
       this.props.verified_tokens.length &&
       !this.state.v
     ) {
-      this.setState({
-        tokens: this.props.verified_tokens,
-      });
+      this.initToken();
     }
   }
+  initToken = () => {
+    let not_in_default_token = [];
+    this.props.tokens.map((item) => {
+      const index = this.props.default_tokens.findIndex(
+        (it) => it.symbol == item.symbol
+      );
+      if (index == -1) {
+        const i = this.props.verified_tokens.findIndex(
+          (it) => it.symbol == item.symbol
+        );
+        if (i == -1) {
+          not_in_default_token.push(item);
+        }
+      }
+    });
+    this.setState({
+      tokens: window.localStorage.hbc_wallet_tokens
+        ? JSON.parse(window.localStorage.hbc_wallet_tokens)
+        : this.props.verified_tokens.concat(not_in_default_token),
+    });
+  };
 
-  handleChange = (symbol, token, i) => () => {
+  handleChange = (symbol, token, i) => (e) => {
     const index = this.props.tokens.findIndex((item) => item.symbol == symbol);
     const default_index = this.props.verified_tokens.findIndex(
       (item) => item.symbol == symbol
     );
     let tokens = [...this.props.tokens];
     let tokens_state = [...this.state.tokens];
+
     if (index > -1) {
-      // const address = this.props.store.accounts[this.props.store.account_index]
-      //   ? this.props.store.accounts[this.props.store.account_index]["address"]
-      //   : "";
-      // const balance =
-      //   this.props.balance && address && this.props.balance[address]
-      //     ? this.props.balance[address].assets.find(
-      //         (item) => item.symbol == symbol
-      //       ) || {
-      //         amount: "",
-      //       }
-      //     : { amount: "" };
-      // if (balance.amount) {
-      //   message.info(
-      //     this.props.intl.formatMessage(
-      //       { id: "{token} has assets" },
-      //       { token: symbol.toUpperCase() }
-      //     )
-      //   );
-      //   return;
-      // }
-      if (default_index == -1) {
-        tokens.splice(index, 1);
-        tokens_state[i]["hide"] = true;
+      if (default_index > -1) {
+        tokens[index] = {
+          ...tokens[index],
+          hide: !Boolean(e.target.checked),
+        };
       } else {
-        tokens_state[i]["hide"] = !Boolean(tokens_state[i]["hide"]);
+        tokens.splice(index, 1);
       }
     } else {
+      token.hide = false;
       tokens.push(token);
-      tokens_state[i]["hide"] = false;
     }
+    tokens_state[i] = {
+      ...tokens_state[i],
+      hide: !Boolean(e.target.checked),
+    };
     this.props.dispatch({
       type: "layout/save",
       payload: {
@@ -132,7 +136,7 @@ class IndexRC extends React.Component {
           if (index == -1) {
             res_data.push({ ...item, hide: true });
           } else {
-            res_data.push(item);
+            res_data.push({ ...item, hide: false });
           }
         });
         this.setState({
@@ -238,7 +242,7 @@ class IndexRC extends React.Component {
                     </Grid>
                     <Grid item style={{ textAlign: "right" }}>
                       <Switch
-                        checked={!Boolean(item.hide)}
+                        checked={!(item.hide === true)}
                         onChange={this.handleChange(item.symbol, item, i)}
                         color="primary"
                         name="checkedB"

@@ -431,6 +431,9 @@ class IndexRC extends React.Component {
               }}
             >
               {this.props.tokens.map((item) => {
+                if (item.hide) {
+                  return "";
+                }
                 let balance =
                   this.props.balance && address && this.props.balance[address]
                     ? this.props.balance[address].assets.find(

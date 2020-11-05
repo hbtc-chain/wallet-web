@@ -216,7 +216,7 @@ export default {
           id: v4(),
         });
       }
-      yield util.delay(1000);
+      yield util.delay(2000);
       yield put({
         type: "get_balance_loop",
         payload: {},
@@ -260,6 +260,30 @@ export default {
     },
     *get_balance({ payload }, { put, select }) {
       const balance = yield select((state) => state.layout.balance);
+      const store = yield select((state) => state.layout.store);
+      const tokens = yield select((state) => state.layout.tokens);
+      const address =
+        store.accounts.length && store.account_index > -1
+          ? store.accounts[store.account_index]["address"]
+          : "";
+      if (address && payload[address]) {
+        const assets = payload[address]["assets"];
+        let not_in_tokens = [];
+        assets.map((item) => {
+          const index = tokens.findIndex((it) => it.symbol == item.symbol);
+          if (index == -1) {
+            not_in_tokens.push(item.symbol);
+          }
+        });
+        if (not_in_tokens.length) {
+          yield put({
+            type: "tokens",
+            payload: {
+              symbols: not_in_tokens.join(","),
+            },
+          });
+        }
+      }
       yield put({
         type: "save",
         payload: {
@@ -270,6 +294,10 @@ export default {
         },
       });
     },
+    /**
+     * search token
+     */
+    *search_token({ payload }, { call, put }) {},
     /**
      * query sign
      */
@@ -296,7 +324,9 @@ export default {
     save(state, action) {
       // 同步数据到background store
       const data = { ...state, ...action.payload };
-      store.set(data.store);
+      if (action.payload.store) {
+        store.set(data.store);
+      }
       if (action.payload.tokens) {
         action.payload.tokens.sort((a, b) => {
           return a.symbol.toUpperCase() > b.symbol.toUpperCase() ? 1 : -1;

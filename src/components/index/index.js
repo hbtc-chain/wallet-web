@@ -122,8 +122,9 @@ class IndexRC extends React.Component {
     let total = 0;
     balances.assets.map((item) => {
       balances_json[item.symbol] = item.amount;
+      const token = this.props.tokens.find((it) => it.symbol == item.symbol);
       const d = this.rates(item.amount, item.symbol);
-      if (Number(d[0])) {
+      if (Number(d[0]) && token && !token.hide) {
         total += Number(d[0] || 0);
       }
     });
@@ -368,7 +369,6 @@ class IndexRC extends React.Component {
       this.props.store.account_index != -1
         ? this.props.store.accounts[this.props.store.account_index]["username"]
         : "";
-    this.props.tokens.map((item) => {});
     let balance = {};
     const balances =
       this.props.balance && address && this.props.balance[address]
@@ -668,7 +668,7 @@ class IndexRC extends React.Component {
             let token = this.state.tokens.find((it) => it.symbol == item.chain);
             token = token || {};
             this.state.tokens.map((it) => {
-              if (it.chain == item.chain) {
+              if (it.chain == item.chain && !it.hide) {
                 const rate = this.rates(
                   it.amount,
                   it.symbol,
