@@ -12,7 +12,7 @@ class MessageManager {
   constructor() {
     // 保存已发送的消息
     this.msgs = new Map();
-    window.HBC_wallet_isready = true;
+    window.HBTC_wallet_isready = true;
     window.onmessage = (e) => {
       const data = e.data;
       this.messagehandle(data);
@@ -148,4 +148,4 @@ class MessageManager {
     window.postMessage(d);
   }
 }
-window.HBC_wallet = new MessageManager();
+window.HBTC_wallet = new MessageManager();
