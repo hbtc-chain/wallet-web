@@ -128,13 +128,14 @@ class IndexRC extends React.Component {
       [str]: img,
     });
   };
-  choose = (symbol, title, address) => () => {
+  choose = (symbol, title, address, logo) => () => {
     this.qrcode(address);
     this.setState({
       choose: {
         symbol,
         title,
         address,
+        logo,
       },
       open: true,
     });
@@ -149,6 +150,7 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const symbol = this.props.match.params.chainId;
+    const token = this.props.tokens.find((item) => item.symbol == symbol) || {};
     const address =
       this.props.store.accounts && this.props.store.account_index > -1
         ? this.props.store.accounts[this.props.store.account_index]["address"]
@@ -213,14 +215,19 @@ class IndexRC extends React.Component {
                     "name"
                   ] == "test net" ? (
                     <Grid item>
-                      <a
-                        href="https://explorer.hbtcchain.io/receive"
-                        target="_blank"
+                      <span
+                        onClick={() => {
+                          this.props.dispatch(
+                            routerRedux.push({
+                              pathname: route_map.test_token,
+                            })
+                          );
+                        }}
                       >
                         {this.props.intl.formatMessage({
                           id: "get test token",
                         })}
-                      </a>
+                      </span>
                     </Grid>
                   ) : (
                     ""
@@ -236,7 +243,8 @@ class IndexRC extends React.Component {
                       onClick={this.choose(
                         symbol,
                         "HBC chain address",
-                        address
+                        address,
+                        token.logo
                       )}
                     />
                   </Grid>
@@ -283,7 +291,8 @@ class IndexRC extends React.Component {
                       onClick={this.choose(
                         symbol,
                         "HBC chain address",
-                        address
+                        address,
+                        token.logo
                       )}
                     />
                   </Grid>
@@ -341,7 +350,8 @@ class IndexRC extends React.Component {
                         onClick={this.choose(
                           symbol,
                           "external chain address",
-                          chain_external_address
+                          chain_external_address,
+                          token.logo
                         )}
                       />
                     </Grid>

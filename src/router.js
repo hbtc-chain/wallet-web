@@ -108,6 +108,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/external_address"),
   });
+  // test token
+  const TestTokenRC = dynamic({
+    app,
+    component: () => import("./pages/test_token"),
+  });
   // symbol
   const SymbolRC = dynamic({
     app,
@@ -230,6 +235,8 @@ function RouterConfig({ history, app }) {
           path={route_map.external_address + "/:symbol"}
           component={ExternalAddressRC}
         />
+        {/* test token */}
+        <Route exact path={route_map.test_token} component={TestTokenRC} />
         {/* symbol */}
         <Route
           exact

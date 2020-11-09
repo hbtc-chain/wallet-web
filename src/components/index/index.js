@@ -419,9 +419,12 @@ class IndexRC extends React.Component {
                     size={24}
                     onClick={() => {
                       extension.tabs.create({
-                        url: this.props.store.chain[
-                          this.props.store.chain_index
-                        ]["exc"],
+                        url:
+                          this.props.store.chain[this.props.store.chain_index][
+                            "exc"
+                          ] +
+                          "?lang=" +
+                          this.props.store.lang,
                       });
                       // window.open(
                       //   this.props.store.chain[this.props.chain_index]["exc"],

@@ -33,6 +33,7 @@ export default {
   symbol: `${local}/symbol`,
   transfer: `${local}/transfer`,
   add_token: `${local}/add_token`,
+  test_token: `${local}/test_token`,
   send: `${local}/send`,
   external_address: `${local}/external_address`,
   withdrawal: `${local}/withdrawal`,

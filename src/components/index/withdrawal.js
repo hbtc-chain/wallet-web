@@ -492,8 +492,8 @@ class IndexRC extends React.Component {
           <div className={classes.form_input}>
             <TextField
               placeholder={this.props.intl.formatMessage({ id: "fee" })}
+              disabled
               value={this.state.fee}
-              onChange={this.feeChange}
               fullWidth
               variant="outlined"
               classes={{
@@ -506,7 +506,7 @@ class IndexRC extends React.Component {
               helperText={this.state.fee_msg}
             />
           </div>
-          <Grid
+          {/* <Grid
             container
             justify="space-between"
             className={classes.form_label}
@@ -524,7 +524,7 @@ class IndexRC extends React.Component {
               min={0.002}
               max={1}
             />
-          </div>
+          </div> */}
           {this.state.loading ? (
             <Button
               className={classes.submit}

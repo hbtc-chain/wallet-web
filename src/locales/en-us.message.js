@@ -271,9 +271,9 @@ export default {
   exc: "JuSwap Quick token swap ",
   locked: "Locked",
   "get test token": "Claim Testnet Tokens",
-  "add token": "添加资产",
-  "search token name": "更多币种请输入名称检索",
-  "{token} has assets": "{token}存在资产，不可隐藏",
+  "add token": "Add token",
+  "search token name": "Enter symbol to search more",
+  "{token} has assets": "{token} contains value, cannot be hidden",
   "GAS FEE": "Gas fee",
   from: "Promoter",
   referer: "Referer",
@@ -289,5 +289,9 @@ export default {
   min_token_b_amount: "Token B Amount",
   "enter current wallet password":
     "Please enter the current password of wallet",
-  "sign closed": "本次交易已结束",
+  "sign closed": "Trade closed",
+  "claim test token": "Claim Test Token",
+  "address required": "Address cannot be empty",
+  token: "Token",
+  address: "Address",
 };

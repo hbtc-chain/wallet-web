@@ -271,4 +271,8 @@ export default {
   "sign closed": "本次交易已结束",
   "View on Explorer": "在链浏览器查看",
   "Expand view": "展开视图",
+  "claim test token": "领取测试币",
+  "address required": "地址不能为空",
+  token: "币种",
+  address: "地址",
 };

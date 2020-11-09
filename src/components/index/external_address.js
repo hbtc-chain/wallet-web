@@ -289,12 +289,13 @@ class IndexRC extends React.Component {
             InputProps={{
               endAdornment: <span className={classes.grey}>HBC</span>,
             }}
-            onChange={this.feeChange}
+            //onChange={this.feeChange}
+            disabled
             helperText={this.state.fee_msg}
             error={Boolean(this.state.fee_msg)}
             variant="outlined"
           />
-          <label className={classes.external_label}>
+          {/* <label className={classes.external_label}>
             {this.props.intl.formatMessage({ id: "fee_min_max" })}
           </label>
           <Slider
@@ -303,7 +304,7 @@ class IndexRC extends React.Component {
             step={0.001}
             min={0}
             max={1}
-          />
+          /> */}
         </div>
         {this.state.loading ? (
           <Button

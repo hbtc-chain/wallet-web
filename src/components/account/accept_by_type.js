@@ -119,11 +119,11 @@ class IndexRC extends React.Component {
               ""
             )}
           </Paper>
-          <dl className={classes.tip}>
+          {/* <dl className={classes.tip}>
             <dt>{this.props.intl.formatMessage({ id: "tip" })}</dt>
             <dd>xxxxxxxxxxxxxxxxx</dd>
             <dd>yyyyyyyyyyyyyyyyyy</dd>
-          </dl>
+          </dl> */}
         </div>
       </div>
     );
