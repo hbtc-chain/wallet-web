@@ -48,7 +48,7 @@ class IndexRC extends React.Component {
       getTokenError: "",
       tokens: [],
       fee: {
-        gas: "200000",
+        gas: CONST.GAS_FEE,
         amount: [{ denom: "hbc", amount: "10000000000000000" }],
       },
       memo: "",

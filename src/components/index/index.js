@@ -517,10 +517,11 @@ class IndexRC extends React.Component {
             >
               <MenuItem
                 onClick={() => {
-                  window.open(
-                    "chrome-extension://dblgdkbnafbmiegdhjemadfokcccemch/index.html#/",
-                    "_blank"
-                  );
+                  extension.tabs.create({ url: "index.html" });
+                  // window.open(
+                  //   "chrome-extension://abhehknhgkpgodifpecmdilkdnbgkabn/index.html#/welcome",
+                  //   "_blank"
+                  // );
                 }}
               >
                 <ListItemIcon>
