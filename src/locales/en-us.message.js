@@ -294,4 +294,7 @@ export default {
   "address required": "Address cannot be empty",
   token: "Token",
   address: "Address",
+  "delete account": "Delete Account",
+  "delete account desc":
+    "Are you sure to delete the current account? Please confirm whether you have owned or exported the original privateKey, mnemonic phrase, or KeyStore of the account.",
 };

@@ -113,12 +113,12 @@ export default function request(url, options = { method: "GET" }) {
               data,
             };
           } else {
-            if (res.status == 403) {
-              return {
-                code: 403,
-                msg: "Request denied",
-              };
-            }
+            // if (res.status == 403) {
+            //   return {
+            //     code: 403,
+            //     msg: "Request denied",
+            //   };
+            // }
             let data = {};
             try {
               data = JSON.parse(d);

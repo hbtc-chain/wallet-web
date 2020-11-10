@@ -82,7 +82,7 @@ class IndexRC extends React.Component {
                       onClick={this.changeAccount(i)}
                     >
                       <ListItemText primary={item.username} />
-                      <ListItemSecondaryAction>
+                      <ListItemSecondaryAction onClick={this.changeAccount(i)}>
                         <em></em>
                         <CheckCircle />
                       </ListItemSecondaryAction>

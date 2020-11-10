@@ -161,7 +161,7 @@ class IndexRC extends React.Component {
             color="primary"
             style={{ height: 48 }}
           >
-            {this.props.intl.formatMessage({ id: "create external address" })}
+            {this.props.intl.formatMessage({ id: "claim test token" })}
           </Button>
         )}
       </div>

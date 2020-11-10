@@ -29,6 +29,10 @@
   padding: 0 5px;
 }
 
+.bhex-icon-deleteaccount:before {
+  content: "\e62c";
+}
+
 .bhex-icon-expandview:before {
   content: "\e62a";
 }

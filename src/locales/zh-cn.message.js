@@ -275,4 +275,7 @@ export default {
   "address required": "地址不能为空",
   token: "币种",
   address: "地址",
+  "delete account": "删除账户",
+  "delete account desc":
+    "您确定删除当前账户吗？请在继续操作前，确认您是否已经拥有或备份导出该账户的原始秘钥、助记词、KeyStore。",
 };

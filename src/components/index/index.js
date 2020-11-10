@@ -28,6 +28,7 @@ import {
   Menu,
   MenuItem,
   Divider,
+  DialogActions,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -58,6 +59,7 @@ class IndexRC extends React.Component {
       copyed: false,
       anchorEl: false,
       anchorEl2: false,
+      delete_account: false,
       info_dialog: false,
       dialog_sites: false,
       dialog_private_key: false,
@@ -357,6 +359,34 @@ class IndexRC extends React.Component {
       );
     }
   };
+  delete_account = () => {
+    let accounts = [...this.props.store.accounts];
+    let account_index = this.props.store.account_index;
+    accounts.splice(account_index, 1);
+    account_index =
+      accounts.length - 1 < account_index ? accounts.length - 1 : account_index;
+    this.props.dispatch({
+      type: "layout/save",
+      payload: {
+        store: {
+          ...this.props.store,
+          accounts,
+          account_index,
+        },
+      },
+    });
+    if (account_index > -1) {
+      this.setState({
+        delete_account: false,
+      });
+    } else {
+      this.props.dispatch(
+        routerRedux.push({
+          pathname: route_map.welcome,
+        })
+      );
+    }
+  };
   render() {
     const { classes } = this.props;
     const address =
@@ -626,6 +656,23 @@ class IndexRC extends React.Component {
                 <ListItemText
                   primary={this.props.intl.formatMessage({
                     id: "export backup account",
+                  })}
+                />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this.setState({
+                    delete_account: true,
+                    anchorEl2: null,
+                  });
+                }}
+              >
+                <ListItemIcon>
+                  <Iconfont type="deleteaccount" size={22} />
+                </ListItemIcon>
+                <ListItemText
+                  primary={this.props.intl.formatMessage({
+                    id: "delete account",
                   })}
                 />
               </MenuItem>
@@ -1131,6 +1178,36 @@ class IndexRC extends React.Component {
             </ListItem>
           </List>
         </Drawer>
+        <Dialog
+          open={this.state.delete_account}
+          onClose={() => {
+            this.setState({ delete_account: false });
+          }}
+        >
+          <DialogTitle>
+            {this.props.intl.formatMessage({ id: "delete account" })}
+          </DialogTitle>
+          <DialogContent>
+            <p>
+              {this.props.intl.formatMessage({ id: "delete account desc" })}
+            </p>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              color="primary"
+              onClick={() => {
+                this.setState({
+                  delete_account: false,
+                });
+              }}
+            >
+              {this.props.intl.formatMessage({ id: "cancel" })}
+            </Button>
+            <Button color="primary" onClick={this.delete_account}>
+              {this.props.intl.formatMessage({ id: "confirm" })}
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
