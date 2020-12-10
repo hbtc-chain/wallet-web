@@ -140,6 +140,7 @@ const initStore = async () => {
         ),
         default_tokens: [],
         verified_tokens: [],
+        default_fee: { fee: "", gas: "" },
         units: ["cny", "jpy", "krw", "usd", "usdt", "vnd"],
         langs: ["zh-cn", "en-us"],
         messageManager: null,

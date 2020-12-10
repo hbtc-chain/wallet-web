@@ -12,4 +12,5 @@ export default {
   token_txs: "/api/v1/tokens/${token}/txs", // 币 资产变动记录
   txs: `/api/v1/txs`,
   tokenprices: `/api/v1/tokenprices`,
+  default_fee: `/api/v1/default_fee`,
 };

@@ -193,11 +193,11 @@ class IndexRC extends React.Component {
         "chain_id"
       ],
       fee: {
-        gas: CONST.GAS_FEE,
+        gas: this.props.default_fee.gas, // CONST.GAS_FEE,
         amount: [
           {
             denom: "hbc",
-            amount: this.decimals(this.state.fee, token_hbc.decimals),
+            amount: this.props.default_fee.fee, // this.decimals(this.state.fee, token_hbc.decimals),
           },
         ],
       },

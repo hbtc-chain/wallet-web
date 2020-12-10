@@ -320,11 +320,11 @@ class IndexRC extends React.Component {
       account_choose: false,
     });
   };
-  choose_chain = (i) => () => {
+  choose_chain = (i) => async () => {
     if (i == 0) {
       return;
     }
-    this.props.dispatch({
+    await this.props.dispatch({
       type: "layout/save",
       payload: {
         store: {
@@ -333,9 +333,17 @@ class IndexRC extends React.Component {
         },
       },
     });
-    this.setState({
-      chain_choose: false,
-    });
+    this.setState(
+      {
+        chain_choose: false,
+      },
+      () => {
+        this.props.dispatch({
+          type: "layout/default_fee",
+          payload: {},
+        });
+      }
+    );
   };
   logout = async () => {
     if (this.props.messageManager) {

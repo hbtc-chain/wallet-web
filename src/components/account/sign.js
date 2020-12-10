@@ -39,7 +39,7 @@ import PasswordRC from "../public/password";
 import extension from "extensionizer";
 
 class IndexRC extends React.Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       tab: 0,
@@ -48,8 +48,8 @@ class IndexRC extends React.Component {
       getTokenError: "",
       tokens: [],
       fee: {
-        gas: CONST.GAS_FEE,
-        amount: [{ denom: "hbc", amount: "10000000000000000" }],
+        gas: props.default_fee.gas,
+        amount: [{ denom: "hbc", amount: props.default_fee.fee }],
       },
       memo: "",
       gas: ["", ""],

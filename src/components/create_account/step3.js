@@ -19,7 +19,7 @@ class IndexRC extends React.Component {
     super();
     this.state = {
       password: "",
-      password_msg_arr: ["pwd_rule1", "pwd_rule3"],
+      password_msg_arr: ["pwd_rule1"],
       password_msg_i: [],
       confirmpwd: "",
       confirmpwd_msg_arr: ["pwd_rule2"],
@@ -109,15 +109,12 @@ class IndexRC extends React.Component {
     if (this.state.step2) {
       const password = key == "password" ? v : this.state.password;
       const confirmpwd = key == "confirmpwd" ? v : this.state.confirmpwd;
-      if (password && password.length < 8) {
+      if (password && !/^\d{6}$/.test(password)) {
         arr1.push(0);
       }
-      if (
-        password &&
-        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/.test(password)
-      ) {
-        arr1.push(1);
-      }
+      // if (password && !/^\d{6}$/.test(password)) {
+      //   arr1.push(1);
+      // }
       if (
         this.props.store.account_index > -1 &&
         helper.sha256(password) !== this.props.store.accounts[0]["password"]

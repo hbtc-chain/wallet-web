@@ -17,5 +17,4 @@ export default {
   METHOD_SAVE_PASSWORD: "save_password",
   METHOD_QUERY_PASSWORD: "query_password",
   METHOD_BROADCAST: "broadcast",
-  GAS_FEE: "2000000",
 };

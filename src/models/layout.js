@@ -40,6 +40,10 @@ export default {
       //   dispatch,
       // });
       dispatch({
+        type: "default_fee",
+        payload: {},
+      });
+      dispatch({
         type: "get_rates_loop",
         payload: {},
       });
@@ -74,6 +78,22 @@ export default {
     //     );
     //   }
     // },
+    // 查询 default gas fee
+    *default_fee({ payload }, { put, call, select }) {
+      const store = yield select((state) => state.layout.store);
+      const result = yield call(
+        getData(store.chain[store.chain_index]["url"] + API.default_fee),
+        { payload: {}, method: "get" }
+      );
+      if (result.code == 200) {
+        yield put({
+          type: "save",
+          payload: {
+            default_fee: result.data,
+          },
+        });
+      }
+    },
     // 创建账户
     *create_account({ payload }, { put, select }) {
       let password = payload.password;

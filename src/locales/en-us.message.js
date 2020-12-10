@@ -49,13 +49,13 @@ export default {
   "statemente.agreement":
     "I have hereby read, understood and agree to the terms of the service agreement",
   "I agree": "Agree and Continue",
-  "new.password": "New Password (no less than 8 characters)",
+  "new.password": "New Password (6 numbers)",
   password: "Password",
   "confirm.password": "Confirm Password",
   "read and agree": "I have hereby read, understood and agree",
   terms: "Terms",
   create: "Create",
-  pwd_rule1: "Password must be no less than 8 characters",
+  pwd_rule1: "Password must be 6 numbers",
   pwd_rule2: "Incorrect password",
   pwd_rule3:
     "An uppercase letter, a lowercase letter and a number must be included",
