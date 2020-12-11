@@ -20,6 +20,7 @@ import Qrcode from "qrcode";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import message from "../public/message";
 import classnames from "classnames";
+import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -27,14 +28,17 @@ class IndexRC extends React.Component {
     this.state = {
       loading: false,
       account: {},
+      token: "",
     };
   }
   componentDidMount() {
-    const account = {
-      address: this.props.match.params.address,
-    };
+    const account =
+      this.props.store.accounts && this.props.store.account_index > -1
+        ? this.props.store.accounts[this.props.store.account_index]
+        : {};
     this.setState({
       account,
+      token: this.props.match.params.token || "hbc",
     });
     this.qrcode(account.address);
   }
@@ -47,7 +51,7 @@ class IndexRC extends React.Component {
     }
     const img = await Qrcode.toDataURL(str, { width: 480 });
     this.setState({
-      img: img,
+      [str]: img,
     });
   };
   copy = () => {
@@ -56,9 +60,9 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const account = this.state.account;
-    const type = this.props.match.params.type;
-    const symbol = this.props.match.params.symbol.toLowerCase();
+    const symbol = this.props.match.params.token.toLowerCase();
     const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const type = token && token.chain == "hbc" ? token.chain : "";
 
     return (
       <div
@@ -81,7 +85,13 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            <h2>{this.props.intl.formatMessage({ id: "receive payment" })}</h2>
+            <h2>
+              <span>
+                {this.props.intl.formatMessage({ id: "receive payment" })}
+                {symbol.toUpperCase()}
+              </span>
+              <Iconfont type="arrowdown" />
+            </h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
@@ -91,7 +101,7 @@ class IndexRC extends React.Component {
             classes.accept_content_type
           )}
         >
-          {type == "chain_out" ? (
+          {type !== "hbc" ? (
             <h3>{this.props.intl.formatMessage({ id: "support hbc fee" })}</h3>
           ) : (
             ""
@@ -104,7 +114,7 @@ class IndexRC extends React.Component {
                 { symbol: symbol.toUpperCase() }
               )}
             </h2>
-            {account.address ? <img src={this.state.img} /> : ""}
+            {account.address ? <img src={this.state[account.address]} /> : ""}
             <strong>{account.address}</strong>
             <CopyToClipboard text={account.address} onCopy={this.copy}>
               <span>
@@ -119,11 +129,11 @@ class IndexRC extends React.Component {
               ""
             )}
           </Paper>
-          {/* <dl className={classes.tip}>
+          <dl className={classes.tip}>
             <dt>{this.props.intl.formatMessage({ id: "tip" })}</dt>
             <dd>xxxxxxxxxxxxxxxxx</dd>
             <dd>yyyyyyyyyyyyyyyyyy</dd>
-          </dl> */}
+          </dl>
         </div>
       </div>
     );

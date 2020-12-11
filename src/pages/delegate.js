@@ -1,19 +1,17 @@
 import React from "react";
 import { connect } from "dva";
 import LayoutRC from "../components/layout";
-import IndexRC from "../components/account/accept";
+import IndexRC from "../components/account/delegate";
 import LoginRC from "../components/account/login";
-import HeaderRC from "../components/header";
 import withRoot from "../withRoot";
 
-function IndexPage({ layout, dispatch, location, history, match }) {
+function IndexPage({ layout, dispatch, location, history }) {
   return (
     <LayoutRC {...layout} dispatch={dispatch} location={location}>
       <div className="g_content">
         {layout.logged ? (
           <IndexRC
             {...layout}
-            match={match}
             dispatch={dispatch}
             location={location}
             history={history}

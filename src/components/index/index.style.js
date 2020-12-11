@@ -26,7 +26,7 @@ export default (theme) => ({
     "& em": {},
   },
   listItem: {
-    minHeight: 90,
+    minHeight: 72,
     borderBottom: `1px solid ${theme.palette.grey[100]}`,
     "& img": {
       width: 32,
@@ -231,7 +231,7 @@ export default (theme) => ({
       "&.copyed": {
         color: theme.palette.common.white,
         minWidth: 194,
-        background: theme.palette.error.main,
+        background: "#35E5DB",
         padding: "0 2px",
         "& span:first-of-type": {
           flex: 1,
@@ -312,14 +312,51 @@ export default (theme) => ({
     "& hr": {
       background: `${helper.hex_to_rgba(theme.palette.grey[100], 0.2)}`,
     },
-    "& div:nth-child(3n+1),& div:nth-child(3n)": {
+    "& div:nth-child(5n+1),& div:nth-child(5n+3),& div:nth-child(5n)": {
       flex: 1,
       textAlign: "center",
       fontSize: 14,
       cursor: "pointer",
     },
-    "& div:nth-child(3n+2)": {
+    "& div:nth-child(5n+2)，& div:nth-child(5n+4)": {
       width: 2,
+    },
+  },
+  message: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    height: 32,
+    borderRadius: 16,
+    margin: "8px 16px 0",
+    color: theme.palette.grey[700],
+    padding: "0 10px 0 0",
+    background: helper.hex_to_rgba(theme.palette.secondary.main, 0.1),
+    "& p": {
+      flex: 1,
+      padding: "0 10px",
+      fontSize: 12,
+      overflow: "hidden",
+      whiteSpace: "nowrap",
+      "& a": {
+        color: theme.palette.grey[700],
+      },
+    },
+    "& i": {
+      cursor: "pointer",
+    },
+    "& span": {
+      margin: "0 0 0 2px",
+      display: "flex",
+      width: 26,
+      height: 26,
+      borderRadius: 13,
+      alignItems: "center",
+      justifyContent: "center",
+      background: helper.hex_to_rgba(theme.palette.secondary.main, 0.15),
+      "& i": {
+        color: theme.palette.secondary.main,
+      },
     },
   },
   token_item: {

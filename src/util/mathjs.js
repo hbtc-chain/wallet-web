@@ -21,7 +21,7 @@ math.config({ number: "BigNumber" });
 //   math
 //     .chain(math.bignumber("0.011"))
 //     .subtract(math.bignumber("0.0099"))
-//     .format({ notation: "fixed" })
+//     .format({ notation: "fixed",precision: 2 })
 //     .done()
 // );
 

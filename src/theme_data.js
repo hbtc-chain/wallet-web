@@ -22,7 +22,7 @@ export default {
       contrastText: "#fff",
     },
     secondary: {
-      main: "#FFC000",
+      main: "#FF922E",
       light: "#FFF04E",
       dark: "#F69400",
       contrastText: "#000",

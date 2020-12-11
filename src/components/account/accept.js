@@ -19,6 +19,7 @@ import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import Qrcode from "qrcode";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import message from "../public/message";
+import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -26,6 +27,7 @@ class IndexRC extends React.Component {
     this.state = {
       loading: false,
       account: {},
+      token: "",
     };
   }
   componentDidMount() {
@@ -35,6 +37,7 @@ class IndexRC extends React.Component {
         : {};
     this.setState({
       account,
+      token: this.props.match.params.token,
     });
     this.qrcode(account.address);
   }
@@ -75,7 +78,11 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            <h2>{this.props.intl.formatMessage({ id: "receive payment" })}</h2>
+            <h2>
+              {this.props.intl.formatMessage({ id: "receive payment" })}
+              {this.state.token.toUpperCase()}
+              <Iconfont type="arrowdown" />
+            </h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>

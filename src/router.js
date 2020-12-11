@@ -148,6 +148,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/setting"),
   });
+  // delegate
+  const DelegateRC = dynamic({
+    app,
+    component: () => import("./pages/delegate"),
+  });
 
   return (
     <Router history={history}>
@@ -257,15 +262,29 @@ function RouterConfig({ history, app }) {
           component={WithdrawalRC}
         />
         {/* AcceptRC */}
-        <Route exact path={route_map.accept} component={AcceptRC} />
+        <Route exact path={route_map.accept + "/:token"} component={AcceptRC} />
+        <Redirect
+          exact
+          from={route_map.accept}
+          to={route_map.accept + "/hbc"}
+          component={AcceptRC}
+        />
         {/* AccpetByTypeRC */}
         <Route
           exact
-          path={route_map.accept_by_type + "/:symbol/:address/:type"}
+          path={route_map.accept_by_type + "/:token"}
+          component={AccpetByTypeRC}
+        />
+        <Redirect
+          exact
+          from={route_map.accept_by_type}
+          to={route_map.accept_by_type + "/hbc"}
           component={AccpetByTypeRC}
         />
         {/* SettingRC */}
         <Route exact path={route_map.setting} component={SettingRC} />
+        {/* DelegateRC */}
+        <Route exact path={route_map.delegate} component={DelegateRC} />
 
         <Route component={NotFountRC} />
       </Switch>

@@ -697,7 +697,7 @@ class IndexRC extends React.Component {
               onClick={() => {
                 this.props.dispatch(
                   routerRedux.push({
-                    pathname: route_map.accept,
+                    pathname: route_map.accept_by_type,
                   })
                 );
               }}
@@ -719,7 +719,31 @@ class IndexRC extends React.Component {
                 id: "hbtcchain/transfer/MsgSend",
               })}
             </Grid>
+            <Divider orientation="vertical" flexItem />
+            <Grid
+              item
+              onClick={() => {
+                this.props.dispatch(
+                  routerRedux.push({
+                    pathname: route_map.send,
+                  })
+                );
+              }}
+            >
+              {this.props.intl.formatMessage({
+                id: "hbtcchain/MsgDelegate",
+              })}
+            </Grid>
           </Grid>
+        </div>
+        <div className={classes.message}>
+          <span>
+            <Iconfont type="announcement" />
+          </span>
+          <p>
+            <a>提示：测试网的HBC代币均为测试币无任何实际</a>
+          </p>
+          <Iconfont type="close" />
         </div>
         <List component="nav">
           {this.state.chains.map((item, i) => {
@@ -775,7 +799,7 @@ class IndexRC extends React.Component {
                 </ListItemIcon>
                 <ListItemText>
                   <strong>
-                    {(token.symbol || "").toUpperCase()}{" "}
+                    {(item.chain || "").toUpperCase()}{" "}
                     {token.is_native ? (
                       <span className="native">
                         {this.props.intl.formatMessage({
@@ -791,15 +815,16 @@ class IndexRC extends React.Component {
                     )}
                   </strong>
                   <em>
-                    {rates2[2]}
-                    {rates2[0]} {rates2[1]}
+                    {/* {rates2[2]}
+                    {rates2[0]} {rates2[1]} */}
+                    {item.full_name}
                   </em>
                 </ListItemText>
                 <ListItemText style={{ textAlign: "right" }}>
                   <strong style={{ display: "inline" }}></strong>
                   <em>
                     {prefix}
-                    {amount}
+                    {util.fix_digits(amount, 2)}
                     {unit.toUpperCase()}
                   </em>
                 </ListItemText>

@@ -147,6 +147,9 @@ export default (theme) => ({
     margin: "0 auto",
     "& h2": {
       fontSize: 16,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     },
   },
   back2: {
@@ -155,7 +158,7 @@ export default (theme) => ({
   accept: {
     minHeight: "100vh",
   },
-  accept_by_type_native: {
+  accept_by_type_hbc: {
     background: theme.palette.primary.main,
   },
   accept_by_type_chain_in: {
@@ -164,7 +167,7 @@ export default (theme) => ({
       background: "#269A99 !important",
     },
   },
-  accept_by_type_chain_out: {
+  accept_by_type_: {
     background: theme.palette.grey[700],
     "& i": {
       background: `${theme.palette.grey[700]} !important`,

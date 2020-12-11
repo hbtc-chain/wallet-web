@@ -107,14 +107,14 @@ const initStore = async () => {
         lang: browserLang(),
         chain: [
           {
-            name: "main net",
+            name: "Main net",
             url: "https://explorer.hbtcchain.io",
             chain_id: "hbtc-testnet",
             exc: "https://juswap.io/",
             explorer: "https://explorer.hbtcchain.io/account/",
           },
           {
-            name: "test net",
+            name: "Test net",
             url: "https://explorer.hbtcchain.io",
             chain_id: "hbtc-testnet",
             exc: "https://juswap.io/",
