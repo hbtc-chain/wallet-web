@@ -15,6 +15,8 @@ import {
 } from "@material-ui/core";
 import helper from "../../util/helper";
 import CONST from "../../util/const";
+import PWDRC from "./pwd_input";
+import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -43,10 +45,17 @@ class IndexRC extends React.Component {
     });
   };
   handleChange = (key) => (e) => {
-    this.setState({
-      [key]: e.target.value,
-      [key + "_msg"]: "",
-    });
+    this.setState(
+      {
+        [key]: e.target.value,
+        [key + "_msg"]: "",
+      },
+      () => {
+        if (this.state.password.length == 6) {
+          this.success();
+        }
+      }
+    );
   };
   cancel = () => {
     this.setState({
@@ -94,11 +103,14 @@ class IndexRC extends React.Component {
     const { classes } = this.props;
     return (
       <Dialog open={this.props.open}>
-        <DialogTitle>
-          {this.props.intl.formatMessage({ id: "confirmed password" })}
+        <DialogTitle className={classes.title}>
+          <em>{this.props.intl.formatMessage({ id: "confirmed password" })}</em>
+          <Iconfont type="close" size={20} onClick={this.cancel} />
         </DialogTitle>
         <DialogContent>
-          <TextField
+          <PWDRC onChange={this.handleChange("password")} />
+          <p className={classes.error_msg}>{this.state.password_msg}</p>
+          {/* <TextField
             value={this.state.password}
             onChange={this.handleChange("password")}
             helperText={this.state.password_msg}
@@ -109,7 +121,8 @@ class IndexRC extends React.Component {
             style={{ width: 260 }}
             variant="outlined"
             type="password"
-          />
+          /> */}
+          {this.props.mark_info}
           <div>
             <FormControlLabel
               value="end"
@@ -126,15 +139,7 @@ class IndexRC extends React.Component {
             />
           </div>
         </DialogContent>
-        <DialogActions>
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={this.cancel}
-            style={{ padding: 10 }}
-          >
-            {this.props.intl.formatMessage({ id: "cancel" })}
-          </Button>
+        {/* <DialogActions>
           <Button
             onClick={this.success}
             variant="contained"
@@ -144,7 +149,7 @@ class IndexRC extends React.Component {
           >
             {this.props.intl.formatMessage({ id: "confirm" })}
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </Dialog>
     );
   }

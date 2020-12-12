@@ -32,7 +32,7 @@ class IndexRC extends React.Component {
   constructor() {
     super();
     this.state = {
-      fee: 0.01,
+      fee: "",
       fee_msg: "",
       memo: "",
       password: "",
@@ -41,7 +41,26 @@ class IndexRC extends React.Component {
       sequence: "",
     };
   }
-  componentDidMount() {}
+  componentDidMount() {
+    this.setFee();
+  }
+  componentDidUpdate() {
+    if (
+      this.props.tokens.length &&
+      !this.state.fee &&
+      this.props.default_fee.fee
+    ) {
+      this.setFee();
+    }
+  }
+  setFee = () => {
+    const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
+    if (token_hbc && this.props.default_fee.fee) {
+      this.setState({
+        fee: this.decimals(this.props.default_fee.fee, -token_hbc.decimals, 1),
+      });
+    }
+  };
   sliderChange = (e, v) => {
     this.setState({
       fee: v,
@@ -95,11 +114,15 @@ class IndexRC extends React.Component {
     d[1] = d[1].join("");
     return d[0] + "." + d[1];
   };
-  decimals = (amount, decimals) => {
+  decimals = (amount, decimals, t) => {
+    let type = { notation: "fixed", precision: 0 };
+    if (t) {
+      delete type.precision;
+    }
     let a = math
       .chain(math.bignumber(amount))
       .multiply(Math.pow(10, decimals))
-      .format({ notation: "fixed", precision: 0 })
+      .format(type)
       .done();
     return a;
   };
@@ -295,16 +318,6 @@ class IndexRC extends React.Component {
             error={Boolean(this.state.fee_msg)}
             variant="outlined"
           />
-          {/* <label className={classes.external_label}>
-            {this.props.intl.formatMessage({ id: "fee_min_max" })}
-          </label>
-          <Slider
-            value={Number(this.state.fee)}
-            onChange={this.sliderChange}
-            step={0.001}
-            min={0}
-            max={1}
-          /> */}
         </div>
         {this.state.loading ? (
           <Button

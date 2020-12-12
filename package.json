@@ -71,7 +71,7 @@
     "react-copy-to-clipboard": "^5.0.2",
     "react-dev-utils": "^10.2.1",
     "react-dom": "^16.13.1",
-    "react-intl": "^2.4.0",
+    "react-intl": "^2.9.0",
     "resolve": "1.15.0",
     "resolve-url-loader": "3.1.2",
     "ripemd160": "^2.0.2",

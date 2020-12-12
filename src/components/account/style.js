@@ -161,33 +161,27 @@ export default (theme) => ({
   accept_by_type_hbc: {
     background: theme.palette.primary.main,
   },
-  accept_by_type_chain_in: {
-    background: "#269A99",
-    "& i": {
-      background: "#269A99 !important",
-    },
-  },
   accept_by_type_: {
     background: theme.palette.grey[700],
-    "& i": {
-      background: `${theme.palette.grey[700]} !important`,
-    },
   },
   tip: {
-    color: helper.hex_to_rgba(theme.palette.common.white, 0.45),
-    margin: "40px auto 0",
+    color: helper.hex_to_rgba(theme.palette.common.white),
+    margin: "16px auto 0",
     // maxWidth: 375,
     padding: "0 0 20px",
     lineHeight: "20px",
     fontSize: 12,
-    "& dt": {
-      textAlign: "center",
+    textAlign: "center",
+    "& img": {
+      height: 16,
+      width: 132,
     },
   },
   accept_content: {
     // height: "calc(100vh - 44px)",
     background: theme.palette.primary.main,
     position: "relative",
+    color: theme.palette.grey[700],
     padding: 24,
     "& h3": {
       margin: "-42px -24px 42px",
@@ -208,12 +202,14 @@ export default (theme) => ({
       padding: "8px 20px",
       margin: "0 0 24px",
     },
-    "& div": {
+    "& div.paper": {
       padding: "40px 0 0",
       textAlign: "center",
       position: "relative",
+      borderRadius: 8,
       // maxWidth: 375,
       margin: "0 auto",
+      color: theme.palette.grey[700],
     },
     "& img": {
       width: 240,
@@ -241,37 +237,34 @@ export default (theme) => ({
     },
     "& strong": {
       fontSize: 12,
-      color: theme.palette.grey[700],
       display: "block",
-      textAlign: "center",
-      padding: "0 0 24px",
-      borderBottom: `1px dashed ${theme.palette.grey[300]}`,
+      textAlign: "left",
+      margin: "8px 0 10px",
+      lineHeight: "20px",
+      fontSize: 12,
+      fontWeight: 400,
+      color: theme.palette.grey[300],
     },
-    "& span": {
+    "& span, & a": {
       display: "flex",
       width: "100%",
-      height: 72,
+      height: 24,
       justifyContent: "center",
       alignItems: "center",
       fontSize: 16,
       color: theme.palette.primary.main,
       cursor: "pointer",
+      width: 170,
     },
-    "& i": {
-      display: "block",
-      width: 16,
-      height: 16,
-      background: theme.palette.primary.main,
-      position: "absolute",
-      borderRadius: 8,
-      bottom: 65,
-      "&:nth-child(2n)": {
-        right: -8,
-      },
-      "&:nth-child(2n+1)": {
-        left: -8,
-      },
+    "& em": {
+      color: theme.palette.primary.main,
+      cursor: "pointer",
     },
+  },
+  accept_btn: {
+    borderTop: `1px dashed ${theme.palette.grey[100]}`,
+    height: 64,
+    padding: "20px 0 10px",
   },
   input_root: {
     height: 48,
@@ -301,5 +294,104 @@ export default (theme) => ({
     //height: "calc(100vh - 44px)",
     background: "none",
     padding: "42px 24px 24px",
+  },
+  token_item: {
+    borderBottom: `1px solid ${theme.palette.grey[50]}`,
+    "& div": {
+      "&:nth-child(3n+2), &:nth-child(3n)": {},
+    },
+    height: 78,
+    "& img": {
+      width: 40,
+    },
+    "& strong": {
+      color: theme.palette.grey[900],
+      fontSize: 16,
+      lineHeight: "18px",
+      fontWeight: 500,
+    },
+    "& p": {
+      color: theme.palette.grey[300],
+      fontSize: 12,
+      margin: "4px 0 0",
+    },
+    "& i": {
+      display: "inline-block",
+      padding: 2,
+      margin: "0 0 0 6px",
+      lineHeight: "18px",
+      fontSize: 12,
+      color: theme.palette.grey[500],
+      background: helper.hex_to_rgba(theme.palette.grey[200], 0.2),
+      fontWeight: 400,
+      transform: "scale3d(1,1,0.85)",
+      "&.native": {
+        background: "rgba(81,211,114,.2)",
+        color: theme.palette.success.main,
+      },
+    },
+  },
+  avatar: {
+    color: theme.palette.common.white,
+    background: "#3E3A50",
+  },
+  token_list: {
+    padding: "10px 0 0",
+  },
+  dialog_token: {
+    padding: 16,
+    height: "calc(100vh)",
+    position: "fixed",
+    top: 10,
+    left: 0,
+    zIndex: 100,
+    width: "100%",
+    overflow: "auto",
+    borderRadius: "8px 8px 0 0",
+    transition: "all ease-in-out .3s",
+    transform: "translate(0,100%)",
+  },
+  dialog_token_open: {
+    transform: "translate(0,0)",
+  },
+  dialog_token_title: {
+    display: "flex",
+    margin: "0 0 16px",
+    alignItems: "center",
+    "& em": {
+      flex: 1,
+      textAlign: "center",
+      fontSize: 20,
+      color: theme.palette.grey[900],
+    },
+    "& i": {
+      cursor: "pointer",
+    },
+  },
+  dialog_token_search: {
+    height: 48,
+    padding: "11px 0 0 10px",
+    background: theme.palette.grey[50],
+    "& i": {
+      color: theme.palette.grey[500],
+    },
+    "& .MuiInput-underline:after,& .MuiInput-underline:before": {
+      display: "none",
+    },
+  },
+  dialog_token_list_title: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    margin: "24px 0 12px",
+    "& span": {
+      color: theme.palette.grey[300],
+      fontSize: 14,
+    },
+    "& i": {
+      color: theme.palette.grey[900],
+      background: theme.palette.grey[50],
+      cursor: "pointer",
+    },
   },
 });

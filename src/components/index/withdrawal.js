@@ -43,7 +43,7 @@ class IndexRC extends React.Component {
       to_address_msg: "",
       amount: "",
       amount_msg: "",
-      fee: 0.01,
+      fee: "",
       fee_msg: "",
       gas_fee: "",
       gas_fee_min: "",
@@ -55,12 +55,28 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {
     this.init();
+    this.setFee();
   }
   componentDidUpdate(preProps) {
     if (!preProps.tokens.length && this.props.tokens.length) {
       this.init();
     }
+    if (
+      this.props.tokens.length &&
+      !this.state.fee &&
+      this.props.default_fee.fee
+    ) {
+      this.setFee();
+    }
   }
+  setFee = () => {
+    const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
+    if (token_hbc && this.props.default_fee.fee) {
+      this.setState({
+        fee: this.decimals(this.props.default_fee.fee, -token_hbc.decimals, 1),
+      });
+    }
+  };
   init = () => {
     const symbol = this.props.match.params.symbol.toLowerCase();
     const token = this.props.tokens.find((item) => item.symbol == symbol);
@@ -190,11 +206,15 @@ class IndexRC extends React.Component {
       return;
     }
   };
-  decimals = (amount, decimals) => {
+  decimals = (amount, decimals, t) => {
+    let type = { notation: "fixed", precision: 0 };
+    if (t) {
+      delete type.precision;
+    }
     let a = math
       .chain(math.bignumber(amount))
       .multiply(Math.pow(10, decimals))
-      .format({ notation: "fixed", precision: 0 })
+      .format(type)
       .done();
     return a;
   };
@@ -506,25 +526,28 @@ class IndexRC extends React.Component {
               helperText={this.state.fee_msg}
             />
           </div>
-          {/* <Grid
+          <Grid
             container
             justify="space-between"
             className={classes.form_label}
           >
-            <Grid item>
-              {this.props.intl.formatMessage({ id: "fee_min_max" })}
-            </Grid>
+            <Grid item>{this.props.intl.formatMessage({ id: "mark" })}</Grid>
             <Grid item></Grid>
           </Grid>
-          <div className={classes.form_input}>
-            <Slider
-              value={Number(this.state.fee)}
-              onChange={this.sliderChange}
-              step={0.001}
-              min={0.002}
-              max={1}
+          <div className={classes.form_input} style={{ margin: "0 0 40px" }}>
+            <TextField
+              variant="outlined"
+              placeholder={this.props.intl.formatMessage({ id: "mark" })}
+              value={this.state.memo}
+              onChange={this.handleChange("memo")}
+              classes={{
+                root: classes.outline,
+              }}
+              fullWidth
+              error={Boolean(this.state.memo_msg)}
+              helperText={this.state.memo_msg}
             />
-          </div> */}
+          </div>
           {this.state.loading ? (
             <Button
               className={classes.submit}

@@ -617,7 +617,8 @@ export default (theme) => ({
     right: 0,
     padding: "0 16px",
     maxWidth: 700,
-    margin: "0 auto",
+    margin: "0 16px",
+    width: "calc(100vw - 32px)",
   },
   drawer: {
     position: "relative",

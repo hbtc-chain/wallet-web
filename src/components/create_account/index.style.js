@@ -31,6 +31,11 @@ export default (theme) => ({
       left: 16,
     },
   },
+  pwd_label: {
+    color: theme.palette.grey[500],
+    margin: "10px 0 ",
+    display: "block",
+  },
   logo: {
     width: 80,
     // height: 80,

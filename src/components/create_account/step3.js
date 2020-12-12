@@ -13,6 +13,7 @@ import Nav from "./nav";
 import Cancel from "@material-ui/icons/Cancel";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 import classnames from "classnames";
+import PWDRC from "../public/pwd_input";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -119,7 +120,7 @@ class IndexRC extends React.Component {
         this.props.store.account_index > -1 &&
         helper.sha256(password) !== this.props.store.accounts[0]["password"]
       ) {
-        arr1.push(2);
+        arr1.push(1);
       }
       if (this.props.store.account_index == -1 && password != confirmpwd) {
         arr2.push(0);
@@ -277,7 +278,11 @@ class IndexRC extends React.Component {
           />
           <Grid container className={classes.form}>
             <Grid item xs={12} className={classes.item}>
-              <TextField
+              <span className={classes.pwd_label}>
+                {this.props.intl.formatMessage({ id: "password request" })}
+              </span>
+              <PWDRC onChange={this.handleChange("password")} />
+              {/* <TextField
                 fullWidth
                 placeholder={intl.formatMessage({
                   id:
@@ -305,7 +310,7 @@ class IndexRC extends React.Component {
                     root: classes.input_root,
                   },
                 }}
-              />
+              /> */}
               {this.state.password && this.state.password_msg_i.length > 0 ? (
                 <div className="tip">
                   {this.state.password_msg_arr.map((item, i) => {
@@ -331,7 +336,11 @@ class IndexRC extends React.Component {
               ""
             ) : (
               <Grid item xs={12} className={classes.item}>
-                <TextField
+                <span className={classes.pwd_label}>
+                  {this.props.intl.formatMessage({ id: "confirm.password" })}
+                </span>
+                <PWDRC onChange={this.handleChange("confirmpwd")} />
+                {/* <TextField
                   fullWidth
                   placeholder={intl.formatMessage({ id: "confirm.password" })}
                   value={this.state.confirmpwd}
@@ -354,7 +363,7 @@ class IndexRC extends React.Component {
                       root: classes.input_root,
                     },
                   }}
-                />
+                /> */}
                 {this.state.confirmpwd &&
                 this.state.confirmpwd_msg_i.length > 0 ? (
                   <div className="tip">

@@ -113,11 +113,15 @@ class IndexRC extends React.Component {
     }
     return res;
   };
-  decimals = (amount, decimals) => {
+  decimals = (amount, decimals, t) => {
+    let type = { notation: "fixed", precision: 0 };
+    if (t) {
+      delete type.precision;
+    }
     let a = math
       .chain(math.bignumber(amount))
-      .divide(Math.pow(10, decimals))
-      .format({ notation: "fixed", precision: 0 })
+      .multiply(Math.pow(10, decimals))
+      .format(type)
       .done();
     return a;
   };
