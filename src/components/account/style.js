@@ -197,6 +197,10 @@ export default (theme) => ({
       lineHeight: 1.5,
       padding: "4px 48px",
     },
+    "& h2": {
+      fontSize: 12,
+      color: theme.palette.grey[500],
+    },
     "& p": {
       color: theme.palette.common.white,
       textAlign: "center",
@@ -225,6 +229,15 @@ export default (theme) => ({
       left: "50%",
       top: -26,
       margin: "0 0 0 -28px",
+    },
+    "& img.token_logo_small": {
+      width: 22,
+      height: 22,
+      borderRadius: 11,
+      position: "absolute",
+      left: "50%",
+      top: 6,
+      margin: "0 0 0 6px",
     },
     "& strong": {
       fontSize: 12,

@@ -78,11 +78,18 @@ function start(initstore, lang) {
 
   getLocale(lang, function (appLocale) {
     addLocaleData(...appLocale.data);
+    window.react_intl_msgs = new Set();
     ReactDOM.render(
       <IntlProvider
         locale={appLocale.locale}
         messages={appLocale.messages}
         formats={appLocale.formats}
+        onError={(info) => {
+          let keys = info.match(/\"[^\"]{1,}\"/);
+          if (keys[0]) {
+            window.react_intl_msgs.add(keys[0].replace(/"/g, ""));
+          }
+        }}
       >
         <App />
       </IntlProvider>,

@@ -29,6 +29,7 @@ class IndexRC extends React.Component {
       loading: false,
       account: {},
       token: "",
+      choose: 0, // 0 :hbc链地址， 1: 跨链托管地址
     };
   }
   componentDidMount() {
@@ -62,6 +63,7 @@ class IndexRC extends React.Component {
     const account = this.state.account;
     const symbol = this.props.match.params.token.toLowerCase();
     const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const hbc = this.props.tokens.find((item) => item.symbol == "hbc");
     const type = token && token.chain == "hbc" ? token.chain : "";
 
     return (
@@ -115,16 +117,45 @@ class IndexRC extends React.Component {
               )}
             </h2>
             {account.address ? <img src={this.state[account.address]} /> : ""}
+            <Grid container justify="space-between">
+              <Grid item>
+                {this.props.intl.formatMessage(
+                  { id: "{token} receive payment address" },
+                  { token: symbol }
+                )}
+              </Grid>
+              <Grid item>
+                {type == "" ? (
+                  <span>
+                    {this.props.intl.formatMessage({
+                      id:
+                        this.state.choose == 0
+                          ? "change to external address"
+                          : "change to hbc address",
+                    })}
+                  </span>
+                ) : (
+                  ""
+                )}
+              </Grid>
+            </Grid>
             <strong>{account.address}</strong>
             <CopyToClipboard text={account.address} onCopy={this.copy}>
               <span>
                 {this.props.intl.formatMessage({ id: "copy address" })}
               </span>
             </CopyToClipboard>
-            <i></i>
-            <i></i>
             {token && token.logo ? (
               <img src={token.logo} className="token_logo" />
+            ) : (
+              ""
+            )}
+            {token && token.logo ? (
+              this.state.choose == 0 && type == "" ? (
+                <img src={hbc.logo} className="token_logo_small" />
+              ) : (
+                ""
+              )
             ) : (
               ""
             )}

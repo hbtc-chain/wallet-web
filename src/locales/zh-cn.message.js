@@ -278,4 +278,7 @@ export default {
   "delete account": "删除账户",
   "delete account desc":
     "您确定删除当前账户吗？请在继续操作前，确认您是否已经拥有或备份导出该账户的原始秘钥、助记词、KeyStore。",
+  "{token} receive payment address": "{token}收款地址",
+  "change to external address": "切换跨链地址",
+  "change to hbc address": "切换HBC链地址",
 };
