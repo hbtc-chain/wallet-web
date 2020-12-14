@@ -327,11 +327,7 @@ class IndexRC extends React.Component {
               onClick={() => {
                 this.props.dispatch(
                   routerRedux.push({
-                    pathname:
-                      route_map.accept_by_type +
-                      `/${token.symbol}/${address}/${
-                        token.is_native ? "native" : "chain_in"
-                      }`,
+                    pathname: route_map.accept_by_type + `/${token.symbol}`,
                   })
                 );
               }}
@@ -356,77 +352,25 @@ class IndexRC extends React.Component {
               </span>
               <i>{this.props.intl.formatMessage({ id: "output" })}</i>
             </Grid>
-            {token && !token.is_native ? (
-              <Grid
-                item
-                onClick={(e) => {
-                  this.setState({
-                    open: this.state.open ? null : e.target,
+            <Grid
+              item
+              onClick={() => {
+                extension.tabs &&
+                  extension.tabs.create({
+                    url:
+                      this.props.store.chain[this.props.store.chain_index][
+                        "exc"
+                      ] +
+                      "/swap" +
+                      "?lang=" +
+                      this.props.store.lang,
                   });
-                }}
-              >
-                <span className="cross">
-                  <img src={require("../../assets/btn-3.png")} width={24} />{" "}
-                  <ExpandMoreIcon />
-                </span>
-                <i>{this.props.intl.formatMessage({ id: "cross chain" })}</i>
-              </Grid>
-            ) : (
-              ""
-            )}
-          </Grid>
-          <Grid container>
-            <Grid item>
-              <Button
-                onClick={() => {
-                  this.props.dispatch(
-                    routerRedux.push({
-                      pathname: route_map.accept_by_type + "/" + symbol,
-                    })
-                  );
-                }}
-                variant="contained"
-                color="primary"
-              >
-                {this.props.intl.formatMessage({ id: "receive payment" })}
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={() => {
-                  this.props.dispatch(
-                    routerRedux.push({
-                      pathname: route_map.send,
-                    })
-                  );
-                }}
-                variant="contained"
-                color="primary"
-              >
-                {this.props.intl.formatMessage({
-                  id: "hbtcchain/transfer/MsgSend",
-                })}
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                onClick={() => {
-                  extension &&
-                    extension.tabs.create({
-                      url:
-                        this.props.store.chain[this.props.store.chain_index][
-                          "exc"
-                        ] +
-                        "/trade" +
-                        "?lang=" +
-                        this.props.store.lang,
-                    });
-                }}
-                variant="contained"
-                color="primary"
-              >
-                {this.props.intl.formatMessage({ id: "trade" })}
-              </Button>
+              }}
+            >
+              <span>
+                <img src={require("../../assets/btn-4.png")} width={24} />
+              </span>
+              <i>{this.props.intl.formatMessage({ id: "trade" })}</i>
             </Grid>
           </Grid>
         </div>

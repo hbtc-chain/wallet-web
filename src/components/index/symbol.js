@@ -15,14 +15,11 @@ import {
 import route_map from "../../config/route_map";
 import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
-import querystring from "query-string";
-import CONST from "../../util/const";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import { v4 } from "uuid";
-import util from "../../util/util";
 import API from "../../util/api";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import moment from "moment";
+import extension from "extensionizer";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -55,7 +52,7 @@ class IndexRC extends React.Component {
     const result = await this.props.dispatch({
       type: "layout/commReq",
       payload: {
-        page: 1,
+        page: this.state.page,
         page_size: 100,
         token: symbol,
         addr: address,
@@ -89,7 +86,9 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
-    const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const token = this.props.tokens.find(
+      (item) => item.symbol.toLowerCase() == symbol
+    );
     let tokens = [];
     this.props.tokens.map((item) => {
       if (token && item.chain == token.chain) {
@@ -135,7 +134,7 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            <h2>{this.props.match.params.symbol.toUpperCase()}</h2>
+            <h2>{token ? token.name.toUpperCase() : ""}</h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
@@ -286,10 +285,14 @@ class IndexRC extends React.Component {
         ) : (
           ""
         )}
-        {this.state.hasmore && !this.state.loading ? (
+        {this.state.hasmore && !this.state.loading && this.state.data.length ? (
           <Grid container justify="center">
             <Grid item>
-              <Button color="primary" variant="contained">
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={this.get_balance_history}
+              >
                 {this.props.intl.formatMessage({ id: "more data" })}
               </Button>
             </Grid>
@@ -308,11 +311,7 @@ class IndexRC extends React.Component {
             onClick={() => {
               this.props.dispatch(
                 routerRedux.push({
-                  pathname:
-                    route_map.accept_by_type +
-                    `/${token.symbol}/${address}/${
-                      token.is_native ? "native" : "chain_in"
-                    }`,
+                  pathname: route_map.accept_by_type + `/${token.symbol}`,
                 })
               );
             }}
@@ -337,7 +336,27 @@ class IndexRC extends React.Component {
             </span>
             <i>{this.props.intl.formatMessage({ id: "output" })}</i>
           </Grid>
-          {token && !token.is_native ? (
+          <Grid
+            item
+            onClick={() => {
+              extension.tabs &&
+                extension.tabs.create({
+                  url:
+                    this.props.store.chain[this.props.store.chain_index][
+                      "exc"
+                    ] +
+                    "/swap" +
+                    "?lang=" +
+                    this.props.store.lang,
+                });
+            }}
+          >
+            <span>
+              <img src={require("../../assets/btn-4.png")} width={24} />
+            </span>
+            <i>{this.props.intl.formatMessage({ id: "trade" })}</i>
+          </Grid>
+          {token && !token.is_mapping_token ? (
             <Grid
               item
               onClick={(e) => {
@@ -346,54 +365,19 @@ class IndexRC extends React.Component {
                 });
               }}
             >
-              <span className="cross">
-                <img src={require("../../assets/btn-3.png")} width={24} />{" "}
-                <ExpandMoreIcon />
+              <span>
+                <img src={require("../../assets/btn-4.png")} width={24} />
               </span>
-              <i>{this.props.intl.formatMessage({ id: "cross chain" })}</i>
+              <i>
+                {this.props.intl.formatMessage({
+                  id: "hbtcchain/mapping/MsgMappingSwap",
+                })}
+              </i>
             </Grid>
           ) : (
             ""
           )}
         </Grid>
-        <Menu
-          anchorEl={this.state.open}
-          open={Boolean(this.state.open)}
-          keepMounted
-          onClose={() => {
-            this.setState({ open: false });
-          }}
-        >
-          <MenuItem
-            onClick={() => {
-              this.props.dispatch(
-                routerRedux.push({
-                  pathname: external_address
-                    ? route_map.accept_by_type +
-                      "/" +
-                      symbol +
-                      "/" +
-                      external_address +
-                      "/chain_out"
-                    : route_map.external_address + "/" + symbol,
-                })
-              );
-            }}
-          >
-            {this.props.intl.formatMessage({ id: "cross chain accept" })}
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              this.props.dispatch(
-                routerRedux.push({
-                  pathname: route_map.withdrawal + "/" + symbol,
-                })
-              );
-            }}
-          >
-            {this.props.intl.formatMessage({ id: "cross chain withdrawl" })}
-          </MenuItem>
-        </Menu>
       </div>
     );
   }

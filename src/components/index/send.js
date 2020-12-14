@@ -469,7 +469,7 @@ class IndexRC extends React.Component {
                 balance = balance || { amount: 0 };
                 return (
                   <MenuItem value={item.symbol} key={item.symbol}>
-                    {item.symbol.toUpperCase()}({balance.amount})
+                    {item.name.toUpperCase()}({balance.amount})
                   </MenuItem>
                 );
               })}

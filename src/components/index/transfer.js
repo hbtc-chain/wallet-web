@@ -208,7 +208,9 @@ class IndexRC extends React.Component {
       "address"
     ];
     const symbol = this.props.match.params.symbol.toLowerCase();
-    const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const token = this.props.tokens.find(
+      (item) => item.symbol.toLowerCase() == symbol
+    );
     const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
 
     let d = {
@@ -329,6 +331,9 @@ class IndexRC extends React.Component {
   render() {
     const { classes, ...otherProps } = this.props;
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
+    const token = this.props.tokens.find(
+      (item) => item.symbol.toLowerCase() == symbol
+    ) || { name: "" };
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
@@ -356,7 +361,7 @@ class IndexRC extends React.Component {
           </Grid>
           <Grid item>
             <h2>
-              {this.props.match.params.symbol.toUpperCase()}
+              {token.name.toUpperCase()}
               {this.props.intl.formatMessage({ id: "transfer" })}
             </h2>
           </Grid>
@@ -400,7 +405,7 @@ class IndexRC extends React.Component {
             <Grid item>
               {this.props.intl.formatMessage({ id: "available" })}{" "}
               {balance.amount}
-              {(symbol || "").toUpperCase()}
+              {(token.name || "").toUpperCase()}
             </Grid>
           </Grid>
           <div className={classes.form_input}>

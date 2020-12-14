@@ -125,7 +125,9 @@ class IndexRC extends React.Component {
     const { classes } = this.props;
     const account = this.state.account;
     const symbol = this.props.match.params.token.toLowerCase();
-    const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const token = this.props.tokens.find(
+      (item) => item.symbol.toLowerCase() == symbol
+    );
     const hbc = this.props.tokens.find((item) => item.symbol == "hbc");
     const type = token && token.chain == "hbc" ? token.chain : "";
 

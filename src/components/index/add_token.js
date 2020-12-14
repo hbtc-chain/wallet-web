@@ -231,12 +231,12 @@ class IndexRC extends React.Component {
                         <img src={item.logo} />
                       ) : (
                         <Avatar className={classes.avatar}>
-                          {item.symbol.split("")[0].toUpperCase()}
+                          {item.name.split("")[0].toUpperCase()}
                         </Avatar>
                       )}
                     </Grid>
                     <Grid item style={{ flex: 1, margin: "0 0 0 12px" }}>
-                      <strong>{item.symbol.toUpperCase()}</strong>
+                      <strong>{item.name.toUpperCase()}</strong>
                       <br />
                       <p>{(item.name || "").toUpperCase()}</p>
                     </Grid>

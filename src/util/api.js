@@ -13,4 +13,5 @@ export default {
   txs: `/api/v1/txs`,
   tokenprices: `/api/v1/tokenprices`,
   default_fee: `/api/v1/default_fee`,
+  validators: `/api/v1/validators`, //节点列表
 };

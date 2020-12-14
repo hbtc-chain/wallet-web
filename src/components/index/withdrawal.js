@@ -79,7 +79,9 @@ class IndexRC extends React.Component {
   };
   init = () => {
     const symbol = this.props.match.params.symbol.toLowerCase();
-    const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const token = this.props.tokens.find(
+      (item) => item.symbol.toLowerCase() == symbol
+    );
     if (token) {
       this.setState({
         gas_fee: Number(token.withdrawal_fee),
@@ -243,7 +245,9 @@ class IndexRC extends React.Component {
       "address"
     ];
     const symbol = this.props.match.params.symbol.toLowerCase();
-    const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const token = this.props.tokens.find(
+      (item) => item.symbol.toLowerCase() == symbol
+    );
     const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
 
     let d = {
