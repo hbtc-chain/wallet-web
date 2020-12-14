@@ -122,10 +122,10 @@ const initStore = async () => {
           },
           {
             name: "Test net",
-            url: "https://explorer.hbtcchain.io",
+            url: "http://hbtc.yym.plus",
             chain_id: "hbtc-testnet",
             exc: "https://juswap.io/",
-            explorer: "https://explorer.hbtcchain.io/account/",
+            explorer: "http://hbtc.yym.plus/account/",
           },
         ],
         chain_index: 1,

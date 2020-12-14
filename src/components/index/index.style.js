@@ -161,6 +161,9 @@ export default (theme) => ({
   token_list: {
     padding: "10px 0 0",
   },
+  chain_token_list: {
+    padding: "20px 0 0",
+  },
   withdrawl_tip: {
     margin: "0 auto 20px",
     border: `1px solid ${theme.palette.grey[100]}`,
@@ -388,36 +391,58 @@ export default (theme) => ({
       color: theme.palette.grey[500],
       background: helper.hex_to_rgba(theme.palette.grey[200], 0.2),
       fontWeight: 400,
+      borderRadius: 10,
+      padding: "0 6px",
       transform: "scale3d(1,1,0.85)",
       "&.native": {
         background: "rgba(81,211,114,.2)",
         color: theme.palette.success.main,
       },
+      "&.verified": {
+        background: "rgba(255, 146, 46, 0.17)",
+        color: "#FF922E",
+      },
     },
   },
+  chain_address_title: {
+    padding: "0 16px",
+    margin: "0 -16px",
+    background:
+      "linear-gradient(180deg, rgba(255, 255, 255, 0) 70%, #D1D7E6 100%)",
+  },
   chain_address: {
-    padding: "14px 0 6px",
-    margin: "0 16px",
-    color: theme.palette.grey[500],
-    borderBottom: `1px solid ${theme.palette.grey[200]}`,
+    borderRadius: "10px 10px 0 0",
+    background: theme.palette.primary.main,
+    padding: "14px 24px 6px",
+    color: theme.palette.common.white,
+    height: 72,
     fontSize: 14,
     "& span": {
       color: util.hex_to_rgba(theme.palette.grey[700], 0.5),
     },
-    "& i": {},
-    "& em": {
-      color: theme.palette.primary.main,
-      cursor: "pointer",
+    "& img": {
+      width: 18,
     },
+    "& em": {
+      margin: "0 4px",
+    },
+    "& i": {},
     "& p": {
       lineHeight: "24px",
     },
+    "& .address": {
+      cursor: "pointer",
+      height: 24,
+      background: helper.hex_to_rgba(theme.palette.grey[900], 0.2),
+      borderRadius: 12,
+      color: helper.hex_to_rgba(theme.palette.common.white, 0.75),
+      padding: 3,
+      display: "flex",
+      alignItems: "center",
+    },
   },
   chain_symbol: {
-    background: theme.palette.primary.main,
     color: theme.palette.common.white,
-    borderRadius: 4,
-    padding: "0 16px 10px",
     "& h2": {
       height: 32,
       lineHeight: "32px",
@@ -543,7 +568,7 @@ export default (theme) => ({
     height: 44,
     margin: "0 0 12px",
     "& h2": {
-      fontSize: 14,
+      fontSize: 16,
     },
   },
   external_content: {
@@ -619,6 +644,20 @@ export default (theme) => ({
     maxWidth: 700,
     margin: "0 16px",
     width: "calc(100vw - 32px)",
+  },
+  add_token: {
+    color: theme.palette.grey[900],
+    fontSize: 14,
+    "& span": {
+      background: helper.hex_to_rgba(theme.palette.grey[100], 0.55),
+      display: "flex",
+      height: 20,
+      borderRadius: 10,
+      padding: "0 5px",
+      color: theme.palette.primary.main,
+      alignItems: "center",
+      cursor: "pointer",
+    },
   },
   drawer: {
     position: "relative",

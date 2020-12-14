@@ -289,4 +289,6 @@ export default {
   "search token": "搜索币种",
   tokenname: "币种名称",
   mark: "备注",
+  "not verified": "未认证",
+  trade: "交易",
 };
