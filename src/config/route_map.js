@@ -43,4 +43,7 @@ export default {
   export_list: `${local}/export_list`,
   account_choose: `${local}/account_choose`,
   delegate: `${local}/delegate`,
+  delegate_node: `${local}/delegate/node`,
+  delegate_exec: `${local}/delegate/exec`,
+  delegate_unexec: `${local}/delegate/unexec`,
 };

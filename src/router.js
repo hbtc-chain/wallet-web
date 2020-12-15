@@ -153,6 +153,21 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/delegate"),
   });
+  // delegate node
+  const DelegateNodeRC = dynamic({
+    app,
+    component: () => import("./pages/delegate_node"),
+  });
+  // delegate exec
+  const DelegateExecRC = dynamic({
+    app,
+    component: () => import("./pages/delegate_exec"),
+  });
+  // delegate unexec
+  const DelegateUnExecRC = dynamic({
+    app,
+    component: () => import("./pages/delegate_unexec"),
+  });
 
   return (
     <Router history={history}>
@@ -285,6 +300,24 @@ function RouterConfig({ history, app }) {
         <Route exact path={route_map.setting} component={SettingRC} />
         {/* DelegateRC */}
         <Route exact path={route_map.delegate} component={DelegateRC} />
+        {/* DelegateNodeRC */}
+        <Route
+          exact
+          path={route_map.delegate_node + "/:operator_address"}
+          component={DelegateNodeRC}
+        />
+        {/* DelegateExecRC */}
+        <Route
+          exact
+          path={route_map.delegate_exec + "/:operator_address"}
+          component={DelegateExecRC}
+        />
+        {/* DelegateExecRC */}
+        <Route
+          exact
+          path={route_map.delegate_unexec + "/:operator_address"}
+          component={DelegateUnExecRC}
+        />
 
         <Route component={NotFountRC} />
       </Switch>

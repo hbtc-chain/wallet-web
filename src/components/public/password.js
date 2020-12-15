@@ -108,6 +108,7 @@ class IndexRC extends React.Component {
           <Iconfont type="close" size={20} onClick={this.cancel} />
         </DialogTitle>
         <DialogContent>
+          <p className={classes.mark_info}>{this.props.mark_info}</p>
           <PWDRC onChange={this.handleChange("password")} />
           <p className={classes.error_msg}>{this.state.password_msg}</p>
           {/* <TextField
@@ -122,7 +123,7 @@ class IndexRC extends React.Component {
             variant="outlined"
             type="password"
           /> */}
-          {this.props.mark_info}
+
           <div>
             <FormControlLabel
               value="end"

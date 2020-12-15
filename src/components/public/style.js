@@ -15,4 +15,10 @@ export default (theme) => ({
     color: theme.palette.error.main,
     height: 24,
   },
+  mark_info: {
+    margin: "0 0 16px",
+    textAlign: "center",
+    fontSize: 14,
+    color: theme.palette.grey[700],
+  },
 });

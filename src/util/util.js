@@ -74,9 +74,26 @@ function hex_to_rgba(hex, a) {
   )},${Number(a) || 1})`;
 }
 
+/**
+ * 短地址
+ * @param {string} str
+ * @param {number} n
+ */
+function short_address(str, n = 8) {
+  if (!str) {
+    return "";
+  }
+  if (str.length < 2 * n) {
+    return str;
+  }
+  const s = str.match(/^(.{8})(.{0,})(.{8})$/);
+  return s[1] + "..." + s[3];
+}
+
 export default {
   packmsg,
   delay,
   fix_digits,
   hex_to_rgba,
+  short_address,
 };

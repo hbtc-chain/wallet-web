@@ -604,6 +604,9 @@ export default (theme) => ({
     "& .MuiOutlinedInput-root": {
       background: theme.palette.grey[50],
     },
+    "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline": {
+      borderColor: "rgba(0,0,0,0)",
+    },
   },
   outline_input: {
     padding: "16px 0 16px 16px",
@@ -626,6 +629,9 @@ export default (theme) => ({
     },
     "& .MuiOutlinedInput-root": {
       background: theme.palette.grey[50],
+    },
+    "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline": {
+      borderColor: "rgba(0,0,0,0)",
     },
   },
   btn_all: {

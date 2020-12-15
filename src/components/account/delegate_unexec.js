@@ -1,6 +1,6 @@
-// 转账
+// 解委托
 import React from "react";
-import styles from "./index.style";
+import styles from "./style";
 import { withStyles } from "@material-ui/core/styles";
 import { injectIntl } from "react-intl";
 import {
@@ -8,12 +8,12 @@ import {
   Grid,
   TextField,
   Checkbox,
+  Drawer,
+  Avatar,
+  Tabs,
+  Tab,
   Paper,
-  Slider,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
+  Divider,
   CircularProgress,
 } from "@material-ui/core";
 import route_map from "../../config/route_map";
@@ -22,36 +22,40 @@ import { routerRedux } from "dva/router";
 import querystring from "query-string";
 import CONST from "../../util/const";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import { v4 } from "uuid";
+import classnames from "classnames";
 import util from "../../util/util";
+import { Iconfont } from "../../lib";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import Qrcode from "qrcode";
+import CloseIcon from "@material-ui/icons/Close";
+import message from "../public/message";
 import API from "../../util/api";
 import math from "../../util/mathjs";
-import message from "../public/message";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import VisibilityIcon from "@material-ui/icons/Visibility";
 import PassowrdRC from "../public/password";
 
-class IndexRC extends React.Component {
+class DelegateRC extends React.Component {
   constructor() {
     super();
     this.state = {
-      loading: false,
-      open: false,
-      password: "",
-      password_msg: "",
-      to_address: "",
-      to_address_msg: "",
+      data: {
+        description: {},
+        commission: {},
+      },
+      fee: "",
       amount: "",
       amount_msg: "",
-      fee: "",
-      fee_msg: "",
       sequence: "",
-      memo: "",
+      open: false,
+      msg: "",
       err_msg: "",
+      memo: "",
+      available: "",
     };
   }
   componentDidMount() {
+    this.init();
     this.setFee();
+    this.get_validator_list();
   }
   componentDidUpdate() {
     if (
@@ -62,11 +66,30 @@ class IndexRC extends React.Component {
       this.setFee();
     }
   }
-  setFee = () => {
-    const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
-    if (token_hbc && this.props.default_fee.fee) {
+  get_validator_list = async () => {
+    const account =
+      this.props.store.accounts && this.props.store.account_index > -1
+        ? this.props.store.accounts[this.props.store.account_index]
+        : {};
+    if (!account.address) {
+      return;
+    }
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.cus + `/${account.address}/delegations`,
+    });
+    if (result.code == 200 && result.data) {
+      const operator_address = this.props.match.params.operator_address;
+      let available = "";
+      result.data.map((item) => {
+        if (item.operator_address == operator_address) {
+          available = item.bonded;
+        }
+      });
       this.setState({
-        fee: this.decimals(this.props.default_fee.fee, -token_hbc.decimals, 1),
+        validator_list: result.data,
+        available,
       });
     }
   };
@@ -77,75 +100,53 @@ class IndexRC extends React.Component {
       err_msg: "",
     });
   };
-  rates = (v, t) => {
-    if (this.props.tokens[this.state.i]) {
-      const d = helper.rates(v, t, this.props.store.unit, this.props.rates);
-      return d;
+  decimals = (amount, decimals, t) => {
+    let type = { notation: "fixed", precision: 0 };
+    if (t) {
+      delete type.precision;
     }
-    return ["", this.props.store.unit];
+    let a = math
+      .chain(math.bignumber(amount))
+      .multiply(Math.pow(10, decimals))
+      .format(type)
+      .done();
+    return a;
   };
-  feeChange = (e) => {
-    let v = e.target.value;
-    // 非数字
-    if (Number.isNaN(Number(v))) {
-      return;
+  setFee = () => {
+    const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
+    if (token_hbc && this.props.default_fee.fee) {
+      this.setState({
+        fee: this.decimals(this.props.default_fee.fee, -token_hbc.decimals, 1),
+      });
     }
-    if (Number(v) > 1) {
-      v = 1;
-    }
-    v = util.fix_digits(v, 3);
-    this.setState({
-      fee: v,
-      fee_msg: "",
-      err_msg: "",
-    });
   };
-  sliderChange = (e, v) => {
-    this.setState({
-      fee: v,
-      fee_msg: "",
-      err_msg: "",
+  init = async () => {
+    const operator_address = this.props.match.params.operator_address;
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.validators + "/" + operator_address,
     });
+    if (result.code == 200 && result.data) {
+      this.setState({
+        data: result.data,
+      });
+    }
   };
   submit = async () => {
-    const symbol = this.props.match.params.symbol.toLowerCase();
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
-    const balance =
-      this.props.balance && this.props.balance[address]
-        ? this.props.balance[address].assets.find(
-            (item) => item.symbol == symbol
-          ) || { amount: "" }
-        : { amount: 0 };
-    if (!this.state.to_address) {
-      this.setState({
-        to_address_msg: this.props.intl.formatMessage({ id: "input address" }),
-      });
-      return;
-    }
     if (
       !Number(this.state.amount) ||
       /[^0-9\.]/.test(this.state.amount) ||
-      Number(this.state.amount) > balance.amount
+      Number(this.state.amount) > this.state.available
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
-          { n: balance.amount }
+          { n: this.state.available }
         ),
-      });
-      return;
-    }
-    if (!this.state.fee) {
-      this.setState({
-        fee_msg: this.props.intl.formatMessage({ id: "fee required" }),
-      });
-      return;
-    }
-    if (Number(this.state.fee) < 0.001 || Number(this.state.fee) > 1) {
-      this.setState({
-        fee_msg: this.props.intl.formatMessage({ id: "wrong fee" }),
       });
       return;
     }
@@ -171,48 +172,10 @@ class IndexRC extends React.Component {
       return;
     }
   };
-  decimals = (amount, decimals, t) => {
-    let type = { notation: "fixed", precision: 0 };
-    if (t) {
-      delete type.precision;
-    }
-    let a = math
-      .chain(math.bignumber(amount))
-      .multiply(Math.pow(10, decimals))
-      .format(type)
-      .done();
-    return a;
-  };
   transfer = async (res) => {
-    // if (!this.state.password) {
-    //   this.setState({
-    //     password_msg: this.props.intl.formatMessage({
-    //       id: "password is required",
-    //     }),
-    //   });
-    //   return;
-    // }
-    // let pwd = helper.sha256(this.state.password);
-    // if (
-    //   pwd !=
-    //   this.props.store.accounts[this.props.store.account_index]["password"]
-    // ) {
-    //   this.setState({
-    //     password_msg: this.props.intl.formatMessage({
-    //       id: "password is wrong",
-    //     }),
-    //   });
-    //   return;
-    // }
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
-    const symbol = this.props.match.params.symbol.toLowerCase();
-    const token = this.props.tokens.find(
-      (item) => item.symbol.toLowerCase() == symbol
-    );
-    const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
-
     let d = {
       chain_id: this.props.store.chain[this.props.store.chain_index][
         "chain_id"
@@ -229,14 +192,14 @@ class IndexRC extends React.Component {
       memo: this.state.memo,
       msgs: [
         {
-          type: "hbtcchain/transfer/MsgSend",
+          type: "hbtcchain/MsgUndelegate",
           value: {
-            from_address: address,
-            to_address: this.state.to_address,
+            delegator_address: address,
+            validator_address: this.state.data.operator_address,
             amount: [
               {
-                amount: this.decimals(this.state.amount, token.decimals),
-                denom: symbol,
+                amount: this.state.amount,
+                denom: "hbc",
               },
             ],
           },
@@ -311,7 +274,10 @@ class IndexRC extends React.Component {
       });
       if (result.code == 200) {
         if (result.data.success) {
-          this.props.dispatch(routerRedux.goBack());
+          message.success(
+            this.props.intl.formatMessage({ id: "undelegate success" })
+          );
+          //this.props.dispatch(routerRedux.goBack());
         } else {
           message.error(
             result.data.error_message
@@ -330,27 +296,22 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes, ...otherProps } = this.props;
-    const symbol = (this.props.match.params.symbol || "").toLowerCase();
-    const token = this.props.tokens.find(
-      (item) => item.symbol.toLowerCase() == symbol
-    ) || { name: "" };
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
     const balance =
       this.props.balance && this.props.balance[address]
         ? this.props.balance[address].assets.find(
-            (item) => item.symbol == symbol
+            (item) => item.symbol == "hbc"
           ) || { amount: 0 }
-        : { amount: "" };
-    const rates = this.rates(balance.amount, symbol);
+        : { amount: 0 };
     return (
-      <div className={classes.symbol}>
+      <div className={classes.delegate_node_bg}>
         <Grid
           container
           justify="space-between"
           alignItems="center"
-          className={classes.back}
+          className={classnames(classes.back)}
         >
           <Grid item xs={2} style={{ padding: "0 0 0 10px" }}>
             <ArrowBackIosIcon
@@ -361,37 +322,40 @@ class IndexRC extends React.Component {
           </Grid>
           <Grid item>
             <h2>
-              {token.name.toUpperCase()}
-              {this.props.intl.formatMessage({ id: "transfer" })}
+              {this.props.intl.formatMessage({
+                id: "undelegate",
+              })}
             </h2>
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        <div className={classes.form}>
+        <div className={classes.form} style={{ padding: "0 16px" }}>
+          <p className={classes.delegate_desc}>
+            {this.props.intl.formatMessage({ id: "delegate_desc" })}
+          </p>
           <Grid
             container
             justify="space-between"
             className={classes.form_label}
           >
             <Grid item>
-              {this.props.intl.formatMessage({ id: "transfer address" })}
+              {this.props.intl.formatMessage({ id: "delegate from" })}
             </Grid>
             <Grid item></Grid>
           </Grid>
           <div className={classes.form_input}>
             <TextField
-              placeholder={this.props.intl.formatMessage({
-                id: "input address",
-              })}
               variant="outlined"
-              value={this.state.to_address}
+              disabled
+              value={
+                this.props.intl.formatMessage({ id: "my account" }) +
+                ": " +
+                address
+              }
               classes={{
                 root: classes.outline,
               }}
               fullWidth
-              onChange={this.handleChange("to_address")}
-              error={Boolean(this.state.to_address_msg)}
-              helperText={this.state.to_address_msg}
             />
           </div>
           <Grid
@@ -400,18 +364,18 @@ class IndexRC extends React.Component {
             className={classes.form_label}
           >
             <Grid item>
-              {this.props.intl.formatMessage({ id: "transfer amount" })}
+              {this.props.intl.formatMessage({ id: "undelegate quantity" })}
             </Grid>
             <Grid item>
-              {this.props.intl.formatMessage({ id: "available" })}{" "}
-              {balance.amount}
-              {(token.name || "").toUpperCase()}
+              {this.props.intl.formatMessage({ id: "delegate available" })}{" "}
+              {this.state.available}
+              HBC
             </Grid>
           </Grid>
           <div className={classes.form_input}>
             <TextField
               placeholder={this.props.intl.formatMessage({
-                id: "input amount",
+                id: "input undelegate quantity",
               })}
               value={this.state.amount}
               onChange={this.handleChange("amount")}
@@ -433,6 +397,7 @@ class IndexRC extends React.Component {
                     }}
                     color="primary"
                     className={classes.btn_all}
+                    style={{ whiteSpace: "nowrap" }}
                   >
                     {this.props.intl.formatMessage({ id: "all" })}
                   </span>
@@ -453,12 +418,12 @@ class IndexRC extends React.Component {
               variant="outlined"
               placeholder={this.props.intl.formatMessage({ id: "fee" })}
               value={this.state.fee}
-              disabled
               //onChange={this.feeChange}
-              fullWidth
+              disabled
               classes={{
                 root: classes.outline,
               }}
+              fullWidth
               InputProps={{
                 endAdornment: <span className={classes.grey}>HBC</span>,
               }}
@@ -466,49 +431,23 @@ class IndexRC extends React.Component {
               helperText={this.state.fee_msg}
             />
           </div>
-          <Grid
-            container
-            justify="space-between"
-            className={classes.form_label}
-          >
-            <Grid item>{this.props.intl.formatMessage({ id: "mark" })}</Grid>
-            <Grid item></Grid>
-          </Grid>
-          <div className={classes.form_input} style={{ margin: "0 0 40px" }}>
-            <TextField
-              variant="outlined"
-              placeholder={this.props.intl.formatMessage({ id: "mark" })}
-              value={this.state.memo}
-              onChange={this.handleChange("memo")}
-              classes={{
-                root: classes.outline,
-              }}
-              fullWidth
-              error={Boolean(this.state.memo_msg)}
-              helperText={this.state.memo_msg}
-            />
+
+          <div className={classes.submit}>
+            {this.state.loading ? (
+              <Button color="primary" variant="contained" fullWidth disabled>
+                <CircularProgress color="primary" />
+              </Button>
+            ) : (
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                onClick={this.submit}
+              >
+                {this.props.intl.formatMessage({ id: "undelegate" })}
+              </Button>
+            )}
           </div>
-          {this.state.loading ? (
-            <Button
-              className={classes.submit}
-              color="primary"
-              variant="contained"
-              fullWidth
-              disabled
-            >
-              <CircularProgress color="primary" />
-            </Button>
-          ) : (
-            <Button
-              color="primary"
-              variant="contained"
-              fullWidth
-              onClick={this.submit}
-              className={classes.submit}
-            >
-              {this.props.intl.formatMessage({ id: "transfer" })}
-            </Button>
-          )}
         </div>
         <PassowrdRC
           {...otherProps}
@@ -527,4 +466,4 @@ class IndexRC extends React.Component {
   }
 }
 
-export default withStyles(styles)(injectIntl(IndexRC));
+export default withStyles(styles)(injectIntl(DelegateRC));

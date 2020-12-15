@@ -170,11 +170,11 @@ class IndexRC extends React.Component {
         err_msg: "",
       });
     } else {
-      this.setState({
-        msg: this.props.intl.formatMessage({
-          id: "create external address error",
-        }),
-      });
+      message.error(
+        result.data.error_message
+          ? result.data.error_message.message
+          : "unknown error"
+      );
       return;
     }
   };
