@@ -260,7 +260,7 @@ class IndexRC extends React.Component {
                   <strong>
                     {this.props.intl.formatMessage({
                       id:
-                        item.activities && item.activities
+                        item.activities && item.activities[0]
                           ? item.activities[0]["type"]
                           : "other",
                     })}

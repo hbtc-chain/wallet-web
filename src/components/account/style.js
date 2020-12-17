@@ -254,7 +254,7 @@ export default (theme) => ({
       fontSize: 16,
       color: theme.palette.primary.main,
       cursor: "pointer",
-      width: 170,
+      width: 150,
     },
     "& em": {
       color: theme.palette.primary.main,

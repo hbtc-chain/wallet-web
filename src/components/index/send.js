@@ -591,7 +591,7 @@ class IndexRC extends React.Component {
           <div className={classes.submit}>
             {this.state.loading ? (
               <Button color="primary" variant="contained" fullWidth disabled>
-                <CircularProgress color="primary" />
+                <CircularProgress color="primary" size={20} />
               </Button>
             ) : (
               <Button

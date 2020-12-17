@@ -406,7 +406,7 @@ class DelegateRC extends React.Component {
           <div className={classes.submit}>
             {this.state.loading ? (
               <Button color="primary" variant="contained" fullWidth disabled>
-                <CircularProgress color="primary" />
+                <CircularProgress size={20} color="primary" />
               </Button>
             ) : (
               <Button

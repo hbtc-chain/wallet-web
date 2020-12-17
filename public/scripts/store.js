@@ -138,11 +138,11 @@ const init_data = {
       explorer: "https://explorer.hbtcchain.io/account/",
     },
     {
-      name: "test net",
-      url: "https://explorer.hbtcchain.io",
+      name: "Test net",
+      url: "http://hbtc.yym.plus",
       chain_id: "hbtc-testnet",
       exc: "https://juswap.io/",
-      explorer: "https://explorer.hbtcchain.io/account/",
+      explorer: "http://hbtc.yym.plus/account/",
     },
   ],
   chain_index: 1, // 0 = main chain , 1 = test chain

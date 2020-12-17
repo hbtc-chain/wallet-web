@@ -327,7 +327,7 @@ class IndexRC extends React.Component {
             color="primary"
             style={{ height: 48 }}
           >
-            <CircularProgress color="primary" size={22} />
+            <CircularProgress color="primary" size={20} />
           </Button>
         ) : (
           <Button

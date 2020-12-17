@@ -436,7 +436,7 @@ export default (theme) => ({
       background: helper.hex_to_rgba(theme.palette.grey[900], 0.2),
       borderRadius: 12,
       color: helper.hex_to_rgba(theme.palette.common.white, 0.75),
-      padding: 3,
+      padding: "3px 10px",
       display: "flex",
       alignItems: "center",
     },

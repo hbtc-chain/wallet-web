@@ -339,7 +339,10 @@ class IndexRC extends React.Component {
                 <span className={classes.pwd_label}>
                   {this.props.intl.formatMessage({ id: "confirm.password" })}
                 </span>
-                <PWDRC onChange={this.handleChange("confirmpwd")} />
+                <PWDRC
+                  autoFocus={false}
+                  onChange={this.handleChange("confirmpwd")}
+                />
                 {/* <TextField
                   fullWidth
                   placeholder={intl.formatMessage({ id: "confirm.password" })}

@@ -188,7 +188,7 @@ class IndexRC extends React.Component {
                     {this.short_address(chain_external_address || address)}
                     <Iconfont
                       type="QRcode"
-                      size={24}
+                      size={20}
                       onClick={this.choose(
                         symbol,
                         chain_external_address

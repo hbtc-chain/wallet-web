@@ -32,7 +32,7 @@ class IndexRC extends React.Component {
       account: {},
       token_info: {},
       token: "",
-      choose: 0, // 0 :hbc链地址， 1: 跨链托管地址
+      choose: 1, // 0 :hbc链地址， 1: 跨链托管地址
       sort: 0,
       search: "",
       open: false,
@@ -70,6 +70,7 @@ class IndexRC extends React.Component {
       deposit_threshold: token_info.deposit_threshold,
       address: account.address,
       chain_external_address,
+      choose: chain_external_address ? 1 : 0,
     });
     this.qrcode(account.address);
     this.qrcode(chain_external_address);
@@ -90,6 +91,7 @@ class IndexRC extends React.Component {
     message.success(this.props.intl.formatMessage({ id: "copyed" }));
   };
   changeChain = () => {
+    console.log(this.state.choose);
     this.setState({
       choose: 1 - this.state.choose,
     });
@@ -181,9 +183,11 @@ class IndexRC extends React.Component {
           <Paper className="paper">
             <h2>
               {type == ""
-                ? this.props.intl.formatMessage({
-                    id: this.state.chain_external_address ? "" : "hbc address",
-                  })
+                ? this.state.chain_external_address
+                  ? ""
+                  : this.props.intl.formatMessage({
+                      id: "hbc address",
+                    })
                 : this.props.intl.formatMessage({
                     id: "hbc address",
                   })}
@@ -213,7 +217,7 @@ class IndexRC extends React.Component {
                 <Grid item>
                   {type == "" ? (
                     this.state.chain_external_address ? (
-                      <em onChange={this.changeChain}>
+                      <em onClick={this.changeChain}>
                         {this.props.intl.formatMessage({
                           id:
                             this.state.choose == 0

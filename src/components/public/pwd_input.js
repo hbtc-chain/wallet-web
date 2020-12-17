@@ -69,7 +69,9 @@ class IndexRC extends React.Component {
         </Grid>
         <TextField
           fullWidth
-          autoFocus
+          autoFocus={
+            this.props.autoFocus !== undefined ? this.props.autoFocus : true
+          }
           ref={(ref) => (this.ref = ref)}
           onFocus={() => {
             this.setState({ focus: true });

@@ -109,7 +109,10 @@ class IndexRC extends React.Component {
         </DialogTitle>
         <DialogContent>
           <p className={classes.mark_info}>{this.props.mark_info}</p>
-          <PWDRC onChange={this.handleChange("password")} />
+          <PWDRC
+            autoFocus={this.props.autoFocus}
+            onChange={this.handleChange("password")}
+          />
           <p className={classes.error_msg}>{this.state.password_msg}</p>
           {/* <TextField
             value={this.state.password}

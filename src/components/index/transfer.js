@@ -496,7 +496,7 @@ class IndexRC extends React.Component {
               fullWidth
               disabled
             >
-              <CircularProgress color="primary" />
+              <CircularProgress color="primary" size={20} />
             </Button>
           ) : (
             <Button
