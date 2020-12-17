@@ -168,6 +168,11 @@ function RouterConfig({ history, app }) {
     app,
     component: () => import("./pages/delegate_unexec"),
   });
+  // mapping
+  const MappingRC = dynamic({
+    app,
+    component: () => import("./pages/mapping"),
+  });
 
   return (
     <Router history={history}>
@@ -317,6 +322,12 @@ function RouterConfig({ history, app }) {
           exact
           path={route_map.delegate_unexec + "/:operator_address"}
           component={DelegateUnExecRC}
+        />
+        {/* MappingRC */}
+        <Route
+          exact
+          path={route_map.mapping + "/:issue_symbol/:target_symbol"}
+          component={MappingRC}
         />
 
         <Route component={NotFountRC} />

@@ -46,4 +46,5 @@ export default {
   delegate_node: `${local}/delegate/node`,
   delegate_exec: `${local}/delegate/exec`,
   delegate_unexec: `${local}/delegate/unexec`,
+  mapping: `${local}/mapping`,
 };

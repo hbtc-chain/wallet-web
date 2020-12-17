@@ -330,4 +330,9 @@ export default {
   "delegate success": "委托成功",
   "MsgWithdrawDelegationReward success": "收益提取成功",
   "receive fee {v} hbc": "提取收益手续费{v}HBC",
+  "swap out quantity": "请输入转出数量",
+  "swap in quantity": "请输入转入数量",
+  "exchange rate": "汇率",
+  "hbtcchain/mapping/MsgMappingSwap success": "映射兑换成功",
+  amount: "余额",
 };

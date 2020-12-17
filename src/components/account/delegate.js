@@ -290,10 +290,10 @@ class DelegateRC extends React.Component {
               ? result.data.error_message.message
               : "unknown error"
           );
-          this.setState({
-            loading: false,
-          });
         }
+        this.setState({
+          loading: false,
+        });
         return;
       }
     } catch (e) {}

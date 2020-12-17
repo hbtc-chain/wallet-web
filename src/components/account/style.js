@@ -720,4 +720,102 @@ export default (theme) => ({
     fontSize: 12,
     lineHeight: "20px",
   },
+  swap: {
+    margin: "20px 24px 0",
+    boxShadow: `0px 0px 16px 0px ${helper.hex_to_rgba("#3375E0", 0.12)}`,
+    padding: "0 8px 16px",
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: theme.palette.grey[50],
+    },
+    "& .MuiOutlinedInput-adornedEnd": {
+      padding: "0 10px 0 0",
+    },
+    "& .MuiOutlinedInput-root": {
+      background: theme.palette.grey[50],
+    },
+    "& .MuiOutlinedInput-root.Mui-disabled .MuiOutlinedInput-notchedOutline": {
+      borderColor: "rgba(0,0,0,0)",
+    },
+    "& input": {
+      "&:nth-child(2n)": {
+        textAlign: "right",
+      },
+    },
+  },
+  swap_tokens: {
+    fontSize: 16,
+    padding: "30px 8px 24px",
+    color: theme.palette.grey[900],
+    "& div": {
+      display: "flex",
+      alignItems: "center",
+      cursor: "pointer",
+    },
+    "& img": {
+      width: 24,
+      margin: "0 5px 0 0",
+    },
+    "& i": {
+      color: theme.palette.grey[500],
+      margin: "0 0 0 6px",
+    },
+  },
+  swap_input: {
+    height: 54,
+    background: theme.palette.grey[50],
+    "& .MuiOutlinedInput-input": {
+      padding: "18px 10px",
+    },
+  },
+  swap_rate: {
+    position: "relative",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    margin: "24px 0 0",
+    padding: "24px 8px",
+    borderTop: `1px dashed ${theme.palette.grey[300]}`,
+    "& span": {
+      fontSize: 14,
+      color: theme.palette.grey[700],
+      margin: "0 8px 0 0",
+    },
+    "& p": {
+      flex: 1,
+      fontSize: 16,
+      color: theme.palette.grey[900],
+    },
+    "& i": {
+      width: 16,
+      height: 16,
+      display: "block",
+      position: "relative",
+      borderRadius: 8,
+      background: helper.hex_to_rgba("#51D372", 0.2),
+      "& i": {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        background: "#51D372",
+        position: "absolute",
+        left: 4,
+        top: 4,
+      },
+    },
+    "& em": {
+      position: "absolute",
+      width: 16,
+      height: 16,
+      background: theme.palette.grey[50],
+      borderRadius: 8,
+      display: "block",
+      top: -10,
+      "&:nth-child(2n+1)": {
+        left: -16,
+      },
+      "&:nth-child(2n)": {
+        right: -16,
+      },
+    },
+  },
 });

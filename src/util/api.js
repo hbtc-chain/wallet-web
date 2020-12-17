@@ -14,4 +14,5 @@ export default {
   tokenprices: `/api/v1/tokenprices`,
   default_fee: `/api/v1/default_fee`,
   validators: `/api/v1/validators`, //节点列表
+  mapping: `/api/v1/mappings`, // 映射币对
 };
