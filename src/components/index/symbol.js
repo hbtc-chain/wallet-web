@@ -32,11 +32,25 @@ class IndexRC extends React.Component {
       loading: false,
       hasmore: true,
       open: false,
+      mapping: [],
     };
   }
   componentDidMount() {
     this.get_balance_history();
+    this.get_mapping();
   }
+  get_mapping = async () => {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.mapping,
+    });
+    if (result.code == 200 && result.data) {
+      this.setState({
+        mapping: result.data.items,
+      });
+    }
+  };
   get_balance = async () => {};
   get_balance_history = async () => {
     if (this.state.loading) {
@@ -88,6 +102,11 @@ class IndexRC extends React.Component {
     const symbol = (this.props.match.params.symbol || "").toLowerCase();
     const token = this.props.tokens.find(
       (item) => item.symbol.toLowerCase() == symbol
+    );
+    const mapping_symbol = this.state.mapping.find(
+      (item) =>
+        item.issue_symbol == this.props.match.params.symbol ||
+        item.target_symbol == this.props.match.params.symbol
     );
     let tokens = [];
     this.props.tokens.map((item) => {
@@ -356,13 +375,20 @@ class IndexRC extends React.Component {
             </span>
             <i>{this.props.intl.formatMessage({ id: "trade" })}</i>
           </Grid>
-          {token && !token.is_mapping_token ? (
+          {mapping_symbol ? (
             <Grid
               item
               onClick={(e) => {
-                this.setState({
-                  open: this.state.open ? null : e.target,
-                });
+                this.props.dispatch(
+                  routerRedux.push({
+                    pathname:
+                      route_map.mapping +
+                      "/" +
+                      mapping_symbol.issue_symbol +
+                      "/" +
+                      mapping_symbol.target_symbol,
+                  })
+                );
               }}
             >
               <span>
