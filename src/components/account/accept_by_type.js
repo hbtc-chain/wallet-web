@@ -101,9 +101,10 @@ class IndexRC extends React.Component {
   };
   goto = (symbol) => async () => {
     await this.props.dispatch(
-      routerRedux.push({
-        pathname: route_map.accept_by_type + "/" + symbol,
-      })
+      routerRedux.replace(route_map.accept_by_type + "/" + symbol)
+      // routerRedux.push({
+      //   pathname: route_map.accept_by_type + "/" + symbol,
+      // })
     );
     await this.setState({
       open: false,
