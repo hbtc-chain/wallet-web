@@ -555,7 +555,7 @@ class IndexRC extends React.Component {
             <Grid item>{this.props.intl.formatMessage({ id: "mark" })}</Grid>
             <Grid item></Grid>
           </Grid>
-          <div className={classes.form_input} style={{ margin: "0 0 40px" }}>
+          <div className={classes.form_input} style={{ margin: "0 0 20px" }}>
             <TextField
               variant="outlined"
               placeholder={this.props.intl.formatMessage({ id: "mark" })}
@@ -588,22 +588,22 @@ class IndexRC extends React.Component {
               max={1}
             />
           </div> */}
-          <div className={classes.submit}>
-            {this.state.loading ? (
-              <Button color="primary" variant="contained" fullWidth disabled>
-                <CircularProgress color="primary" size={20} />
-              </Button>
-            ) : (
-              <Button
-                color="primary"
-                variant="contained"
-                fullWidth
-                onClick={this.submit}
-              >
-                {this.props.intl.formatMessage({ id: "transfer" })}
-              </Button>
-            )}
-          </div>
+          {/* <div className={classes.submit}> */}
+          {this.state.loading ? (
+            <Button color="primary" variant="contained" fullWidth disabled>
+              <CircularProgress color="primary" size={20} />
+            </Button>
+          ) : (
+            <Button
+              color="primary"
+              variant="contained"
+              fullWidth
+              onClick={this.submit}
+            >
+              {this.props.intl.formatMessage({ id: "transfer" })}
+            </Button>
+          )}
+          {/* </div> */}
         </div>
         <PasswordRC
           {...otherProps}

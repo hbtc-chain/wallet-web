@@ -19,10 +19,10 @@ function checkStatus(response, timer) {
  */
 export default function request(url, options = { method: "GET" }) {
   const t_start = new Date().getTime();
-  // const fheaders = new Headers();
+  const fheaders = new Headers();
   // fheaders.append("X-Requested-With", "XMLHttpRequest");
   // if (!options.upload) {
-  //   fheaders.append("Content-Type", "application/x-www-form-urlencoded");
+  fheaders.append("Content-Type", "application/x-www-form-urlencoded");
   // }
   // //fheaders.append("Accept-Language", window.localStorage.lang);
   // if (options.headers) {
@@ -37,7 +37,7 @@ export default function request(url, options = { method: "GET" }) {
       //credentials: options.credentials || "include", // 是否跨域访问cookie， omit默认，same-origin同域，include
       method: options.method || "GET",
       mode: options.mode || "cors", // 是否允许跨域请求，no-cors默认，same-origin同域，cors跨域
-      //headers: fheaders,
+      headers: fheaders,
     },
     options
   );

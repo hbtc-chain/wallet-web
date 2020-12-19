@@ -231,7 +231,7 @@ class IndexRC extends React.Component {
               justify="space-between"
               className={classes.add_token}
             >
-              <Grid item>Token</Grid>
+              <Grid item>{this.props.intl.formatMessage({ id: "token" })}</Grid>
               <Grid item>
                 <span
                   onClick={() => {

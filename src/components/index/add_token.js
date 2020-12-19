@@ -238,7 +238,7 @@ class IndexRC extends React.Component {
                     <Grid item style={{ flex: 1, margin: "0 0 0 12px" }}>
                       <strong>{item.name.toUpperCase()}</strong>
                       <br />
-                      <p>{(item.name || "").toUpperCase()}</p>
+                      <p>{(item.symbol || "").toUpperCase()}</p>
                     </Grid>
                     <Grid item style={{ textAlign: "right" }}>
                       <Switch

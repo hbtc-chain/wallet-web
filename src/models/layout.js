@@ -245,10 +245,12 @@ export default {
     *get_rates({ payload }, { call, put, select }) {
       const { tokens, store } = yield select((state) => state.layout);
       if (tokens.length) {
+        let symbols = [];
+        tokens.map((item) => symbols.push(item.symbol));
         try {
           const result = yield call(
             getData(store.chain[store.chain_index]["url"] + API.tokenprices),
-            { payload: { symbols: "" } }
+            { payload: { symbols: symbols.join(",") }, method: "post" }
           );
           let rates = {};
           if (result.code == 200 && result.data) {

@@ -176,6 +176,7 @@ class DelegateRC extends React.Component {
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
+    const hbc_token = this.props.tokens.find((item) => item.symbol == "hbc");
     let d = {
       chain_id: this.props.store.chain[this.props.store.chain_index][
         "chain_id"
@@ -196,12 +197,10 @@ class DelegateRC extends React.Component {
           value: {
             delegator_address: address,
             validator_address: this.state.data.operator_address,
-            amount: [
-              {
-                amount: this.state.amount,
-                denom: "hbc",
-              },
-            ],
+            amount: {
+              amount: this.decimals(this.state.amount, hbc_token.decimals),
+              denom: "hbc",
+            },
           },
         },
       ],
@@ -368,7 +367,7 @@ class DelegateRC extends React.Component {
             </Grid>
             <Grid item>
               {this.props.intl.formatMessage({ id: "delegate available" })}{" "}
-              {this.state.available}
+              {this.state.available || "--"}
               HBC
             </Grid>
           </Grid>

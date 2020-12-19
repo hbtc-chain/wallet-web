@@ -1,6 +1,6 @@
 export default (theme) => ({
   container: {
-    width: 280,
+    width: 250,
     position: "relative",
     "& .MuiFormControl-root": {
       opacity: 0,
@@ -14,7 +14,8 @@ export default (theme) => ({
     left: 0,
     top: 0,
     "& div": {
-      width: 40,
+      flex: 1,
+      margin: "0 6px 0 0",
       height: 56,
       border: `1px solid ${theme.palette.grey[500]}`,
       borderRadius: 4,
@@ -23,6 +24,9 @@ export default (theme) => ({
       justifyContent: "center",
       "&.active": {
         border: `1px solid ${theme.palette.primary.main}`,
+      },
+      "&:last-child": {
+        margin: 0,
       },
     },
     "& span": {
