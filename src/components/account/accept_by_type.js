@@ -298,7 +298,7 @@ class IndexRC extends React.Component {
                   id: "min deposit {token}{value}",
                 },
                 {
-                  token: this.state.token.toUpperCase(),
+                  token: (this.state.token_info.name || "").toUpperCase(),
                   value: this.state.deposit_threshold,
                 }
               )}
