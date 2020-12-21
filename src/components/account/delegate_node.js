@@ -30,6 +30,7 @@ import Qrcode from "qrcode";
 import CloseIcon from "@material-ui/icons/Close";
 import message from "../public/message";
 import API from "../../util/api";
+import moment from "moment";
 
 class DelegateRC extends React.Component {
   constructor() {
@@ -167,7 +168,11 @@ class DelegateRC extends React.Component {
               </span>
             </Grid>
             <Grid item style={{ textAlign: "right" }}>
-              {this.state.data.last_voted_time}
+              {this.state.data.last_voted_time
+                ? moment(
+                    Number(`${this.state.data.last_voted_time}000`)
+                  ).format("YYYY-MM-DD HH:mm:ss")
+                : ""}
             </Grid>
           </Grid>
           <Grid container justify="space-between">

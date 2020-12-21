@@ -46,6 +46,7 @@ class IndexRC extends React.Component {
       issue_token: { name: "" },
       target_token: { name: "" },
       data: [],
+      memo: "",
     };
   }
   componentDidMount() {
@@ -181,16 +182,16 @@ class IndexRC extends React.Component {
           },
         ],
       },
-      memo: this.state.memo,
+      memo: this.state.memo || "",
       msgs: [
         {
           type: "hbtcchain/mapping/MsgMappingSwap",
           value: {
             from: address,
-            issue_symbol: this.state.issue_symbol,
+            issue_symbol: this.state.target_symbol,
             coins: [
               {
-                denom: this.state.target_symbol,
+                denom: this.state.issue_symbol,
                 amount: this.decimals(
                   this.state.target_quantity,
                   this.state.target_token.decimals
@@ -202,6 +203,7 @@ class IndexRC extends React.Component {
       ],
       sequence: this.state.sequence,
     };
+    console.log(d);
     let obj = helper.jsonSort(d);
     let account = this.props.store.accounts[this.props.store.account_index];
     let privateKey = account.privateKey;

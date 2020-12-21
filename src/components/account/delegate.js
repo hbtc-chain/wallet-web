@@ -14,6 +14,7 @@ import {
   Tabs,
   Tab,
   Paper,
+  CircularProgress,
 } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import helper from "../../util/helper";
@@ -238,7 +239,7 @@ class DelegateRC extends React.Component {
       ],
     };
     this.setState({
-      open: false,
+      open2: false,
       password_msg: "",
       password: "",
       loading: true,
@@ -307,6 +308,12 @@ class DelegateRC extends React.Component {
         ? this.props.store.accounts[this.props.store.account_index]
         : {};
     const token = this.props.tokens.find((item) => item.symbol == "hbc") || {};
+    const balance =
+      this.props.balance &&
+      account.address &&
+      this.props.balance[account.address]
+        ? this.props.balance[account.address]
+        : {};
     return (
       <div className={classes.delegate}>
         <Grid
@@ -350,36 +357,47 @@ class DelegateRC extends React.Component {
               <span>
                 {this.props.intl.formatMessage({ id: "available" })}HBC
               </span>
-              <em>{this.props.balance.available}</em>
+              <em>{balance.available}</em>
             </Grid>
             <Grid item xs={4} style={{ textAlign: "center" }}>
               <span>
                 {this.props.intl.formatMessage({ id: "delegateing" })}
               </span>
-              <em>{this.props.balance.bonded}</em>
+              <em>{balance.bonded}</em>
             </Grid>
             <Grid item xs={4} style={{ textAlign: "right" }}>
               <span>{this.props.intl.formatMessage({ id: "ransoming" })}</span>
-              <em>{this.props.balance.unbonding}</em>
+              <em>{balance.unbonding}</em>
             </Grid>
             <Grid item xs={4}>
               <span>{this.props.intl.formatMessage({ id: "incomed" })}</span>
-              <em>{this.props.balance.claimed_reward}</em>
+              <em>{balance.claimed_reward}</em>
             </Grid>
             <Grid item xs={4} style={{ textAlign: "center" }}>
               <span>{this.props.intl.formatMessage({ id: "incoming" })}</span>
-              <em>{this.props.balance.unclaimed_reward}</em>
+              <em>{balance.unclaimed_reward}</em>
             </Grid>
             <Grid item xs={4} style={{ textAlign: "right" }}>
-              <Button
-                variant="contained"
-                color="primary"
-                disabled={!Boolean(this.props.balance.unclaimed_reward)}
-                style={{ height: 32, borderRadius: 16, color: "#fff" }}
-                onClick={this.submit}
-              >
-                {this.props.intl.formatMessage({ id: "receive income" })}
-              </Button>
+              {this.state.loading ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled
+                  style={{ height: 32, borderRadius: 16, color: "#fff" }}
+                >
+                  <CircularProgress size={16} />
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  disabled={!Boolean(balance.unclaimed_reward)}
+                  style={{ height: 32, borderRadius: 16, color: "#fff" }}
+                  onClick={this.submit}
+                >
+                  {this.props.intl.formatMessage({ id: "receive income" })}
+                </Button>
+              )}
             </Grid>
           </Grid>
         </Paper>
