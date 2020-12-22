@@ -18,16 +18,6 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       const messageManager = new MessageManager(dispatch, history, routerRedux);
-      // 查询登录状态
-      messageManager.sendMessage({
-        type: CONST.METHOD_LOGGED_STATUS_QUERY,
-        data: {},
-      });
-      // 查询免密设置
-      messageManager.sendMessage({
-        type: CONST.METHOD_QUERY_PASSWORD,
-        data: {},
-      });
       dispatch({
         type: "save",
         payload: {
@@ -57,6 +47,16 @@ export default {
           type: CONST.METHOD_QUERY_SIGN,
           data: {},
         });
+        // 查询登录状态
+        messageManager.sendMessage({
+          type: CONST.METHOD_LOGGED_STATUS_QUERY,
+          data: {},
+        });
+        // 查询免密设置
+        // messageManager.sendMessage({
+        //   type: CONST.METHOD_QUERY_PASSWORD,
+        //   data: {},
+        // });
       });
     },
   },
@@ -168,6 +168,7 @@ export default {
         type: CONST.METHOD_LOGIN,
         data: {
           password: helper.sha256(password),
+          password_source: password,
         },
       });
     },

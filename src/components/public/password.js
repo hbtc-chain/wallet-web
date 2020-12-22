@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import helper from "../../util/helper";
 import CONST from "../../util/const";
-import PWDRC from "./pwd_input";
+// import PWDRC from "./pwd_input";
 import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
@@ -32,9 +32,9 @@ class IndexRC extends React.Component {
       no_pwd: this.props.no_pwd,
     });
   }
-  componentDidUpdate() {
-    // 唤起password, 处在免密期
-    if (this.props.no_pwd && this.props.password && this.props.open) {
+  componentDidUpdate(preProps) {
+    // 密码有效期内
+    if (this.props.logged && this.props.password && this.props.open) {
       this.props.submit && this.props.submit({ password: this.props.password });
       return;
     }
@@ -86,13 +86,13 @@ class IndexRC extends React.Component {
       return;
     }
     // 保存免密配置
-    this.props.messageManager.sendMessage({
-      type: CONST.METHOD_SAVE_PASSWORD,
-      data: {
-        no_pwd: this.state.no_pwd,
-        password: this.state.password,
-      },
-    });
+    // this.props.messageManager.sendMessage({
+    //   type: CONST.METHOD_SAVE_PASSWORD,
+    //   data: {
+    //     no_pwd: this.state.no_pwd,
+    //     password: this.state.password,
+    //   },
+    // });
     this.props.submit && this.props.submit({ password: this.state.password });
     this.setState({
       password_msg: "",
@@ -109,12 +109,12 @@ class IndexRC extends React.Component {
         </DialogTitle>
         <DialogContent>
           <p className={classes.mark_info}>{this.props.mark_info}</p>
-          <PWDRC
+          {/* <PWDRC
             autoFocus={this.props.autoFocus}
             onChange={this.handleChange("password")}
           />
-          <p className={classes.error_msg}>{this.state.password_msg}</p>
-          {/* <TextField
+          <p className={classes.error_msg}>{this.state.password_msg}</p> */}
+          <TextField
             value={this.state.password}
             onChange={this.handleChange("password")}
             helperText={this.state.password_msg}
@@ -125,9 +125,9 @@ class IndexRC extends React.Component {
             style={{ width: 260 }}
             variant="outlined"
             type="password"
-          /> */}
+          />
 
-          <div>
+          {/* <div>
             <FormControlLabel
               value="end"
               control={
@@ -141,9 +141,9 @@ class IndexRC extends React.Component {
                 id: "no need password in 30m",
               })}
             />
-          </div>
+          </div> */}
         </DialogContent>
-        {/* <DialogActions>
+        <DialogActions>
           <Button
             onClick={this.success}
             variant="contained"
@@ -153,7 +153,7 @@ class IndexRC extends React.Component {
           >
             {this.props.intl.formatMessage({ id: "confirm" })}
           </Button>
-        </DialogActions> */}
+        </DialogActions>
       </Dialog>
     );
   }

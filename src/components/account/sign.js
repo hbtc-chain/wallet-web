@@ -94,6 +94,9 @@ class IndexRC extends React.Component {
       if (result.code == 200) {
         let a = this.decimals(amount, result.data.decimals);
         res = res.concat([a, token]);
+        this.setState({
+          token1_name: result.data.name.toUpperCase(),
+        });
       }
     } else {
       let a = this.decimals(amount, this.state[token]["decimals"]);
@@ -105,6 +108,9 @@ class IndexRC extends React.Component {
         if (result2.code == 200) {
           let a = this.decimals(amount2, result2.data.decimals);
           res = res.concat([a, token2]);
+          this.setState({
+            token2_name: result2.data.name.toUpperCase(),
+          });
         }
       } else {
         let a = this.decimals(amount2, this.state[token2]["decimals"]);
@@ -120,7 +126,7 @@ class IndexRC extends React.Component {
     }
     let a = math
       .chain(math.bignumber(amount))
-      .multiply(Math.pow(10, decimals))
+      .multiply(Math.pow(10, -1 * Number(decimals)))
       .format(type)
       .done();
     return a;
@@ -222,6 +228,11 @@ class IndexRC extends React.Component {
     }
     // 由background关闭tab
     //window.close();
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.index,
+      })
+    );
   };
   sign = async (res) => {
     // if (!this.state.password) {
@@ -362,9 +373,9 @@ class IndexRC extends React.Component {
     // type = MsgAddLiquidity
     if (/MsgAddLiquidity/i.test(msgs.type)) {
       return this.amount_count(
-        msgs.value.min_token_a_amount,
+        msgs.value.max_token_a_amount,
         msgs.value.token_a,
-        msgs.value.min_token_b_amount,
+        msgs.value.max_token_b_amount,
         msgs.token_b
       );
     }
@@ -416,11 +427,7 @@ class IndexRC extends React.Component {
 
         {this.state.msg_amount ? (
           <div className={classes.acount}>
-            <h1>
-              {this.state.msg_amount[0] +
-                " " +
-                (this.state.msg_amount[1] || "").toUpperCase()}
-            </h1>
+            <h1>{this.state.msg_amount[0] + " " + this.state.token1_name}</h1>
             {this.state.msg_amount[2] ? (
               <span>
                 <ArrowDownwardIcon color="primary" />
@@ -429,11 +436,7 @@ class IndexRC extends React.Component {
               ""
             )}
             {this.state.msg_amount[2] ? (
-              <h1>
-                {this.state.msg_amount[2] +
-                  " " +
-                  (this.state.msg_amount[3] || "").toUpperCase()}
-              </h1>
+              <h1>{this.state.msg_amount[2] + " " + this.state.token2_name}</h1>
             ) : (
               ""
             )}
@@ -447,7 +450,7 @@ class IndexRC extends React.Component {
               .sort((a, b) => (a.toUpperCase() > b.toUpperCase() ? 1 : -1))
               .map((item) => {
                 if (
-                  /amount|initial_deposit|coins|swap_path|expired_at|min_amount_out|max_amount_in|side|liquidity|token_a|token_b|price|order_id/i.test(
+                  /amount|initial_deposit|coins|swap_path|expired_at|min_amount_out|max_amount_in|side|liquidity|token_a|token_b|price|order_id|dex_id/i.test(
                     item
                   )
                 ) {

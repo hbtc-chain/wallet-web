@@ -13,14 +13,13 @@ import Nav from "./nav";
 import Cancel from "@material-ui/icons/Cancel";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 import classnames from "classnames";
-import PWDRC from "../public/pwd_input";
 
 class IndexRC extends React.Component {
   constructor() {
     super();
     this.state = {
       password: "",
-      password_msg_arr: ["pwd_rule1"],
+      password_msg_arr: ["pwd_rule1", "pwd_rule3"],
       password_msg_i: [],
       confirmpwd: "",
       confirmpwd_msg_arr: ["pwd_rule2"],
@@ -110,17 +109,20 @@ class IndexRC extends React.Component {
     if (this.state.step2) {
       const password = key == "password" ? v : this.state.password;
       const confirmpwd = key == "confirmpwd" ? v : this.state.confirmpwd;
-      if (password && !/^\d{6}$/.test(password)) {
+      if (password && password.length < 8) {
         arr1.push(0);
       }
-      // if (password && !/^\d{6}$/.test(password)) {
-      //   arr1.push(1);
-      // }
+      if (
+        password &&
+        !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,}$/.test(password)
+      ) {
+        arr1.push(1);
+      }
       if (
         this.props.store.account_index > -1 &&
         helper.sha256(password) !== this.props.store.accounts[0]["password"]
       ) {
-        arr1.push(1);
+        arr1.push(2);
       }
       if (this.props.store.account_index == -1 && password != confirmpwd) {
         arr2.push(0);
@@ -278,11 +280,7 @@ class IndexRC extends React.Component {
           />
           <Grid container className={classes.form}>
             <Grid item xs={12} className={classes.item}>
-              <span className={classes.pwd_label}>
-                {this.props.intl.formatMessage({ id: "password request" })}
-              </span>
-              <PWDRC onChange={this.handleChange("password")} />
-              {/* <TextField
+              <TextField
                 fullWidth
                 placeholder={intl.formatMessage({
                   id:
@@ -310,7 +308,7 @@ class IndexRC extends React.Component {
                     root: classes.input_root,
                   },
                 }}
-              /> */}
+              />
               {this.state.password && this.state.password_msg_i.length > 0 ? (
                 <div className="tip">
                   {this.state.password_msg_arr.map((item, i) => {
@@ -336,14 +334,7 @@ class IndexRC extends React.Component {
               ""
             ) : (
               <Grid item xs={12} className={classes.item}>
-                <span className={classes.pwd_label}>
-                  {this.props.intl.formatMessage({ id: "confirm.password" })}
-                </span>
-                <PWDRC
-                  autoFocus={false}
-                  onChange={this.handleChange("confirmpwd")}
-                />
-                {/* <TextField
+                <TextField
                   fullWidth
                   placeholder={intl.formatMessage({ id: "confirm.password" })}
                   value={this.state.confirmpwd}
@@ -366,7 +357,7 @@ class IndexRC extends React.Component {
                       root: classes.input_root,
                     },
                   }}
-                /> */}
+                />
                 {this.state.confirmpwd &&
                 this.state.confirmpwd_msg_i.length > 0 ? (
                   <div className="tip">

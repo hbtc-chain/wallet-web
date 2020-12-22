@@ -61,6 +61,7 @@ class IndexRC extends React.Component {
         type: CONST.METHOD_LOGIN,
         data: {
           password: pwd,
+          password_source: this.state.password,
         },
       });
     }

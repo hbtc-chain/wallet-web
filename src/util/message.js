@@ -60,6 +60,7 @@ class MessageManager {
         type: "layout/save",
         payload: {
           logged: obj.data ? obj.data.logged : false,
+          password: obj.data ? obj.data.password : "",
         },
       });
     }

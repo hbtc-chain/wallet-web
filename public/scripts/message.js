@@ -9,6 +9,9 @@ import Sign from "../../src/util/sign";
 import { v4 } from "uuid";
 
 let that;
+
+const AUTO_LOGOUT_TIME = 6 * 60 * 60 * 1000;
+
 export default class MessageManager {
   constructor(opts) {
     // 存储sign请求，直到用户通过或拒绝
@@ -97,7 +100,10 @@ export default class MessageManager {
     if (obj.to == CONST.MESSAGE_FROM_BACKGROUND) {
       if (obj.type == CONST.METHOD_LOGGED_STATUS_QUERY) {
         if (obj.from == CONST.MESSAGE_FROM_POPUP) {
-          this.sendMsgToPopup({ ...obj, data: { logged: this.logged } }, port);
+          this.sendMsgToPopup(
+            { ...obj, data: { logged: this.logged, password: this.password } },
+            port
+          );
         } else {
           this.sendMsgToPage({ ...obj, data: { logged: this.logged } }, port);
         }
@@ -592,25 +598,41 @@ export default class MessageManager {
       return;
     }
     this.logged = true;
+    this.password = obj.data.password_source;
     datas.account_index = index;
     await store.set(datas);
     this.sendMsgToPopup({
       ...obj,
       data: { code: 200, msg: "OK" },
     });
+
+    // 6小时后登陆失效
+    clearTimeout(this.logout_timer);
+    this.logout_timer = setTimeout(() => {
+      this.logout();
+    }, AUTO_LOGOUT_TIME);
   }
   /**
    * logout
    */
   async logout(obj, port) {
     this.logged = false;
+    this.password = "";
+    clearTimeout(this.logout_timer);
     let datas = await store.get();
     datas.account_index = -1;
     this.signmsgs = {};
     store.set({ ...datas, signmsgs: {} });
+    this.sendMsgToPopup({
+      time: new Date().getTime(),
+      type: CONST.METHOD_BROADCAST,
+      from: CONST.MESSAGE_FROM_BACKGROUND,
+      to: CONST.MESSAGE_FROM_POPUP,
+      data: { logged: this.logged, password: this.password },
+    });
   }
   /**
-   * save_password 30分钟免密状态记录
+   * save_password 30分钟免密状态记录, 功能已废弃
    */
   async save_password(obj) {
     this.no_pwd = obj.data.no_pwd;

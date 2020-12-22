@@ -95,7 +95,10 @@ class IndexRC extends React.Component {
   };
   goto = (hash) => (e) => {
     // open window tab
-    window.open("http://explorer.hbtcchain.io/txs/" + hash, "_blank");
+    const domain = this.props.store.chain[this.props.store.chain_index][
+      "explorer"
+    ];
+    window.open(domain + "/txs/" + hash, "_blank");
   };
   render() {
     const { classes } = this.props;

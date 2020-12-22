@@ -216,7 +216,7 @@ class IndexRC extends React.Component {
             </List>
           </Collapse>
 
-          <ListItem
+          {/* <ListItem
             className={classes.menuitem}
             onClick={() => {
               this.setState({
@@ -242,8 +242,8 @@ class IndexRC extends React.Component {
             ) : (
               <ExpandMore className={classes.grey500} />
             )}
-          </ListItem>
-          <Collapse in={this.state.open3} timeout="auto" unmountOnExit>
+          </ListItem> */}
+          {/* <Collapse in={this.state.open3} timeout="auto" unmountOnExit>
             <List component="div" className={classes.borderTop}>
               {[0, 1].map((item) => {
                 return (
@@ -269,7 +269,7 @@ class IndexRC extends React.Component {
                 );
               })}
             </List>
-          </Collapse>
+          </Collapse> */}
         </List>
         <div className={classes.btn_fixed}>
           <Button

@@ -135,14 +135,14 @@ const init_data = {
       url: "https://explorer.hbtcchain.io",
       chain_id: "hbtc-testnet",
       exc: "https://juswap.io",
-      explorer: "https://explorer.hbtcchain.io/account",
+      explorer: "https://explorer.hbtcchain.io",
     },
     {
       name: "Test net",
-      url: "http://hbtc.yym.plus",
+      url: "http://swap.yym.plus", // api接口地址
       chain_id: "hbtc-testnet",
-      exc: "https://juswap.io",
-      explorer: "http://hbtc.yym.plus/account",
+      exc: "https://juswap.io", // 跳往web交易
+      explorer: "https://explorer.hbtcchain.io", // 浏览器地址
     },
   ],
   chain_index: 1, // 0 = main chain , 1 = test chain

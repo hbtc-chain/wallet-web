@@ -579,7 +579,9 @@ class IndexRC extends React.Component {
                   window.open(
                     this.props.store.chain[this.props.store.chain_index][
                       "explorer"
-                    ] + address,
+                    ] +
+                      "/account/" +
+                      address,
                     "_blank"
                   );
                 }}
