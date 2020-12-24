@@ -18,11 +18,9 @@ export default class MessageManager {
     this.signmsgs = {};
     // 存储balance
     this.balance = new Map();
-    this.openPopup = opts.openPopup;
-    this.popupIsOpen = opts.popupIsOpen;
-    this.setpopupIsOpen = opts.setpopupIsOpen;
     this.platform = opts.platform;
     this.notificationManager = opts.notificationManager;
+    this.openPopup = opts.openPopup;
 
     // 登录状态
     this.logged = false;
@@ -42,10 +40,6 @@ export default class MessageManager {
 
     this.port = new Map();
     extension.runtime.onConnect.addListener((port) => {
-      if (port.name == "popup") {
-        this.popupIsOpen = true;
-        this.setpopupIsOpen(this.popupIsOpen);
-      }
       this.port.set(
         port.sender.tab ? port.sender.tab.id : port.sender.id,
         port
@@ -53,14 +47,6 @@ export default class MessageManager {
       port.onMessage.addListener(this.msglistener(port));
       port.onDisconnect.addListener((res) => {
         this.port.delete(res.sender.tab ? res.sender.tab.id : res.sender.id);
-        let haspopup = false;
-        this.port.forEach((item) => {
-          if (item.name == "popup") {
-            haspopup = true;
-          }
-        });
-        this.popupIsOpen = haspopup;
-        this.setpopupIsOpen(this.popupIsOpen);
       });
     });
   }
@@ -372,9 +358,7 @@ export default class MessageManager {
       const data = this.balance.get(address) || {};
       // popup and popup is open
       if (port.name == "popup") {
-        if (this.popupIsOpen) {
-          this.sendMsgToPopup({ ...obj, data }, port);
-        }
+        this.sendMsgToPopup({ ...obj, data }, port);
       } else {
         this.sendMsgToPage({ ...obj, data }, port);
       }
@@ -519,7 +503,21 @@ export default class MessageManager {
   }
   // 发送数据到popup
   async sendMsgToPopup(data) {
-    if (!this.popupIsOpen) {
+    console.log("send msg to popup");
+    console.log(data);
+    // 仅sign, connect请求，且未有popup时，主动打开popup
+    let haspopup = false;
+    this.port.forEach((item) => {
+      if (item.name == "popup") {
+        haspopup = true;
+      }
+    });
+    if (
+      !haspopup &&
+      (data.type == CONST.METHOD_SIGN || data.type == CONST.MEHTOD_CONNECT)
+    ) {
+      console.log("open popup");
+      console.log(data);
       await this.openPopup();
     }
     setTimeout(() => {

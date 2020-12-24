@@ -405,23 +405,29 @@ export default (theme) => ({
     },
   },
   chain_address_title: {
-    padding: "0 16px",
+    borderBottom: `10px solid ${theme.palette.grey[50]}`,
+    padding: "0 16px 10px",
     margin: "0 -16px",
-    background:
-      "linear-gradient(180deg, rgba(255, 255, 255, 0) 70%, #D1D7E6 100%)",
   },
   chain_address: {
-    borderRadius: "10px 10px 0 0",
-    background: theme.palette.primary.main,
-    padding: "14px 24px 6px",
-    color: theme.palette.common.white,
-    height: 72,
+    padding: "6px 24px 32px",
+    color: theme.palette.grey[700],
+    background: theme.palette.common.white,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
     fontSize: 14,
+    "& img": {
+      width: 48,
+    },
+    "& h2": {
+      color: theme.palette.grey[700],
+      fontSize: 14,
+      margin: "16px 0 10px",
+    },
     "& span": {
       color: util.hex_to_rgba(theme.palette.grey[700], 0.5),
-    },
-    "& img": {
-      width: 18,
     },
     "& em": {
       margin: "0 4px",
@@ -433,12 +439,15 @@ export default (theme) => ({
     "& .address": {
       cursor: "pointer",
       height: 24,
-      background: helper.hex_to_rgba(theme.palette.grey[900], 0.2),
+      background: helper.hex_to_rgba(theme.palette.primary.main, 0.2),
       borderRadius: 12,
-      color: helper.hex_to_rgba(theme.palette.common.white, 0.75),
+      color: theme.palette.grey[500],
       padding: "3px 10px",
       display: "flex",
       alignItems: "center",
+      "& em": {
+        color: theme.palette.primary.main,
+      },
     },
   },
   chain_symbol: {
@@ -525,34 +534,16 @@ export default (theme) => ({
       fontSize: 16,
     },
   },
+  borderTop: {
+    borderTop: `1px solid ${theme.palette.grey[100]}`,
+  },
   btns: {
-    position: "fixed",
-    left: 0,
-    bottom: 0,
-    background: theme.palette.common.white,
-    padding: "0 0 10px",
     width: "100%",
-    "& div": {
-      textAlign: "center",
-      cursor: "pointer",
-    },
-    "& span": {
-      boxShadow: "0px 2px 6px 0px rgba(51,117,224,0.16)",
-      display: "flex",
-      width: 48,
-      height: 48,
-      justifyContent: "center",
-      alignItems: "center",
-      borderRadius: 18,
-      margin: "0 0 8px",
-      "&.cross": {
-        width: 64,
-      },
-    },
-
-    "& i": {
-      color: theme.palette.common.text,
-      fontSize: 12,
+    height: 44,
+    "& .MuiButton-root": {
+      height: 44,
+      fontSize: 14,
+      fontWeight: 400,
     },
   },
   btn_fixed: {
@@ -575,12 +566,32 @@ export default (theme) => ({
     margin: "20px 0 0",
     flex: 1,
   },
+  external_content_external: {
+    margin: "10px 0 0",
+    "& p": {
+      border: `2px solid ${theme.palette.grey[100]}`,
+      borderRadius: 10,
+      padding: 10,
+      margin: "0 0 16px",
+      color: theme.palette.grey[700],
+      fontSize: 14,
+      lineHeight: "22px",
+    },
+    "& .fee": {
+      height: 56,
+      borderBottom: `1px solid ${theme.palette.grey[100]}`,
+      color: theme.palette.grey[500],
+    },
+    "& em": {
+      color: theme.palette.grey[700],
+    },
+  },
   external_label: {
     display: "block",
     margin: "20px 0 10px",
   },
   form: {
-    padding: "0 0 30px 0",
+    padding: "0 0 80px 0",
   },
   form_label: {
     fontSize: 14,
@@ -641,21 +652,37 @@ export default (theme) => ({
     cursor: "pointer",
   },
   submit: {
-    height: 48,
+    height: 68,
     position: "fixed",
-    bottom: 10,
+    bottom: 0,
     left: 0,
     right: 0,
-    padding: "0 16px",
     maxWidth: 700,
-    margin: "0 16px",
-    width: "calc(100vw - 32px)",
+    padding: "10px 16px",
+    background: theme.palette.common.white,
+    width: "100%",
+  },
+  accept_tip: {
+    color: theme.palette.grey[500],
+    fontSize: 12,
+    margin: "24px 0",
+    lineHeight: "20px",
+  },
+  fee: {
+    fontSize: 14,
+    "& span": {
+      color: theme.palette.grey[700],
+      margin: "0 10px 0 0",
+    },
+    "& strong": {
+      color: theme.palette.grey[900],
+      fontWeight: 400,
+    },
   },
   add_token: {
     color: theme.palette.grey[900],
     fontSize: 14,
     "& span": {
-      background: helper.hex_to_rgba(theme.palette.grey[100], 0.55),
       display: "flex",
       height: 20,
       borderRadius: 10,

@@ -7,5 +7,8 @@ export default (theme) => ({
     ".MuiListItemIcon-root": {
       minWidth: 30,
     },
+    ".MuiButton-root": {
+      boxShadow: "none",
+    },
   },
 });

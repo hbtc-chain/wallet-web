@@ -12,6 +12,7 @@ import {
   Paper,
   Divider,
   Avatar,
+  Tooltip,
 } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import helper from "../../util/helper";
@@ -46,7 +47,7 @@ class IndexRC extends React.Component {
       this.props.store.accounts && this.props.store.account_index > -1
         ? this.props.store.accounts[this.props.store.account_index]
         : {};
-    const token_info = this.props.tokens.find((item) => item.symbol == token);
+    const token_info = this.props.tokens.find((item) => item.chain == token);
     const chain = token_info.chain;
 
     let chain_external_address = "";
@@ -64,7 +65,7 @@ class IndexRC extends React.Component {
     });
     this.setState({
       account,
-      token,
+      token: token_info.symbol,
       token_info,
       chain,
       deposit_threshold: token_info.deposit_threshold,
@@ -100,24 +101,29 @@ class IndexRC extends React.Component {
     return helper.rates(v, t, this.props.store.unit, this.props.rates);
   };
   goto = (symbol) => async () => {
-    await this.props.dispatch(
-      routerRedux.replace(route_map.accept_by_type + "/" + symbol)
-      // routerRedux.push({
-      //   pathname: route_map.accept_by_type + "/" + symbol,
-      // })
-    );
+    // await this.props.dispatch(
+    //   routerRedux.replace(route_map.accept_by_type + "/" + symbol)
+    //   // routerRedux.push({
+    //   //   pathname: route_map.accept_by_type + "/" + symbol,
+    //   // })
+    // );
+    const token_info = this.props.tokens.find((item) => item.symbol == symbol);
     await this.setState({
       open: false,
+      token_info,
+      token: token_info.symbol,
     });
-    this.get_data(symbol);
+    //this.get_data(symbol);
   };
   filterStr = (str) => {
     if (!str || str.length < 26) {
-      return str;
+      return (str || "").toUpperCase();
     }
     return (
-      str.slice(0, 11) + "****" + str.slice(str.length - 12, str.length - 1)
-    );
+      str.slice(0, 11) +
+      "****" +
+      str.slice(str.length - 12, str.length - 1)
+    ).toUpperCase();
   };
   search = (e) => {
     this.setState({
@@ -127,20 +133,13 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const account = this.state.account;
-    const symbol = this.props.match.params.token.toLowerCase();
-    const token = this.props.tokens.find(
-      (item) => item.symbol.toLowerCase() == symbol
-    );
+    const chain = this.props.match.params.token;
+    const token = this.props.tokens.find((item) => item.symbol == chain);
     const hbc = this.props.tokens.find((item) => item.symbol == "hbc");
     const type = token && token.chain == "hbc" ? token.chain : "";
 
     return (
-      <div
-        className={classnames(
-          classes.accept,
-          classes["accept_by_type_" + type]
-        )}
-      >
+      <div className={classnames(classes.accept, classes["accept_by_type_"])}>
         <Grid
           container
           justify="space-between"
@@ -155,16 +154,12 @@ class IndexRC extends React.Component {
             />
           </Grid>
           <Grid item>
-            <h2
-              onClick={() => {
-                this.setState({ open: true });
-              }}
-            >
+            <h2>
               <span>
-                {this.props.intl.formatMessage({ id: "receive payment" })}
-                {(this.state.token_info.name || "").toUpperCase()}
+                {this.props.intl.formatMessage({
+                  id: "hbtcchain/transfer/MsgDeposit",
+                })}
               </span>
-              <Iconfont type="arrowdown" />
             </h2>
           </Grid>
           <Grid item xs={2}></Grid>
@@ -175,72 +170,41 @@ class IndexRC extends React.Component {
             classes.accept_content_type
           )}
         >
-          {type !== "hbc" ? (
-            <h3>{this.props.intl.formatMessage({ id: "support hbc fee" })}</h3>
-          ) : (
-            ""
-          )}
-
-          <Paper className="paper">
-            <h2>
-              {type == ""
-                ? this.state.chain_external_address
-                  ? ""
-                  : this.props.intl.formatMessage({
-                      id: "hbc address",
-                    })
-                : this.props.intl.formatMessage({
-                    id: "hbc address",
-                  })}
-              {/* {this.props.intl.formatMessage(
-                { id: "{symbol} address" },
-                { symbol: symbol.toUpperCase() }
-              )} */}
-            </h2>
-            {account.address && this.state.choose == 0 ? (
-              <img src={this.state[this.state.address]} />
-            ) : (
-              ""
-            )}
-            {this.state.chain_external_address && this.state.choose == 1 ? (
+          <p className={classes.deposit_token_p}>
+            {this.props.intl.formatMessage({ id: "deposit token" })}
+          </p>
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            onClick={() => {
+              this.setState({ open: true });
+            }}
+            className={classes.choose_deposit_token}
+          >
+            <Grid item style={{ alignItems: "center", display: "flex" }}>
+              {this.state.token_info.logo ? (
+                <img src={this.state.token_info.logo} />
+              ) : (
+                ""
+              )}
+              {(this.state.token_info.name || "").toUpperCase()}
+            </Grid>
+            <Grid item>
+              <Iconfont type="arrowdown" size={20} />
+            </Grid>
+          </Grid>
+          <Paper className="paper paper2">
+            <p>{this.props.intl.formatMessage({ id: "external address" })}</p>
+            {this.state.chain_external_address ? (
               <img src={this.state[this.state.chain_external_address]} />
             ) : (
               ""
             )}
-            <div style={{ padding: "0 16px" }}>
-              <Grid container justify="space-between">
-                <Grid item>
-                  {this.props.intl.formatMessage(
-                    { id: "{token} receive payment address" },
-                    { token: (this.state.token_info.name || "").toUpperCase() }
-                  )}
-                </Grid>
-                <Grid item>
-                  {type == "" ? (
-                    this.state.chain_external_address ? (
-                      <em onClick={this.changeChain}>
-                        {this.props.intl.formatMessage({
-                          id:
-                            this.state.choose == 0
-                              ? "change to external address"
-                              : "change to hbc address",
-                        })}
-                        <Iconfont type="arrowright" />
-                      </em>
-                    ) : (
-                      ""
-                    )
-                  ) : (
-                    ""
-                  )}
-                </Grid>
-              </Grid>
-              <strong>
-                {this.state.choose == 0
-                  ? this.state.address
-                  : this.state.chain_external_address}
-              </strong>
-            </div>
+            <p className="qrcode_desc">
+              {this.props.intl.formatMessage({ id: "scan qrcode to pay" })}
+            </p>
+            <strong>{this.state.chain_external_address}</strong>
             <Grid
               container
               justify="space-between"
@@ -251,9 +215,7 @@ class IndexRC extends React.Component {
                 <a
                   download="invite_poster.png"
                   href={(
-                    (this.state.choose == 0
-                      ? this.state[this.state.address]
-                      : this.state[this.state.chain_external_address]) || ""
+                    this.state[this.state.chain_external_address] || ""
                   ).replace("image/png", "image/octet-stream")}
                 >
                   {this.props.intl.formatMessage({ id: "download qrcode" })}
@@ -262,11 +224,7 @@ class IndexRC extends React.Component {
               <Divider orientation="vertical" flexItem />
               <Grid item>
                 <CopyToClipboard
-                  text={
-                    this.state.choose == 0
-                      ? this.state.address
-                      : this.state.chain_external_address
-                  }
+                  text={this.state.chain_external_address}
                   onCopy={this.copy}
                 >
                   <span>
@@ -275,23 +233,9 @@ class IndexRC extends React.Component {
                 </CopyToClipboard>
               </Grid>
             </Grid>
-
-            {token && token.logo ? (
-              <img src={token.logo} className="token_logo" />
-            ) : (
-              ""
-            )}
-            {token && token.logo ? (
-              this.state.choose == 0 && type == "" ? (
-                <img src={hbc.logo} className="token_logo_small" />
-              ) : (
-                ""
-              )
-            ) : (
-              ""
-            )}
           </Paper>
-          <div className={classes.tip}>
+          <div className={classes.accept_tip}>
+            {this.props.intl.formatMessage({ id: "tip" })}:
             <p>
               {this.props.intl.formatMessage(
                 {
@@ -303,10 +247,42 @@ class IndexRC extends React.Component {
                 }
               )}
             </p>
-            <img
-              src={require("../../assets/logo_white.png")}
-              style={{ width: 132 }}
-            />
+            <p>
+              {this.state.token_info.collect_fee &&
+              Number(this.state.token_info.collect_fee)
+                ? this.props.intl.formatMessage(
+                    {
+                      id: "external deposit {token}{value}",
+                    },
+                    {
+                      token: (this.state.token_info.name || "").toUpperCase(),
+                      value: this.state.token_info.collect_fee,
+                    }
+                  )
+                : ""}
+
+              {this.state.token_info.collect_fee &&
+              Number(this.state.token_info.collect_fee) ? (
+                <Tooltip
+                  title={
+                    <strong>
+                      {this.props.intl.formatMessage({ id: "collect_fee_tip" })}
+                    </strong>
+                  }
+                  placement="top"
+                  arrow
+                  classes={{
+                    tooltipPlacementTop: classes.collect_fee_tip,
+                  }}
+                >
+                  <em>
+                    <Iconfont type="question" />
+                  </em>
+                </Tooltip>
+              ) : (
+                ""
+              )}
+            </p>
           </div>
         </div>
         <Paper
@@ -366,7 +342,7 @@ class IndexRC extends React.Component {
                   : 1;
               })
               .map((item) => {
-                if (item.hide) {
+                if (item.hide || item.chain != chain) {
                   return "";
                 }
                 if (

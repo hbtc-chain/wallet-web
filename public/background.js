@@ -33,14 +33,9 @@ async function openPopup() {
   });
 }
 
-function setpopupIsOpen(r) {
-  popupIsOpen = r;
-}
 // 接收popup的消息
 const messages = new MessageManager({
   openPopup,
-  popupIsOpen,
-  setpopupIsOpen,
   platform,
 });
 

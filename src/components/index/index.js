@@ -699,7 +699,7 @@ class IndexRC extends React.Component {
               onClick={() => {
                 this.props.dispatch(
                   routerRedux.push({
-                    pathname: route_map.accept_by_type,
+                    pathname: route_map.accept,
                   })
                 );
               }}

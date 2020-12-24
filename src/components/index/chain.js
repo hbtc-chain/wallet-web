@@ -16,6 +16,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { Iconfont } from "../../lib";
 import classnames from "classnames";
 import extension from "extensionizer";
+import API from "../../util/api";
 
 let timer = null;
 class IndexRC extends React.Component {
@@ -25,6 +26,7 @@ class IndexRC extends React.Component {
       tokens: [],
       chain_external_address: "",
       open: false,
+      mapping: [],
       choose: {
         logo: "",
         symbol: "",
@@ -35,12 +37,25 @@ class IndexRC extends React.Component {
   }
   componentDidMount() {
     timer = true;
+    this.get_mapping();
     this.get_balance();
     this.qrcode(this.state.choose.address);
   }
   componentWillUnmount() {
     timer = false;
   }
+  get_mapping = async () => {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.mapping,
+    });
+    if (result.code == 200 && result.data) {
+      this.setState({
+        mapping: result.data.items,
+      });
+    }
+  };
   get_balance = async () => {
     if (!timer) {
       return;
@@ -146,6 +161,12 @@ class IndexRC extends React.Component {
         ? this.props.store.accounts[this.props.store.account_index]["address"]
         : "";
     const chain_external_address = this.state.chain_external_address;
+    const mapping_symbol =
+      this.state.mapping.find(
+        (item) =>
+          item.issue_symbol == this.props.match.params.symbol ||
+          item.target_symbol == this.props.match.params.symbol
+      ) || this.state.mapping[0];
 
     return (
       <div className={classes.chain}>
@@ -169,41 +190,29 @@ class IndexRC extends React.Component {
         </Grid>
         <div className={classes.form}>
           <div className={classes.chain_address_title}>
-            <Grid
-              container
-              justify="space-between"
-              alignItems="center"
-              className={classes.chain_address}
-            >
-              <Grid item className={classes.chain_symbol}>
-                <h2>{token.name.toUpperCase()}</h2>
-              </Grid>
+            <div className={classes.chain_address}>
+              {token.logo ? <img src={token.logo} /> : ""}
+              <h2>
+                {this.props.intl.formatMessage({
+                  id:
+                    symbol == "hbc"
+                      ? "HBC chain address"
+                      : "external chain address",
+                })}
+              </h2>
               {(!token.is_native && chain_external_address) ||
               (token.is_native && address) ? (
                 <CopyToClipboard
                   text={chain_external_address || address}
                   onCopy={this.copy}
                 >
-                  <Grid item className="address">
+                  <div className="address">
                     {this.short_address(chain_external_address || address)}
-                    <Iconfont
-                      type="QRcode"
-                      size={20}
-                      onClick={this.choose(
-                        symbol,
-                        chain_external_address
-                          ? "external chain address"
-                          : "HBC chain address",
-                        chain_external_address || address,
-                        token.logo
-                      )}
-                    />
-                  </Grid>
+                  </div>
                 </CopyToClipboard>
               ) : (
-                <Grid
+                <div
                   className="address"
-                  item
                   onClick={() => {
                     this.props.dispatch(
                       routerRedux.push({
@@ -217,10 +226,9 @@ class IndexRC extends React.Component {
                       id: "create external address",
                     })}
                   </em>
-                  {token.logo ? <img src={token.logo} /> : ""}
-                </Grid>
+                </div>
               )}
-            </Grid>
+            </div>
           </div>
 
           <div
@@ -316,63 +324,113 @@ class IndexRC extends React.Component {
               );
             })}
           </div>
-          <Grid
-            container
-            justify="space-around"
-            alignItems="center"
-            className={classes.btns}
-          >
+          <div className={classnames(classes.submit, classes.borderTop)}>
             <Grid
-              item
-              onClick={() => {
-                this.props.dispatch(
-                  routerRedux.push({
-                    pathname: route_map.accept_by_type + `/${token.symbol}`,
-                  })
-                );
-              }}
+              container
+              justify="space-around"
+              alignItems="center"
+              className={classes.btns}
             >
-              <span>
-                <img src={require("../../assets/btn-1.png")} width={24} />
-              </span>
-              <i>{this.props.intl.formatMessage({ id: "accept" })}</i>
+              <Grid item style={{ flex: 3 }}>
+                <Button
+                  color="primary"
+                  fullWidth
+                  variant="contained"
+                  onClick={() => {
+                    this.props.dispatch(
+                      routerRedux.push({
+                        pathname:
+                          symbol == "hbc"
+                            ? route_map.accept
+                            : `${route_map.accept_by_type}/${token.symbol}`,
+                      })
+                    );
+                  }}
+                >
+                  {this.props.intl.formatMessage({
+                    id:
+                      symbol == "hbc"
+                        ? "receive payment"
+                        : "hbtcchain/transfer/MsgDeposit",
+                  })}
+                </Button>
+              </Grid>
+              <Grid item style={{ flex: 3, margin: "0 0 0 4px" }}>
+                <Button
+                  color="primary"
+                  fullWidth
+                  variant="contained"
+                  onClick={() => {
+                    this.props.dispatch(
+                      routerRedux.push({
+                        pathname:
+                          symbol == "hbc"
+                            ? route_map.send
+                            : `${route_map.withdrawal}/${symbol}`,
+                      })
+                    );
+                  }}
+                >
+                  {this.props.intl.formatMessage({
+                    id:
+                      symbol == "hbc"
+                        ? "hbtcchain/transfer/MsgSend"
+                        : "hbtcchain/transfer/MsgWithdrawal",
+                  })}
+                </Button>
+              </Grid>
+              <Grid item style={{ flex: 2, margin: "0 0 0 4px" }}>
+                <Button
+                  color="primary"
+                  fullWidth
+                  variant="outlined"
+                  onClick={() => {
+                    extension.tabs &&
+                      extension.tabs.create({
+                        url:
+                          this.props.store.chain[this.props.store.chain_index][
+                            "exc"
+                          ] +
+                          "/swap" +
+                          "?lang=" +
+                          this.props.store.lang,
+                      });
+                  }}
+                >
+                  {this.props.intl.formatMessage({
+                    id: "trade",
+                  })}
+                </Button>
+              </Grid>
+              {symbol != "hbc" && mapping_symbol ? (
+                <Grid item style={{ flex: 2, margin: "0 0 0 4px" }}>
+                  <Button
+                    color="primary"
+                    fullWidth
+                    variant="outlined"
+                    onClick={(e) => {
+                      this.props.dispatch(
+                        routerRedux.push({
+                          pathname:
+                            route_map.mapping +
+                            "/" +
+                            mapping_symbol.issue_symbol +
+                            "/" +
+                            mapping_symbol.target_symbol,
+                        })
+                      );
+                    }}
+                  >
+                    {this.props.intl.formatMessage({
+                      id: "hbtcchain/mapping/MsgMappingSwap",
+                    })}
+                  </Button>
+                </Grid>
+              ) : (
+                ""
+              )}
             </Grid>
-            <Grid
-              item
-              onClick={() => {
-                this.props.dispatch(
-                  routerRedux.push({
-                    pathname: route_map.transfer + "/" + symbol,
-                  })
-                );
-              }}
-            >
-              <span>
-                <img src={require("../../assets/btn-2.png")} width={24} />
-              </span>
-              <i>{this.props.intl.formatMessage({ id: "output" })}</i>
-            </Grid>
-            <Grid
-              item
-              onClick={() => {
-                extension.tabs &&
-                  extension.tabs.create({
-                    url:
-                      this.props.store.chain[this.props.store.chain_index][
-                        "exc"
-                      ] +
-                      "/swap" +
-                      "?lang=" +
-                      this.props.store.lang,
-                  });
-              }}
-            >
-              <span>
-                <img src={require("../../assets/btn-4.png")} width={24} />
-              </span>
-              <i>{this.props.intl.formatMessage({ id: "trade" })}</i>
-            </Grid>
-          </Grid>
+          </div>
         </div>
         <Drawer
           anchor="bottom"

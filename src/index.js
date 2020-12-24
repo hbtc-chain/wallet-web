@@ -122,10 +122,10 @@ const initStore = async () => {
           },
           {
             name: "Test net",
-            url: "http://hbtc.yym.plus",
+            url: "http://swap.yym.plus",
             chain_id: "hbtc-testnet",
             exc: "https://juswap.io/",
-            explorer: "http://hbtc.yym.plus/",
+            explorer: "https://explorer.hbtcchain.io/",
           },
         ],
         chain_index: 1,
@@ -142,9 +142,7 @@ const initStore = async () => {
         signmsgs: {},
         rates: {},
         balance: {},
-        tokens: JSON.parse(
-          window.localStorage.getItem("hbc_wallet_tokens") || "[]"
-        ),
+        tokens: [],
         default_tokens: [],
         verified_tokens: [],
         default_fee: { fee: "", gas: "" },

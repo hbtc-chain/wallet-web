@@ -162,7 +162,25 @@ export default (theme) => ({
     background: theme.palette.primary.main,
   },
   accept_by_type_: {
-    background: theme.palette.grey[700],
+    background: theme.palette.primary.main,
+  },
+  deposit_token_p: {
+    color: theme.palette.grey[100],
+    fontSize: 14,
+    height: 24,
+  },
+  choose_deposit_token: {
+    background: theme.palette.common.white,
+    borderRadius: 8,
+    cursor: "pointer",
+    margin: "8px 0",
+    color: theme.palette.grey[900],
+    fontSize: 14,
+    padding: "0 10px",
+    height: 48,
+    "& img": {
+      width: 24,
+    },
   },
   tip: {
     color: helper.hex_to_rgba(theme.palette.common.white),
@@ -176,6 +194,9 @@ export default (theme) => ({
       height: 16,
       width: 132,
     },
+  },
+  bg_primary: {
+    background: theme.palette.primary.main,
   },
   accept_content: {
     // height: "calc(100vh - 44px)",
@@ -195,21 +216,32 @@ export default (theme) => ({
       fontSize: 12,
       color: theme.palette.grey[500],
     },
-    "& p": {
-      color: theme.palette.common.white,
-      textAlign: "center",
-      fontSize: 12,
-      padding: "8px 20px",
-      margin: "0 0 24px",
-    },
+
     "& div.paper": {
       padding: "40px 0 0",
       textAlign: "center",
       position: "relative",
+      boxShadow: "none",
       borderRadius: 8,
       // maxWidth: 375,
       margin: "0 auto",
       color: theme.palette.grey[700],
+      "& p": {
+        color: theme.palette.common.black,
+        textAlign: "center",
+        fontSize: 16,
+        padding: "8px 20px",
+        margin: "0 0 4px",
+        "&.qrcode_desc": {
+          color: theme.palette.grey[500],
+          fontSize: 12,
+          padding: 4,
+          margin: 0,
+        },
+      },
+    },
+    "& div.paper2": {
+      padding: "20px 0 0",
     },
     "& img": {
       width: 240,
@@ -238,12 +270,12 @@ export default (theme) => ({
     "& strong": {
       fontSize: 12,
       display: "block",
-      textAlign: "left",
+      textAlign: "center",
       margin: "8px 0 10px",
       lineHeight: "20px",
       fontSize: 12,
       fontWeight: 400,
-      color: theme.palette.grey[300],
+      color: theme.palette.grey[700],
     },
     "& span, & a": {
       display: "flex",
@@ -259,6 +291,25 @@ export default (theme) => ({
     "& em": {
       color: theme.palette.primary.main,
       cursor: "pointer",
+    },
+  },
+  collect_fee_tip: {
+    margin: "24px 0 4px",
+    "& strong": {
+      lineHeight: "18px",
+      fontSize: 12,
+    },
+  },
+  accept_tip: {
+    color: theme.palette.common.white,
+    fontSize: 12,
+    margin: "24px 0",
+    lineHeight: "20px",
+    "& em": {
+      color: theme.palette.common.white,
+    },
+    "& strong": {
+      lineHeight: "24px",
     },
   },
   accept_btn: {
@@ -293,7 +344,7 @@ export default (theme) => ({
   accept_content_type: {
     //height: "calc(100vh - 44px)",
     background: "none",
-    padding: "42px 24px 24px",
+    padding: "22px 24px 24px",
   },
   token_item: {
     borderBottom: `1px solid ${theme.palette.grey[50]}`,
@@ -764,7 +815,7 @@ export default (theme) => ({
     height: 54,
     background: theme.palette.grey[50],
     "& .MuiOutlinedInput-input": {
-      padding: "18px 10px",
+      padding: "18px 0px",
     },
   },
   swap_rate: {

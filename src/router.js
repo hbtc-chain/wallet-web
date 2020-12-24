@@ -282,13 +282,7 @@ function RouterConfig({ history, app }) {
           component={WithdrawalRC}
         />
         {/* AcceptRC */}
-        <Route exact path={route_map.accept + "/:token"} component={AcceptRC} />
-        <Redirect
-          exact
-          from={route_map.accept}
-          to={route_map.accept + "/hbc"}
-          component={AcceptRC}
-        />
+        <Route exact path={route_map.accept} component={AcceptRC} />
         {/* AccpetByTypeRC */}
         <Route
           exact

@@ -280,6 +280,8 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes, ...otherProps } = this.props;
+    const symbol = this.props.match.params.symbol.toLowerCase();
+    const token = this.props.tokens.find((item) => item.symbol == symbol);
     return (
       <div className={classes.external_address}>
         <Grid
@@ -302,8 +304,44 @@ class IndexRC extends React.Component {
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        <div className={classes.external_content}>
-          <label className={classes.external_label}>
+        <div className={classes.external_content_external}>
+          <p>
+            {this.props.intl.formatMessage({ id: "tip" })}
+            <br />
+            {this.props.intl.formatMessage(
+              { id: "create external address tip" },
+              { token: this.props.match.params.symbol || "".toUpperCase() }
+            )}
+          </p>
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            className="fee"
+          >
+            <Grid item>
+              {this.props.intl.formatMessage({ id: "create external fee" })}
+            </Grid>
+            <Grid item>
+              <em>
+                {token ? token.open_fee : ""}{" "}
+                {token ? token.chain.toUpperCase() : ""}
+              </em>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            justify="space-between"
+            alignItems="center"
+            className="fee"
+          >
+            <Grid item>{this.props.intl.formatMessage({ id: "fee" })}</Grid>
+            <Grid item>
+              <em>{this.state.fee} HBC</em>
+            </Grid>
+          </Grid>
+
+          {/* <label className={classes.external_label}>
             {this.props.intl.formatMessage({ id: "fee" })}
           </label>
           <TextField
@@ -317,29 +355,32 @@ class IndexRC extends React.Component {
             helperText={this.state.fee_msg}
             error={Boolean(this.state.fee_msg)}
             variant="outlined"
-          />
+          /> */}
         </div>
-        {this.state.loading ? (
-          <Button
-            disabled
-            fullWidth
-            variant="contained"
-            color="primary"
-            style={{ height: 48 }}
-          >
-            <CircularProgress color="primary" size={20} />
-          </Button>
-        ) : (
-          <Button
-            onClick={this.submit}
-            fullWidth
-            variant="contained"
-            color="primary"
-            style={{ height: 48 }}
-          >
-            {this.props.intl.formatMessage({ id: "create external address" })}
-          </Button>
-        )}
+        <div className={classes.submit}>
+          {this.state.loading ? (
+            <Button
+              disabled
+              fullWidth
+              variant="contained"
+              color="primary"
+              style={{ height: 48 }}
+            >
+              <CircularProgress color="primary" size={20} />
+            </Button>
+          ) : (
+            <Button
+              onClick={this.submit}
+              fullWidth
+              variant="contained"
+              color="primary"
+              style={{ height: 48 }}
+            >
+              {this.props.intl.formatMessage({ id: "create external address" })}
+            </Button>
+          )}
+        </div>
+
         <PasswordRC
           {...otherProps}
           open={this.state.open}

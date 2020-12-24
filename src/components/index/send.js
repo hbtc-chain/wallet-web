@@ -405,6 +405,7 @@ class IndexRC extends React.Component {
               classes={{
                 root: classes.outline,
               }}
+              disabled
               fullWidth
             />
           </div>
@@ -457,7 +458,7 @@ class IndexRC extends React.Component {
               }}
             >
               {this.props.tokens.map((item) => {
-                if (item.hide) {
+                if (item.hide || item.chain != "hbc") {
                   return "";
                 }
                 let balance =
@@ -526,36 +527,10 @@ class IndexRC extends React.Component {
             justify="space-between"
             className={classes.form_label}
           >
-            <Grid item>{this.props.intl.formatMessage({ id: "fee" })}</Grid>
-            <Grid item></Grid>
-          </Grid>
-          <div className={classes.form_input}>
-            <TextField
-              variant="outlined"
-              placeholder={this.props.intl.formatMessage({ id: "fee" })}
-              value={this.state.fee}
-              //onChange={this.feeChange}
-              disabled
-              classes={{
-                root: classes.outline,
-              }}
-              fullWidth
-              InputProps={{
-                endAdornment: <span className={classes.grey}>HBC</span>,
-              }}
-              error={Boolean(this.state.fee_msg)}
-              helperText={this.state.fee_msg}
-            />
-          </div>
-          <Grid
-            container
-            justify="space-between"
-            className={classes.form_label}
-          >
             <Grid item>{this.props.intl.formatMessage({ id: "mark" })}</Grid>
             <Grid item></Grid>
           </Grid>
-          <div className={classes.form_input} style={{ margin: "0 0 20px" }}>
+          <div className={classes.form_input}>
             <TextField
               variant="outlined"
               placeholder={this.props.intl.formatMessage({ id: "mark" })}
@@ -569,6 +544,15 @@ class IndexRC extends React.Component {
               helperText={this.state.memo_msg}
             />
           </div>
+          <div className={classes.fee}>
+            <span>{this.props.intl.formatMessage({ id: "fee" })}</span>
+            <strong>{this.state.fee} HBC</strong>
+          </div>
+          <p className={classes.accept_tip}>
+            {this.props.intl.formatMessage({ id: "tip" })}:<br />
+            {this.props.intl.formatMessage({ id: "hbc accept tip" })}
+          </p>
+
           {/* <Grid
             container
             justify="space-between"
@@ -588,7 +572,8 @@ class IndexRC extends React.Component {
               max={1}
             />
           </div> */}
-          {/* <div className={classes.submit}> */}
+        </div>
+        <div className={classes.submit}>
           {this.state.loading ? (
             <Button color="primary" variant="contained" fullWidth disabled>
               <CircularProgress color="primary" size={20} />
@@ -603,7 +588,6 @@ class IndexRC extends React.Component {
               {this.props.intl.formatMessage({ id: "transfer" })}
             </Button>
           )}
-          {/* </div> */}
         </div>
         <PasswordRC
           {...otherProps}
