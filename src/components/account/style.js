@@ -151,6 +151,9 @@ export default (theme) => ({
       alignItems: "center",
       justifyContent: "center",
     },
+    "& svg": {
+      cursor: "pointer",
+    },
   },
   back2: {
     color: theme.palette.common.white,
@@ -737,7 +740,7 @@ export default (theme) => ({
     margin: "0 0 4px",
   },
   form_input: {
-    height: 80,
+    height: 70,
   },
   outline: {
     color: theme.palette.grey[500],
@@ -772,9 +775,57 @@ export default (theme) => ({
     lineHeight: "20px",
   },
   swap: {
-    margin: "20px 24px 0",
+    margin: "20px 20px 0",
     boxShadow: `0px 0px 16px 0px ${helper.hex_to_rgba("#3375E0", 0.12)}`,
-    padding: "0 8px 16px",
+    padding: 16,
+    "& .amount": {
+      fontSize: 14,
+      color: theme.palette.grey[500],
+      height: 22,
+      margin: "0 0 6px",
+    },
+    "& .symbol": {
+      display: "flex",
+      alignItems: "center",
+      background: theme.palette.grey[50],
+      height: 40,
+      width: 128,
+      margin: "0 8px 0 0",
+      cursor: "pointer",
+      padding: "0 10px",
+      justifyContent: "space-between",
+      "& span": {
+        flex: 1,
+        display: "flex",
+        justifyContent: "space-between",
+        padding: "0 0 0 6px",
+      },
+    },
+    "& .input": {
+      flex: 1,
+      "& em": {
+        whiteSpace: "nowrap",
+        color: theme.palette.primary.main,
+        cursor: "pointer",
+      },
+    },
+    "& .btn": {
+      margin: "24px 0 0",
+    },
+    "& .exchange": {
+      width: 24,
+      height: 24,
+      margin: "24px 0",
+      borderRadius: 4,
+      background: theme.palette.grey[50],
+      cursor: "pointer",
+      "& img": {
+        width: 24,
+      },
+    },
+    "& img": {
+      width: 24,
+    },
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: theme.palette.grey[50],
     },
@@ -812,10 +863,10 @@ export default (theme) => ({
     },
   },
   swap_input: {
-    height: 54,
+    height: 40,
     background: theme.palette.grey[50],
     "& .MuiOutlinedInput-input": {
-      padding: "18px 0px",
+      padding: "12px 14px",
     },
   },
   swap_rate: {
@@ -823,9 +874,7 @@ export default (theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    margin: "24px 0 0",
-    padding: "24px 8px",
-    borderTop: `1px dashed ${theme.palette.grey[300]}`,
+    padding: "24px 8px 0",
     "& span": {
       fontSize: 14,
       color: theme.palette.grey[700],

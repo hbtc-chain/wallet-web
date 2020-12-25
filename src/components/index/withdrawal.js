@@ -7,30 +7,21 @@ import {
   Button,
   Grid,
   TextField,
-  Checkbox,
-  Paper,
-  Slider,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
   CircularProgress,
   MenuItem,
+  Popper,
+  MenuList,
 } from "@material-ui/core";
-import route_map from "../../config/route_map";
 import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
-import querystring from "query-string";
-import CONST from "../../util/const";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import { v4 } from "uuid";
 import util from "../../util/util";
 import API from "../../util/api";
 import math from "../../util/mathjs";
 import message from "../public/message";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import VisibilityIcon from "@material-ui/icons/Visibility";
 import PasswordRC from "../public/password";
+import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -367,23 +358,29 @@ class IndexRC extends React.Component {
     await util.delay(1000);
     this.check(txhash);
   };
-  symbolChange = (e) => {
-    const symbol = e.target.value;
-    const token = this.props.tokens.find((item) => item.symbol == symbol);
+  symbolChange = (v) => (e) => {
+    const token = this.props.tokens.find((item) => item.symbol == v);
     this.setState({
-      symbol: e.target.value,
+      symbol: v,
       token,
-      gas_fee: Number(token.withdrawal_fee),
-      gas_fee_min: Number(token.withdrawal_fee),
+      anchorEl: null,
+    });
+  };
+  handleClose = () => {
+    this.setState({
+      anchorEl: false,
+    });
+  };
+  handleOpen = (e) => {
+    this.setState({
+      anchorEl: e.currentTarget,
     });
   };
   render() {
     const { classes, ...otherProps } = this.props;
     const chain = this.props.match.params.symbol || "";
-    const symbol =
-      this.state.token && this.state.token.symbol
-        ? this.state.token.symbol
-        : "";
+    const symbol = this.state.symbol;
+    const token = this.state.token || { name: "" };
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
@@ -462,7 +459,64 @@ class IndexRC extends React.Component {
             <Grid item></Grid>
           </Grid>
           <div className={classes.form_input}>
-            <TextField
+            <Grid
+              container
+              justify="space-between"
+              alignItems="center"
+              onClick={this.handleOpen}
+              className={classes.symbolchoose}
+            >
+              <Grid item>
+                {token && token.name ? token.name.toUpperCase() : ""}(
+                {balance.amount || "0"})
+              </Grid>
+              <Grid item>
+                <Iconfont type="arrowdown" size={16} />
+              </Grid>
+            </Grid>
+            <Popper
+              open={Boolean(this.state.anchorEl)}
+              anchorEl={this.state.anchorEl}
+              onClose={this.handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              className={classes.symbolopoer}
+              style={{
+                width: this.state.anchorEl
+                  ? this.state.anchorEl.offsetWidth
+                  : 375,
+              }}
+            >
+              <MenuList>
+                {this.props.tokens.map((item) => {
+                  if (item.hide || item.chain != chain) {
+                    return "";
+                  }
+                  let balance =
+                    this.props.balance && address && this.props.balance[address]
+                      ? this.props.balance[address].assets.find(
+                          (it) => it.symbol == item.symbol
+                        )
+                      : { amount: 0 };
+                  balance = balance || { amount: 0 };
+                  return (
+                    <MenuItem
+                      onClick={this.symbolChange(item.symbol)}
+                      key={item.symbol}
+                    >
+                      {item.name.toUpperCase()}({balance.amount})
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+            </Popper>
+            {/* <TextField
               select
               value={this.state.symbol}
               fullWidth
@@ -490,7 +544,7 @@ class IndexRC extends React.Component {
                   </MenuItem>
                 );
               })}
-            </TextField>
+            </TextField> */}
           </div>
           <Grid
             container

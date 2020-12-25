@@ -17,7 +17,11 @@ import {
   CircularProgress,
   Select,
   MenuItem,
+  MenuList,
   OutlinedInput,
+  ClickAwayListener,
+  Grow,
+  Popper,
 } from "@material-ui/core";
 import route_map from "../../config/route_map";
 import helper from "../../util/helper";
@@ -33,6 +37,7 @@ import message from "../public/message";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import PasswordRC from "../public/password";
+import { Iconfont } from "../../lib";
 
 class IndexRC extends React.Component {
   constructor(props) {
@@ -41,6 +46,7 @@ class IndexRC extends React.Component {
       symbol: "hbc",
       loading: false,
       open: false,
+      open2: false,
       password: "",
       password_msg: "",
       to_address: "",
@@ -338,14 +344,26 @@ class IndexRC extends React.Component {
     await util.delay(1000);
     this.check(txhash);
   };
-  symbolChange = (e) => {
+  symbolChange = (v) => (e) => {
     this.setState({
-      symbol: e.target.value,
+      symbol: v,
+      anchorEl: null,
+    });
+  };
+  handleClose = () => {
+    this.setState({
+      anchorEl: false,
+    });
+  };
+  handleOpen = (e) => {
+    this.setState({
+      anchorEl: e.currentTarget,
     });
   };
   render() {
     const { classes, ...otherProps } = this.props;
-    const symbol = (this.state.symbol || "").toLowerCase();
+    const symbol = this.state.symbol || "";
+    const token = this.props.tokens.find((item) => item.symbol == symbol);
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
@@ -355,7 +373,6 @@ class IndexRC extends React.Component {
             (item) => item.symbol == this.state.symbol
           ) || { amount: 0 }
         : { amount: 0 };
-    const rates = this.rates(balance.amount, symbol);
     const account =
       this.props.store.accounts && this.props.store.account_index > -1
         ? this.props.store.accounts[this.props.store.account_index]
@@ -446,7 +463,63 @@ class IndexRC extends React.Component {
             <Grid item></Grid>
           </Grid>
           <div className={classes.form_input}>
-            <TextField
+            <Grid
+              container
+              justify="space-between"
+              alignItems="center"
+              onClick={this.handleOpen}
+              className={classes.symbolchoose}
+            >
+              <Grid item>
+                {token ? token.name.toUpperCase() : ""}({balance.amount})
+              </Grid>
+              <Grid item>
+                <Iconfont type="arrowdown" size={16} />
+              </Grid>
+            </Grid>
+            <Popper
+              open={Boolean(this.state.anchorEl)}
+              anchorEl={this.state.anchorEl}
+              onClose={this.handleClose}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              className={classes.symbolopoer}
+              style={{
+                width: this.state.anchorEl
+                  ? this.state.anchorEl.offsetWidth
+                  : 375,
+              }}
+            >
+              <MenuList>
+                {this.props.tokens.map((item) => {
+                  if (item.hide || item.chain != "hbc") {
+                    return "";
+                  }
+                  let balance =
+                    this.props.balance && address && this.props.balance[address]
+                      ? this.props.balance[address].assets.find(
+                          (it) => it.symbol == item.symbol
+                        )
+                      : { amount: 0 };
+                  balance = balance || { amount: 0 };
+                  return (
+                    <MenuItem
+                      onClick={this.symbolChange(item.symbol)}
+                      key={item.symbol}
+                    >
+                      {item.name.toUpperCase()}({balance.amount})
+                    </MenuItem>
+                  );
+                })}
+              </MenuList>
+            </Popper>
+            {/* <TextField
               select
               value={this.state.symbol}
               fullWidth
@@ -474,7 +547,7 @@ class IndexRC extends React.Component {
                   </MenuItem>
                 );
               })}
-            </TextField>
+            </TextField> */}
           </div>
           <Grid
             container
@@ -550,7 +623,7 @@ class IndexRC extends React.Component {
           </div>
           <p className={classes.accept_tip}>
             {this.props.intl.formatMessage({ id: "tip" })}:<br />
-            {this.props.intl.formatMessage({ id: "hbc accept tip" })}
+            {this.props.intl.formatMessage({ id: "hbc send tip" })}
           </p>
 
           {/* <Grid

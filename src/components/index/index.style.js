@@ -143,7 +143,7 @@ export default (theme) => ({
   },
   external_address: {
     height: 600,
-    maxWidth: 360,
+    maxWidth: 700,
     padding: "0 10px 20px",
     margin: "0 auto",
     display: "flex",
@@ -539,9 +539,9 @@ export default (theme) => ({
   },
   btns: {
     width: "100%",
-    height: 44,
+    height: 40,
     "& .MuiButton-root": {
-      height: 44,
+      height: 40,
       fontSize: 14,
       fontWeight: 400,
     },
@@ -560,6 +560,26 @@ export default (theme) => ({
     margin: "0 0 12px",
     "& h2": {
       fontSize: 16,
+    },
+    "& svg": {
+      cursor: "pointer",
+    },
+  },
+  symbolopoer: {
+    background: theme.palette.common.white,
+    border: `1px solid ${theme.palette.grey[100]}`,
+    borderRadius: 4,
+  },
+  symbolchoose: {
+    height: 42,
+    background: theme.palette.grey[50],
+    borderRadius: 4,
+    padding: "0 14px",
+    color: theme.palette.grey[700],
+    border: `1px solid rgba(0,0,0,0)`,
+    cursor: "pointer",
+    "&:hover": {
+      border: `1px solid rgba(0,0,0,.87)`,
     },
   },
   external_content: {
@@ -600,7 +620,7 @@ export default (theme) => ({
     margin: "0 0 4px",
   },
   form_input: {
-    height: 80,
+    height: 70,
   },
   outline: {
     color: theme.palette.grey[500],
@@ -655,7 +675,8 @@ export default (theme) => ({
     height: 68,
     position: "fixed",
     bottom: 0,
-    left: 0,
+    left: "50%",
+    transform: "translate(-50%,0)",
     right: 0,
     maxWidth: 700,
     padding: "10px 16px",

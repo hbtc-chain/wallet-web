@@ -547,7 +547,9 @@ class DelegateRC extends React.Component {
                 </Avatar>
               )}
             </div>
-            <h2>HBC Address</h2>
+            <h2>
+              {this.props.intl.formatMessage({ id: "HBC chain address" })}
+            </h2>
             {account.address && this.state[account.address] ? (
               <img src={this.state[account.address]} />
             ) : (
@@ -558,8 +560,8 @@ class DelegateRC extends React.Component {
               <Button
                 fullWidth
                 color="primary"
-                variant="outlined"
-                style={{ height: 56, fontSize: 16 }}
+                variant="contained"
+                style={{ height: 40, fontSize: 14 }}
               >
                 {this.props.intl.formatMessage({ id: "copy address" })}
               </Button>

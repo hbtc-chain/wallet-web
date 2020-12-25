@@ -52,9 +52,9 @@ class IndexRC extends React.Component {
   componentDidMount() {
     this.get_mapping();
   }
-  change = (key) => (e) => {
+  change = (key, value) => (e) => {
     let decimals = this.state[key.replace("_quantity", "_token")]["decimals"];
-    let v = e.target.value.replace(/e/g, "");
+    let v = value || e.target.value.replace(/e/g, "");
     if (Number.isNaN(Number(v))) {
       return;
     }
@@ -63,8 +63,10 @@ class IndexRC extends React.Component {
       return;
     }
     this.setState({
-      [key]: e.target.value,
-      [key + "_msg"]: "",
+      target_quantity: e.target.value,
+      target_quantity_msg: "",
+      issue_quantity: e.target.value,
+      issue_quantity_msg: "",
     });
   };
   get_mapping = async () => {
@@ -112,10 +114,6 @@ class IndexRC extends React.Component {
       : "";
   };
   submit = async () => {
-    const address = this.props.store.accounts[this.props.store.account_index][
-      "address"
-    ];
-
     if (!this.state.issue_quantity) {
       this.setState({
         issue_quantity_msg: this.props.intl.formatMessage({
@@ -132,6 +130,41 @@ class IndexRC extends React.Component {
       });
       return;
     }
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
+    const balance_issue =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == this.state.issue_symbol
+          ) || { amount: "" }
+        : { amount: "" };
+    const balance_target =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == this.state.target_symbol
+          ) || { amount: "" }
+        : { amount: "" };
+
+    if (Number(this.state.issue_quantity) > Number(balance_issue.amount || 0)) {
+      this.setState({
+        issue_quantity_msg: this.props.intl.formatMessage({
+          id: "max to amount",
+        }),
+      });
+      return;
+    }
+    if (
+      Number(this.state.target_quantity) > Number(balance_target.amount || 0)
+    ) {
+      this.setState({
+        target_quantity_msg: this.props.intl.formatMessage({
+          id: "max to amount",
+        }),
+      });
+      return;
+    }
+
     const result = await this.props.dispatch({
       type: "layout/commReq",
       payload: {},
@@ -341,7 +374,21 @@ class IndexRC extends React.Component {
 
   render() {
     const { classes, ...otherProps } = this.props;
-    const account = this.state.account;
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
+    const balance_issue =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == this.state.issue_symbol
+          ) || { amount: "" }
+        : { amount: "" };
+    const balance_target =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == this.state.target_symbol
+          ) || { amount: "" }
+        : { amount: "" };
 
     return (
       <div className={classnames(classes.accept)}>
@@ -351,7 +398,7 @@ class IndexRC extends React.Component {
           alignItems="center"
           className={classnames(classes.back)}
         >
-          <Grid item xs={2} style={{ padding: "0 0 0 10px" }}>
+          <Grid item xs={2} style={{ padding: "0 0 0 16px" }}>
             <ArrowBackIosIcon
               onClick={() => {
                 this.props.dispatch(routerRedux.goBack());
@@ -372,17 +419,24 @@ class IndexRC extends React.Component {
         <Paper className={classes.swap}>
           <Grid
             container
-            justify="space-between"
+            className="amount"
             alignItems="center"
-            className={classes.swap_tokens}
+            justify="space-between"
           >
+            <Grid item>{this.props.intl.formatMessage({ id: "pay" })}</Grid>
+            <Grid item>
+              {this.props.intl.formatMessage({ id: "amount" })}
+              <span>{balance_issue.amount || "--"}</span>
+            </Grid>
+          </Grid>
+          <Grid container justify="space-between">
             {this.state.issue_token.name ? (
               <Grid
                 item
-                style={{ flex: 1 }}
                 onClick={() => {
                   this.setState({ open: true, type: 0 });
                 }}
+                className="symbol"
               >
                 <img src={this.state.issue_token.logo} />
                 <span>
@@ -393,99 +447,124 @@ class IndexRC extends React.Component {
             ) : (
               ""
             )}
-            <Grid
-              item
-              style={{ width: 40, justifyContent: "center" }}
-              onClick={this.chageToken}
-            >
-              <img
-                src={require("../../assets/icon-exchange.png")}
-                style={{ width: 24, margin: 0 }}
-              />
-            </Grid>
-
-            {this.state.target_token.name ? (
-              <Grid
-                item
-                style={{ flex: 1, justifyContent: "flex-end" }}
-                onClick={() => {
-                  this.setState({ open: true, type: 1 });
-                }}
-              >
-                <img src={this.state.target_token.logo} />
-                <span>
-                  {(this.state.target_token.name || "").toUpperCase()}
-                  <Iconfont type="arrowdown" size={16} />
-                </span>
-              </Grid>
-            ) : (
-              ""
-            )}
-          </Grid>
-          <Grid
-            container
-            justify="space-between"
-            className={classes.swap_input}
-          >
-            <Grid item>
+            <Grid item className="input">
               <TextField
                 variant="outlined"
                 placeholder={this.props.intl.formatMessage({
                   id: "swap out quantity",
                 })}
+                fullWidth
                 value={this.state.issue_quantity}
                 onChange={this.change("issue_quantity")}
                 error={Boolean(this.state.issue_quantity_msg)}
                 helperText={this.state.issue_quantity_msg}
+                InputProps={{
+                  endAdornment: (
+                    <em
+                      onClick={this.change(
+                        "issue_quantity",
+                        balance_issue.amount || "0"
+                      )}
+                    >
+                      {this.props.intl.formatMessage({ id: "all" })}
+                    </em>
+                  ),
+                }}
               />
             </Grid>
+          </Grid>
+          <div className="exchange" onClick={this.chageToken}>
+            <img src={require("../../assets/exchange_to.png")} />
+          </div>
+          <Grid
+            container
+            className="amount"
+            alignItems="center"
+            justify="space-between"
+          >
             <Grid item>
+              {this.props.intl.formatMessage({ id: "exchange to" })}
+            </Grid>
+            <Grid item>
+              {this.props.intl.formatMessage({ id: "amount" })}
+              {balance_target.amount || "--"}
+            </Grid>
+          </Grid>
+
+          <Grid container justify="space-between">
+            {this.state.target_token.name ? (
+              <Grid
+                item
+                // onClick={() => {
+                //   this.setState({ open: true, type: 1 });
+                // }}
+                className="symbol"
+              >
+                <img src={this.state.target_token.logo} />
+                <span>
+                  {(this.state.target_token.name || "").toUpperCase()}
+                </span>
+              </Grid>
+            ) : (
+              ""
+            )}
+            <Grid item className="input">
               <TextField
                 variant="outlined"
                 placeholder={this.props.intl.formatMessage({
                   id: "swap in quantity",
                 })}
+                fullWidth
                 value={this.state.target_quantity}
                 onChange={this.change("target_quantity")}
-                inputProps={{
-                  style: { textAlign: "right" },
-                }}
                 error={Boolean(this.state.target_quantity_msg)}
                 helperText={this.state.target_quantity_msg}
+                InputProps={{
+                  endAdornment: (
+                    <em
+                      onClick={this.change(
+                        "target_quantity",
+                        balance_target.amount || "0"
+                      )}
+                    >
+                      {this.props.intl.formatMessage({ id: "all" })}
+                    </em>
+                  ),
+                }}
               />
             </Grid>
           </Grid>
+          <div className="btn">
+            {this.state.loading ? (
+              <Button color="primary" variant="contained" fullWidth disabled>
+                <CircularProgress size={20} />
+              </Button>
+            ) : (
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                onClick={this.submit}
+              >
+                {this.props.intl.formatMessage({
+                  id: "hbtcchain/openswap/MsgSwapExactIn",
+                })}
+              </Button>
+            )}
+          </div>
+
           <div className={classes.swap_rate}>
             <span>
               {this.props.intl.formatMessage({ id: "exchange rate" })}
             </span>
             <p>
-              1{(this.state.issue_token.name || "").toUpperCase()} ={" "}
-              {this.rates()}
+              1{(this.state.issue_token.name || "").toUpperCase()} = 1
               {(this.state.target_token.name || "").toUpperCase()}
             </p>
             <i>
               <i></i>
             </i>
-            <em></em>
-            <em></em>
           </div>
-          {this.state.loading ? (
-            <Button color="primary" variant="contained" fullWidth disabled>
-              <CircularProgress size={20} />
-            </Button>
-          ) : (
-            <Button
-              color="primary"
-              variant="contained"
-              fullWidth
-              onClick={this.submit}
-            >
-              {this.props.intl.formatMessage({
-                id: "hbtcchain/openswap/MsgSwapExactIn",
-              })}
-            </Button>
-          )}
         </Paper>
 
         <Paper

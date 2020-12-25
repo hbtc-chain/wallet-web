@@ -366,4 +366,8 @@ export default {
   "create external fee": "创建费用",
   "enter current wallet password":
     "Please enter the current password of wallet",
+  "hbc send tip": "您正在进行HBTC链内转账,请务必确认接收地址以HBC开头",
+  pay: "支付",
+  "exchange to": "兑换成",
+  "max to amount": "超出余额",
 };

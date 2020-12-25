@@ -9,6 +9,16 @@ export default (theme) => ({
     },
     ".MuiButton-root": {
       boxShadow: "none",
+      height: 40,
+    },
+    ".MuiButton-contained:hover": {
+      boxShadow: "none",
+    },
+    ".MuiInputBase-input": {
+      padding: "12px 14px",
+    },
+    ".MuiMenuItem-root": {
+      minHeight: 40,
     },
   },
 });

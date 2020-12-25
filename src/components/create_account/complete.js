@@ -14,7 +14,16 @@ class IndexRC extends React.Component {
     super();
     this.state = {};
   }
-  goto = () => {
+  goto = async () => {
+    await this.props.dispatch({
+      type: "layout/save",
+      payload: {
+        store: {
+          ...this.props.store,
+          account_index: this.props.store.accounts.length - 1,
+        },
+      },
+    });
     this.props.dispatch(
       routerRedux.push({
         pathname: route_map.index,

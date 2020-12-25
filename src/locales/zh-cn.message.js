@@ -349,4 +349,8 @@ export default {
   "create external address tip":
     "你正在为 {token} 生成跨链充值地址，该地址将由跨链托管节点分布式生成，需要稍微等待一点时间。",
   "create external fee": "创建费用",
+  "hbc send tip": "您正在进行HBTC链内转账,请务必确认接收地址以HBC开头",
+  pay: "支付",
+  "exchange to": "兑换成",
+  "max to amount": "超出余额",
 };
