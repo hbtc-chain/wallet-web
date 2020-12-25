@@ -184,7 +184,10 @@ class IndexRC extends React.Component {
           >
             <Grid item style={{ alignItems: "center", display: "flex" }}>
               {this.state.token_info.logo ? (
-                <img src={this.state.token_info.logo} />
+                <img
+                  src={this.state.token_info.logo}
+                  style={{ width: 24, height: 24, margin: "0 5px 0 0" }}
+                />
               ) : (
                 ""
               )}

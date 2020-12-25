@@ -8,8 +8,6 @@ import API from "../../src/util/api";
 import Sign from "../../src/util/sign";
 import { v4 } from "uuid";
 
-let that;
-
 const AUTO_LOGOUT_TIME = 6 * 60 * 60 * 1000;
 
 export default class MessageManager {
@@ -34,7 +32,6 @@ export default class MessageManager {
 
     // sign消息数量监听
     this.updateBadge();
-    that = this;
 
     store.set_broadcast((res) => this.broadcast(res));
 

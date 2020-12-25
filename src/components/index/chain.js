@@ -342,7 +342,9 @@ class IndexRC extends React.Component {
                         pathname:
                           symbol == "hbc"
                             ? route_map.accept
-                            : `${route_map.accept_by_type}/${token.symbol}`,
+                            : chain_external_address
+                            ? `${route_map.accept_by_type}/${token.symbol}`
+                            : `${route_map.external_address}/${symbol}`,
                       })
                     );
                   }}
