@@ -127,6 +127,9 @@ class IndexRC extends React.Component {
     return a;
   };
   submit = async () => {
+    const address = this.props.store.accounts[this.props.store.account_index][
+      "address"
+    ];
     if (!this.state.fee) {
       this.setState({
         fee_msg: this.props.intl.formatMessage({ id: "fee required" }),
@@ -139,9 +142,6 @@ class IndexRC extends React.Component {
       });
       return;
     }
-    const address = this.props.store.accounts[this.props.store.account_index][
-      "address"
-    ];
 
     const result = await this.props.dispatch({
       type: "layout/commReq",
@@ -280,8 +280,26 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes, ...otherProps } = this.props;
-    const symbol = this.props.match.params.symbol.toLowerCase();
+    const symbol = this.props.match.params.symbol;
+    const address = this.props.store.accounts[this.props.store.account_index]
+      ? this.props.store.accounts[this.props.store.account_index]["address"]
+      : "";
     const token = this.props.tokens.find((item) => item.symbol == symbol);
+    const balance =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == this.props.match.params.symbol
+          ) || { amount: 0 }
+        : { amount: 0 };
+    const balance_hbc =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == "hbc"
+          ) || { amount: 0 }
+        : { amount: 0 };
+    //
+    if (token && balance.amount - token.open_fee < 0) {
+    }
     return (
       <div className={classes.external_address}>
         <Grid
@@ -329,6 +347,14 @@ class IndexRC extends React.Component {
               </em>
             </Grid>
           </Grid>
+          <div className={classes.external_msg}>
+            {token && balance.amount - token.open_fee < 0
+              ? this.props.intl.formatMessage(
+                  { id: "amount not enough {token}" },
+                  { token: token.chain.toUpperCase() }
+                )
+              : ""}
+          </div>
           <Grid
             container
             justify="space-between"
@@ -340,6 +366,11 @@ class IndexRC extends React.Component {
               <em>{this.state.fee} HBC</em>
             </Grid>
           </Grid>
+          <div className={classes.external_msg}>
+            {balance_hbc.amount - this.state.fee < 0
+              ? this.props.intl.formatMessage({ id: "fee not enough" })
+              : ""}
+          </div>
 
           {/* <label className={classes.external_label}>
             {this.props.intl.formatMessage({ id: "fee" })}
@@ -359,13 +390,7 @@ class IndexRC extends React.Component {
         </div>
         <div className={classes.submit}>
           {this.state.loading ? (
-            <Button
-              disabled
-              fullWidth
-              variant="contained"
-              color="primary"
-              style={{ height: 48 }}
-            >
+            <Button disabled fullWidth variant="contained" color="primary">
               <CircularProgress color="primary" size={20} />
             </Button>
           ) : (
@@ -374,7 +399,10 @@ class IndexRC extends React.Component {
               fullWidth
               variant="contained"
               color="primary"
-              style={{ height: 48 }}
+              disabled={Boolean(
+                (token && balance.amount - token.open_fee < 0) ||
+                  balance_hbc.amount - this.state.fee < 0
+              )}
             >
               {this.props.intl.formatMessage({ id: "create external address" })}
             </Button>

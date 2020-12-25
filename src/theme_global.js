@@ -15,7 +15,7 @@ export default (theme) => ({
       boxShadow: "none",
     },
     ".MuiInputBase-input": {
-      padding: "12px 14px",
+      padding: "12px 14px !important",
     },
     ".MuiMenuItem-root": {
       minHeight: 40,

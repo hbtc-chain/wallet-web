@@ -105,10 +105,15 @@ class IndexRC extends React.Component {
       <Dialog open={this.props.open}>
         <DialogTitle className={classes.title}>
           <em>{this.props.intl.formatMessage({ id: "confirmed password" })}</em>
-          <Iconfont type="close" size={20} onClick={this.cancel} />
+          <Iconfont
+            type="close"
+            size={20}
+            onClick={this.cancel}
+            style={{ cursor: "pointer" }}
+          />
         </DialogTitle>
         <DialogContent>
-          <p className={classes.mark_info}>{this.props.mark_info}</p>
+          {/* <p className={classes.mark_info}>{this.props.mark_info}</p> */}
           {/* <PWDRC
             autoFocus={this.props.autoFocus}
             onChange={this.handleChange("password")}
@@ -119,7 +124,7 @@ class IndexRC extends React.Component {
             onChange={this.handleChange("password")}
             helperText={this.state.password_msg}
             error={Boolean(this.state.password_msg)}
-            label={this.props.intl.formatMessage({
+            placeholder={this.props.intl.formatMessage({
               id: "password is required",
             })}
             style={{ width: 260 }}
@@ -143,7 +148,7 @@ class IndexRC extends React.Component {
             />
           </div> */}
         </DialogContent>
-        <DialogActions>
+        <DialogActions style={{ padding: "8px 24px" }}>
           <Button
             onClick={this.success}
             variant="contained"

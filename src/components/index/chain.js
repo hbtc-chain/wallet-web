@@ -33,6 +33,7 @@ class IndexRC extends React.Component {
         title: "",
         address: "",
       },
+      chains: [],
     };
   }
   componentDidMount() {
@@ -40,9 +41,22 @@ class IndexRC extends React.Component {
     this.get_mapping();
     this.get_balance();
     this.qrcode(this.state.choose.address);
+    this.chains();
   }
   componentWillUnmount() {
     timer = false;
+  }
+  async chains() {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {},
+      url: API.chains,
+    });
+    if (result.code == 200 && result.data) {
+      this.setState({
+        chains: result.data,
+      });
+    }
   }
   get_mapping = async () => {
     const result = await this.props.dispatch({
@@ -153,6 +167,7 @@ class IndexRC extends React.Component {
   render() {
     const { classes } = this.props;
     const symbol = this.props.match.params.chainId;
+    const chain = this.state.chains.find((item) => item.chain == symbol);
     const token = this.props.tokens.find((item) => item.symbol == symbol) || {
       name: "",
     };
@@ -241,18 +256,22 @@ class IndexRC extends React.Component {
             >
               <Grid item>{this.props.intl.formatMessage({ id: "token" })}</Grid>
               <Grid item>
-                <span
-                  onClick={() => {
-                    this.props.dispatch(
-                      routerRedux.push({
-                        pathname: route_map.add_token + "/" + symbol,
-                      })
-                    );
-                  }}
-                >
-                  <Iconfont type="addaccount" />
-                  {this.props.intl.formatMessage({ id: "add token" })}
-                </span>
+                {chain && chain.single_coin ? (
+                  ""
+                ) : (
+                  <span
+                    onClick={() => {
+                      this.props.dispatch(
+                        routerRedux.push({
+                          pathname: route_map.add_token + "/" + symbol,
+                        })
+                      );
+                    }}
+                  >
+                    <Iconfont type="addaccount" />
+                    {this.props.intl.formatMessage({ id: "add token" })}
+                  </span>
+                )}
               </Grid>
             </Grid>
             {this.state.tokens.map((item) => {

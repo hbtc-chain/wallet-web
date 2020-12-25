@@ -7,35 +7,18 @@ import {
   Button,
   Grid,
   TextField,
-  Checkbox,
-  Paper,
-  Slider,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
   CircularProgress,
-  Select,
   MenuItem,
   MenuList,
-  OutlinedInput,
-  ClickAwayListener,
-  Grow,
   Popper,
 } from "@material-ui/core";
-import route_map from "../../config/route_map";
 import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
-import querystring from "query-string";
-import CONST from "../../util/const";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import { v4 } from "uuid";
 import util from "../../util/util";
 import API from "../../util/api";
 import math from "../../util/mathjs";
 import message from "../public/message";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import VisibilityIcon from "@material-ui/icons/Visibility";
 import PasswordRC from "../public/password";
 import { Iconfont } from "../../lib";
 
@@ -131,6 +114,12 @@ class IndexRC extends React.Component {
             (item) => item.symbol == symbol
           ) || { amount: 0 }
         : { amount: 0 };
+    const balance_hbc =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == "hbc"
+          ) || { amount: 0 }
+        : { amount: 0 };
     if (!this.state.to_address) {
       this.setState({
         to_address_msg: this.props.intl.formatMessage({ id: "input address" }),
@@ -138,27 +127,35 @@ class IndexRC extends React.Component {
       return;
     }
     if (
+      this.state.to_address.length != 36 ||
+      !/^HBC/.test(this.state.to_address)
+    ) {
+      this.setState({
+        to_address_msg: this.props.intl.formatMessage({ id: "wrong address" }),
+      });
+      return;
+    }
+    if (
       !Number(this.state.amount) ||
       /[^0-9\.]/.test(this.state.amount) ||
-      Number(this.state.amount) > balance.amount
+      Number(this.state.amount) >
+        Number(balance.amount) + Number(symbol == "hbc" ? this.state.fee : 0)
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
-          { n: balance.amount }
+          {
+            n:
+              Number(balance.amount) -
+              Number(symbol == "hbc" ? this.state.fee : 0),
+          }
         ),
       });
       return;
     }
-    if (!this.state.fee) {
+    if (balance_hbc.amount - this.state.fee < 0) {
       this.setState({
-        fee_msg: this.props.intl.formatMessage({ id: "fee required" }),
-      });
-      return;
-    }
-    if (Number(this.state.fee) < 0.001 || Number(this.state.fee) > 1) {
-      this.setState({
-        fee_msg: this.props.intl.formatMessage({ id: "wrong fee" }),
+        fee_msg: this.props.intl.formatMessage({ id: "fee not enough" }),
       });
       return;
     }
@@ -560,7 +557,7 @@ class IndexRC extends React.Component {
             <Grid item>
               {this.props.intl.formatMessage({ id: "available" })}{" "}
               {balance.amount}
-              {this.state.symbol.toUpperCase()}
+              {(token ? token.name : "").toUpperCase()}
             </Grid>
           </Grid>
           <div className={classes.form_input}>
@@ -582,7 +579,11 @@ class IndexRC extends React.Component {
                   <span
                     onClick={() => {
                       this.setState({
-                        amount: balance.amount,
+                        amount:
+                          Number(balance.amount) -
+                          Number(
+                            this.state.symbol == "hbc" ? this.state.fee : 0
+                          ),
                         amount_msg: "",
                       });
                     }}
@@ -621,6 +622,7 @@ class IndexRC extends React.Component {
             <span>{this.props.intl.formatMessage({ id: "fee" })}</span>
             <strong>{this.state.fee} HBC</strong>
           </div>
+          <p className={classes.fee_msg}>{this.state.fee_msg}</p>
           <p className={classes.accept_tip}>
             {this.props.intl.formatMessage({ id: "tip" })}:<br />
             {this.props.intl.formatMessage({ id: "hbc send tip" })}

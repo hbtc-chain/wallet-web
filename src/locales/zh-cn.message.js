@@ -339,7 +339,7 @@ export default {
   "scan qrcode to pay": "扫描二维码向我付款",
   tip: "提示",
   "hbc accept tip": "该账户支持HBC，HBTC链上资产以及HBTC链上的跨链托管资产",
-  "confirm withdrawal": "确认转账",
+  "confirm withdrawal": "确认提币",
   "withdrawal tip desc":
     "您正在进行跨链提币,请务必确认提币地址为该链的原生公链地址",
   "deposit token": "充值币种",
@@ -353,4 +353,7 @@ export default {
   pay: "支付",
   "exchange to": "兑换成",
   "max to amount": "超出余额",
+  "wrong address": "地址错误",
+  "fee not enough": "HBC余额不足",
+  "amount not enough {token}": "{token}余额不足",
 };

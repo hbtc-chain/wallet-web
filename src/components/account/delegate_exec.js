@@ -117,12 +117,14 @@ class DelegateRC extends React.Component {
     if (
       !Number(this.state.amount) ||
       /[^0-9\.]/.test(this.state.amount) ||
-      Number(this.state.amount) > balance.amount
+      Number(this.state.amount) >
+        Math.max(0, balance.amount - this.state.fee) ||
+      Number(this.state.amount) < 0
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
-          { n: balance.amount }
+          { n: Math.max(0, balance.amount - this.state.fee) }
         ),
       });
       return;
@@ -366,7 +368,7 @@ class DelegateRC extends React.Component {
                   <span
                     onClick={() => {
                       this.setState({
-                        amount: balance.amount,
+                        amount: Math.max(0, balance.amount - this.state.fee),
                         amount_msg: "",
                       });
                     }}

@@ -700,6 +700,15 @@ export default (theme) => ({
       fontWeight: 400,
     },
   },
+  external_msg: {
+    color: theme.palette.error.main,
+    margin: "6px 0 0",
+    textAlign: "right",
+  },
+  fee_msg: {
+    color: theme.palette.error.main,
+    margin: "6px 0 0",
+  },
   add_token: {
     color: theme.palette.grey[900],
     fontSize: 14,
