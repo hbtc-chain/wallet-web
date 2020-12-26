@@ -194,12 +194,14 @@ export default {
         tokens = tokens.concat(Object.values(result.data));
         let newtokens = [];
         let k = {};
+        console.log(tokens);
         tokens.map((item) => {
           if (!k[item.symbol]) {
             newtokens.push(item);
             k[item.symbol] = 1;
           }
         });
+        console.log(newtokens);
         yield put({
           type: "save",
           payload: {

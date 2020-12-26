@@ -120,6 +120,15 @@ class IndexRC extends React.Component {
             (item) => item.symbol == "hbc"
           ) || { amount: 0 }
         : { amount: 0 };
+
+    const max =
+      symbol == "hbc"
+        ? math
+            .chain(balance_hbc.amount)
+            .subtract(this.state.fee)
+            .format({ notation: "fixed" })
+            .done()
+        : balance.amount;
     if (!this.state.to_address) {
       this.setState({
         to_address_msg: this.props.intl.formatMessage({ id: "input address" }),
@@ -138,16 +147,14 @@ class IndexRC extends React.Component {
     if (
       !Number(this.state.amount) ||
       /[^0-9\.]/.test(this.state.amount) ||
-      Number(this.state.amount) >
-        Number(balance.amount) + Number(symbol == "hbc" ? this.state.fee : 0)
+      Number(this.state.amount) > Number(max) ||
+      Number(this.state.amount) < 0
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
           {
-            n:
-              Number(balance.amount) -
-              Number(symbol == "hbc" ? this.state.fee : 0),
+            n: max,
           }
         ),
       });
@@ -217,9 +224,9 @@ class IndexRC extends React.Component {
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
-    const symbol = this.state.symbol.toLowerCase();
+    const symbol = this.state.symbol;
     const token = this.props.tokens.find((item) => item.symbol == symbol);
-    const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
+
     let d = {
       chain_id: this.props.store.chain[this.props.store.chain_index][
         "chain_id"
@@ -374,6 +381,14 @@ class IndexRC extends React.Component {
       this.props.store.accounts && this.props.store.account_index > -1
         ? this.props.store.accounts[this.props.store.account_index]
         : {};
+    const max =
+      symbol == "hbc"
+        ? math
+            .chain(balance.amount)
+            .subtract(this.state.fee)
+            .format({ notation: "fixed" })
+            .done()
+        : balance.amount;
     return (
       <div className={classes.symbol}>
         <Grid
@@ -579,11 +594,7 @@ class IndexRC extends React.Component {
                   <span
                     onClick={() => {
                       this.setState({
-                        amount:
-                          Number(balance.amount) -
-                          Number(
-                            this.state.symbol == "hbc" ? this.state.fee : 0
-                          ),
+                        amount: max,
                         amount_msg: "",
                       });
                     }}

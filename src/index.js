@@ -152,7 +152,7 @@ const initStore = async () => {
         logged: window.location.href.indexOf("localhost") > -1 ? true : false,
       },
     },
-    res ? res.lang : "zh-cn"
+    res ? res.lang : "en-us"
   );
 };
 

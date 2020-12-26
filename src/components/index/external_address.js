@@ -172,7 +172,7 @@ class IndexRC extends React.Component {
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
-    const symbol = this.props.match.params.symbol.toLowerCase();
+    const symbol = this.props.match.params.symbol;
     const token = this.props.tokens.find((item) => item.symbol == symbol);
     const token_hbc = this.props.tokens.find((item) => item.symbol == "hbc");
 
@@ -260,7 +260,7 @@ class IndexRC extends React.Component {
     }
   };
   check_address = async () => {
-    const symbol = this.props.match.params.symbol.toLowerCase();
+    const symbol = this.props.match.params.symbol;
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
@@ -297,9 +297,6 @@ class IndexRC extends React.Component {
             (item) => item.symbol == "hbc"
           ) || { amount: 0 }
         : { amount: 0 };
-    //
-    if (token && balance.amount - token.open_fee < 0) {
-    }
     return (
       <div className={classes.external_address}>
         <Grid
@@ -324,7 +321,7 @@ class IndexRC extends React.Component {
         </Grid>
         <div className={classes.external_content_external}>
           <p>
-            {this.props.intl.formatMessage({ id: "tip" })}
+            {this.props.intl.formatMessage({ id: "tip" })}:
             <br />
             {this.props.intl.formatMessage(
               { id: "create external address tip" },
@@ -342,19 +339,18 @@ class IndexRC extends React.Component {
             </Grid>
             <Grid item>
               <em>
-                {token ? token.open_fee : ""}{" "}
-                {token ? token.chain.toUpperCase() : ""}
+                {token ? token.open_fee : ""} {"HBC"}
               </em>
             </Grid>
           </Grid>
-          <div className={classes.external_msg}>
+          {/* <div className={classes.external_msg}>
             {token && balance.amount - token.open_fee < 0
               ? this.props.intl.formatMessage(
                   { id: "amount not enough {token}" },
-                  { token: token.chain.toUpperCase() }
+                  { token: "HBC" }
                 )
               : ""}
-          </div>
+          </div> */}
           <Grid
             container
             justify="space-between"
@@ -366,27 +362,18 @@ class IndexRC extends React.Component {
               <em>{this.state.fee} HBC</em>
             </Grid>
           </Grid>
-          <div className={classes.external_msg}>
-            {balance_hbc.amount - this.state.fee < 0
-              ? this.props.intl.formatMessage({ id: "fee not enough" })
-              : ""}
-          </div>
-
-          {/* <label className={classes.external_label}>
-            {this.props.intl.formatMessage({ id: "fee" })}
-          </label>
-          <TextField
-            value={this.state.fee}
-            fullWidth
-            InputProps={{
-              endAdornment: <span className={classes.grey}>HBC</span>,
-            }}
-            //onChange={this.feeChange}
-            disabled
-            helperText={this.state.fee_msg}
-            error={Boolean(this.state.fee_msg)}
-            variant="outlined"
-          /> */}
+          {token ? (
+            <div className={classes.external_msg}>
+              {balance_hbc.amount -
+                this.state.fee -
+                (token ? token.open_fee : 0) <
+              0
+                ? this.props.intl.formatMessage({ id: "fee not enough" })
+                : ""}
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div className={classes.submit}>
           {this.state.loading ? (
@@ -400,8 +387,10 @@ class IndexRC extends React.Component {
               variant="contained"
               color="primary"
               disabled={Boolean(
-                (token && balance.amount - token.open_fee < 0) ||
-                  balance_hbc.amount - this.state.fee < 0
+                balance_hbc.amount -
+                  this.state.fee -
+                  (token ? token.open_fee : 0) <
+                  0
               )}
             >
               {this.props.intl.formatMessage({ id: "create external address" })}

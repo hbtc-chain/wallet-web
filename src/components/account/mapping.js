@@ -145,6 +145,12 @@ class IndexRC extends React.Component {
             (item) => item.symbol == this.state.target_symbol
           ) || { amount: "" }
         : { amount: "" };
+    const balance_hbc =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == "hbc"
+          ) || { amount: "" }
+        : { amount: "" };
 
     if (Number(this.state.issue_quantity) > Number(balance_issue.amount || 0)) {
       this.setState({
@@ -161,6 +167,13 @@ class IndexRC extends React.Component {
         target_quantity_msg: this.props.intl.formatMessage({
           id: "max to amount",
         }),
+      });
+      return;
+    }
+
+    if (Number(this.state.fee) > Number(balance_hbc.amount)) {
+      this.setState({
+        fee_msg: this.props.intl.formatMessage({ id: "fee not enough" }),
       });
       return;
     }
@@ -552,6 +565,7 @@ class IndexRC extends React.Component {
               </Button>
             )}
           </div>
+          <p className={classes.fee_msg}>{this.state.fee_msg}</p>
 
           <div className={classes.swap_rate}>
             <span>

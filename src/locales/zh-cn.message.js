@@ -353,7 +353,9 @@ export default {
   pay: "支付",
   "exchange to": "兑换成",
   "max to amount": "超出余额",
-  "wrong address": "地址错误",
+  "wrong address": "地址不正确",
   "fee not enough": "HBC余额不足",
   "amount not enough {token}": "{token}余额不足",
+  processing: "处理中",
+  hello: "你好",
 };

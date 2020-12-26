@@ -137,18 +137,30 @@ class DelegateRC extends React.Component {
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
+    const max = math
+      .chain(this.state.available)
+      .subtract(this.state.fee)
+      .format({ notation: "fixed" })
+      .done();
     if (
       !Number(this.state.amount) ||
       /[^0-9\.]/.test(this.state.amount) ||
-      Number(this.state.amount) >
-        Math.max(0, this.state.available - this.state.fee) ||
+      Number(this.state.amount) > Number(max) ||
       this.state.amount < 0
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
-          { n: Math.max(0, this.state.available - this.state.fee) }
+          {
+            n: this.state.available,
+          }
         ),
+      });
+      return;
+    }
+    if (Number(this.state.available) < Number(this.state.fee)) {
+      this.setState({
+        amount_msg: this.props.intl.formatMessage({ id: "fee not enough" }),
       });
       return;
     }
@@ -392,13 +404,23 @@ class DelegateRC extends React.Component {
                   <span
                     onClick={() => {
                       this.setState({
-                        amount: Math.max(0, balance.amount - this.state.fee),
+                        amount: Math.max(
+                          0,
+                          Number(
+                            math
+                              .chain(this.state.available)
+                              .subtract(this.state.fee)
+                              .format({ notation: "fixed" })
+                              .done()
+                          )
+                          //his.state.available || 0 - this.state.fee
+                        ),
                         amount_msg: "",
                       });
                     }}
                     color="primary"
                     className={classes.btn_all}
-                    style={{ whiteSpace: "nowrap" }}
+                    style={{ whiteSpace: "nowrap", color: "#3375E0" }}
                   >
                     {this.props.intl.formatMessage({ id: "all" })}
                   </span>

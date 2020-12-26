@@ -44,6 +44,7 @@ class DelegateRC extends React.Component {
       sequence: "",
       open: false,
       msg: "",
+      fee: "",
       err_msg: "",
       memo: "",
       validator_list: [],
@@ -391,7 +392,13 @@ class DelegateRC extends React.Component {
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={!Boolean(balance.unclaimed_reward)}
+                  disabled={
+                    !Boolean(
+                      balance.unclaimed_reward &&
+                        Number(balance.unclaimed_reward) >=
+                          Number(this.state.fee || 0)
+                    )
+                  }
                   style={{ height: 32, borderRadius: 16, color: "#fff" }}
                   onClick={this.submit}
                 >

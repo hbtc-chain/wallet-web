@@ -114,18 +114,32 @@ class DelegateRC extends React.Component {
             (item) => item.symbol == "hbc"
           ) || { amount: "" }
         : { amount: 0 };
+    const max = Number(
+      math
+        .chain(balance.amount)
+        .subtract(this.state.fee)
+        .format({ notation: "fixed" })
+        .done()
+    );
     if (
       !Number(this.state.amount) ||
       /[^0-9\.]/.test(this.state.amount) ||
-      Number(this.state.amount) >
-        Math.max(0, balance.amount - this.state.fee) ||
+      Number(this.state.amount) > max ||
       Number(this.state.amount) < 0
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
-          { n: Math.max(0, balance.amount - this.state.fee) }
+          {
+            n: balance.amount,
+          }
         ),
+      });
+      return;
+    }
+    if (Number(balance.amount) < Number(this.state.fee)) {
+      this.setState({
+        amount_msg: this.props.intl.formatMessage({ id: "fee not enough" }),
       });
       return;
     }
@@ -368,13 +382,22 @@ class DelegateRC extends React.Component {
                   <span
                     onClick={() => {
                       this.setState({
-                        amount: Math.max(0, balance.amount - this.state.fee),
+                        amount: Math.max(
+                          0,
+                          Number(
+                            math
+                              .chain(balance.amount)
+                              .subtract(this.state.fee)
+                              .format({ notation: "fixed" })
+                              .done()
+                          )
+                        ),
                         amount_msg: "",
                       });
                     }}
                     color="primary"
                     className={classes.btn_all}
-                    style={{ whiteSpace: "nowrap" }}
+                    style={{ whiteSpace: "nowrap", color: "#3375E0" }}
                   >
                     {this.props.intl.formatMessage({ id: "all" })}
                   </span>

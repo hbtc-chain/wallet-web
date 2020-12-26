@@ -15,4 +15,5 @@ export default {
   default_fee: `/api/v1/default_fee`,
   validators: `/api/v1/validators`, //节点列表
   mapping: `/api/v1/mappings`, // 映射币对
+  announcements: `/api/v1/announcements`, // 消息
 };

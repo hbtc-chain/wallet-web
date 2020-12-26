@@ -122,6 +122,7 @@ class IndexRC extends React.Component {
     });
   };
   submit = async () => {
+    const chain = this.props.match.params.symbol;
     const symbol = this.state.token.symbol;
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
@@ -132,21 +133,50 @@ class IndexRC extends React.Component {
             (item) => item.symbol == symbol
           ) || { amount: "" }
         : { amount: 0 };
+    const balance_gas =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == chain
+          ) || { amount: "" }
+        : { amount: 0 };
+    const balance_hbc =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == "hbc"
+          ) || { amount: "" }
+        : { amount: 0 };
+    const max =
+      symbol == chain
+        ? math
+            .chain(balance.amount)
+            .subtract(this.state.gas_fee)
+            .format({ notation: "fixed" })
+            .done()
+        : balance.amount;
     if (!this.state.to_address) {
       this.setState({
         to_address_msg: this.props.intl.formatMessage({ id: "input address" }),
       });
       return;
     }
+    if (this.state.to_address.length < 30) {
+      this.setState({
+        to_address_msg: this.props.intl.formatMessage({ id: "wrong address" }),
+      });
+      return;
+    }
     if (
       !Number(this.state.amount) ||
       /[^0-9\.]/.test(this.state.amount) ||
-      Number(this.state.amount) > balance.amount
+      Number(this.state.amount) > Number(max) ||
+      Number(this.state.amount) < 0
     ) {
       this.setState({
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
-          { n: balance.amount }
+          {
+            n: balance.amount,
+          }
         ),
       });
       return;
@@ -154,7 +184,8 @@ class IndexRC extends React.Component {
     if (
       !Number(this.state.gas_fee) ||
       /[^0-9\.]/.test(this.state.gas_fee) ||
-      Number(this.state.gas_fee) < Number(this.state.gas_fee_min)
+      Number(this.state.gas_fee) < Number(this.state.gas_fee_min) ||
+      Number(this.state.gas_fee) < 0
     ) {
       this.setState({
         gas_fee_msg: this.props.intl.formatMessage(
@@ -164,15 +195,10 @@ class IndexRC extends React.Component {
       });
       return;
     }
-    if (!this.state.fee) {
+
+    if (Number(this.state.fee) < Number(balance_hbc.amount)) {
       this.setState({
-        fee_msg: this.props.intl.formatMessage({ id: "fee required" }),
-      });
-      return;
-    }
-    if (Number(this.state.fee) < 0.001 || Number(this.state.fee) > 1) {
-      this.setState({
-        fee_msg: this.props.intl.formatMessage({ id: "wrong fee" }),
+        fee_msg: this.props.intl.formatMessage({ id: "fee not enough" }),
       });
       return;
     }
@@ -216,26 +242,7 @@ class IndexRC extends React.Component {
     return a;
   };
   withdrawal = async (res) => {
-    // if (!this.state.password) {
-    //   this.setState({
-    //     password_msg: this.props.intl.formatMessage({
-    //       id: "password is required",
-    //     }),
-    //   });
-    //   return;
-    // }
-    // let pwd = helper.sha256(this.state.password);
-    // if (
-    //   pwd !=
-    //   this.props.store.accounts[this.props.store.account_index]["password"]
-    // ) {
-    //   this.setState({
-    //     password_msg: this.props.intl.formatMessage({
-    //       id: "password is wrong",
-    //     }),
-    //   });
-    //   return;
-    // }
+    const chain = this.props.match.params.symbol;
     const address = this.props.store.accounts[this.props.store.account_index][
       "address"
     ];
@@ -244,6 +251,12 @@ class IndexRC extends React.Component {
     const token_chain = this.props.tokens.find(
       (item) => item.symbol == token.chain
     );
+    const balance =
+      this.props.balance && this.props.balance[address]
+        ? this.props.balance[address].assets.find(
+            (item) => item.symbol == symbol
+          ) || { amount: "" }
+        : { amount: 0 };
 
     let d = {
       chain_id: this.props.store.chain[this.props.store.chain_index][
@@ -266,6 +279,7 @@ class IndexRC extends React.Component {
             from_cu: address,
             to_multi_sign_address: this.state.to_address,
             symbol,
+            // 转账的币 == 手续费币 && amount == 余额时， 需要减去手续费
             amount: this.decimals(this.state.amount, token.decimals),
             gas_fee: this.decimals(this.state.gas_fee, token_chain.decimals),
             order_id: v4(),
@@ -396,6 +410,15 @@ class IndexRC extends React.Component {
             (item) => item.symbol == this.state.token.chain
           ) || { amount: "" }
         : { amount: "" };
+    const max =
+      symbol == chain
+        ? math
+            .chain(balance.amount)
+            .subtract(this.state.gas_fee)
+            .format({ notation: "fixed" })
+            .done()
+        : balance.amount;
+    console.log(this.props.tokens);
     return (
       <div className={classes.symbol}>
         <Grid
@@ -416,11 +439,7 @@ class IndexRC extends React.Component {
           </Grid>
           <Grid item xs={2}></Grid>
         </Grid>
-        {/* <ul className={classes.withdrawl_tip}>
-          <li>{this.props.intl.formatMessage({ id: "withdrawal tip 1" })}</li>
-          <li>{this.props.intl.formatMessage({ id: "withdrawal tip 2" })}</li>
-          <li>{this.props.intl.formatMessage({ id: "withdrawal tip 3" })}</li>
-        </ul> */}
+
         <div className={classes.form}>
           <Grid
             container
@@ -516,35 +535,6 @@ class IndexRC extends React.Component {
                 })}
               </MenuList>
             </Popper>
-            {/* <TextField
-              select
-              value={this.state.symbol}
-              fullWidth
-              onChange={this.symbolChange}
-              variant="outlined"
-              classes={{
-                root: classes.outline,
-                outlined: classes.outline_outline,
-              }}
-            >
-              {this.props.tokens.map((item) => {
-                if (item.hide || item.chain != chain) {
-                  return "";
-                }
-                let balance =
-                  this.props.balance && address && this.props.balance[address]
-                    ? this.props.balance[address].assets.find(
-                        (it) => it.symbol == item.symbol
-                      )
-                    : { amount: 0 };
-                balance = balance || { amount: 0 };
-                return (
-                  <MenuItem value={item.symbol} key={item.symbol}>
-                    {item.name.toUpperCase()}({balance.amount})
-                  </MenuItem>
-                );
-              })}
-            </TextField> */}
           </div>
           <Grid
             container
@@ -579,7 +569,7 @@ class IndexRC extends React.Component {
                   <span
                     onClick={() => {
                       this.setState({
-                        amount: balance.amount,
+                        amount: max,
                         amount_msg: "",
                       });
                     }}
@@ -626,31 +616,6 @@ class IndexRC extends React.Component {
               }}
             />
           </div>
-          {/* <Grid
-            container
-            justify="space-between"
-            className={classes.form_label}
-          >
-            <Grid item>{this.props.intl.formatMessage({ id: "fee" })}</Grid>
-            <Grid item></Grid>
-          </Grid>
-          <div className={classes.form_input}>
-            <TextField
-              placeholder={this.props.intl.formatMessage({ id: "fee" })}
-              disabled
-              value={this.state.fee}
-              fullWidth
-              variant="outlined"
-              classes={{
-                root: classes.outline,
-              }}
-              InputProps={{
-                endAdornment: <span className={classes.grey}>HBC</span>,
-              }}
-              error={Boolean(this.state.fee_msg)}
-              helperText={this.state.fee_msg}
-            />
-          </div> */}
           <Grid
             container
             justify="space-between"
@@ -677,6 +642,7 @@ class IndexRC extends React.Component {
             <span>{this.props.intl.formatMessage({ id: "fee" })}</span>
             <strong>{this.state.fee} HBC</strong>
           </div>
+          <p className={classes.fee_msg}>{this.state.fee_msg}</p>
           <p className={classes.accept_tip}>
             {this.props.intl.formatMessage({ id: "tip" })}:<br />
             {this.props.intl.formatMessage({ id: "withdrawal tip desc" })}

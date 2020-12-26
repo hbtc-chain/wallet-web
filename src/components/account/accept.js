@@ -64,9 +64,7 @@ class IndexRC extends React.Component {
       this.props.store.accounts && this.props.store.account_index > -1
         ? this.props.store.accounts[this.props.store.account_index]
         : {};
-    const token = this.props.tokens.find(
-      (item) => item.symbol.toLowerCase() == "hbc"
-    );
+    const token = this.props.tokens.find((item) => item.symbol == "hbc");
     return (
       <div className={classnames(classes.accept, classes.bg_primary)}>
         <Grid

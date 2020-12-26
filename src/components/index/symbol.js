@@ -59,7 +59,7 @@ class IndexRC extends React.Component {
     await this.setState({
       loading: true,
     });
-    const symbol = (this.props.match.params.symbol || "").toLowerCase();
+    const symbol = this.props.match.params.symbol || "";
     const address = this.props.store.accounts[this.props.store.account_index]
       ? this.props.store.accounts[this.props.store.account_index]["address"]
       : "";
@@ -102,10 +102,8 @@ class IndexRC extends React.Component {
   };
   render() {
     const { classes } = this.props;
-    const symbol = (this.props.match.params.symbol || "").toLowerCase();
-    const token = this.props.tokens.find(
-      (item) => item.symbol.toLowerCase() == symbol
-    );
+    const symbol = this.props.match.params.symbol || "";
+    const token = this.props.tokens.find((item) => item.symbol == symbol);
     const mapping_symbol = this.state.mapping.find(
       (item) =>
         item.issue_symbol == this.props.match.params.symbol ||
@@ -249,6 +247,18 @@ class IndexRC extends React.Component {
               flow && Number(flow.amount) && flow.symbol
                 ? this.rates(Math.abs(Number(flow.amount)), flow.symbol)
                 : ["", "", ""];
+            let status = item.success ? "success" : "error";
+            if (
+              item.activities[0] &&
+              Number(item.ibc_status) != 0 &&
+              (item.activities[0]["type"] == "hbtcchain/transfer/MsgDeposit" ||
+                item.activities[0]["type"] ==
+                  "hbtcchain/transfer/MsgWithdrawal")
+            ) {
+              status = ["", "processing", "processing", "error", "success"][
+                item.ibc_status
+              ];
+            }
             return (
               <Grid
                 container
@@ -270,7 +280,7 @@ class IndexRC extends React.Component {
                   </strong>
                   <i className={item.success ? "native" : ""}>
                     {this.props.intl.formatMessage({
-                      id: item.success ? "success" : "error",
+                      id: status,
                     })}
                   </i>
                   <p>

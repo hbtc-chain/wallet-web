@@ -29,6 +29,10 @@
   padding: 0 5px;
 }
 
+.bhex-icon-arrowdown21:before {
+  content: "\e62f";
+}
+
 .bhex-icon-announcement:before {
   content: "\e62e";
 }

@@ -44,12 +44,12 @@ import helper from "../../util/helper";
 import CONST from "../../util/const";
 import util from "../../util/util";
 import API from "../../util/api";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import { Iconfont } from "../../lib";
 import route_map from "../../config/route_map";
 import message from "../public/message";
 import extension from "extensionizer";
+import classnames from "classnames";
 
 let timer = null;
 class IndexRC extends React.Component {
@@ -76,16 +76,32 @@ class IndexRC extends React.Component {
       chain_choose: false,
       chains: [],
       account_choose: false,
+      announcements: [],
     };
   }
   componentDidMount() {
     timer = true;
     this.chains();
     this.get_balance();
+    this.announcements();
   }
   componentWillUnmount() {
     timer = false;
   }
+  announcements = async () => {
+    const result = await this.props.dispatch({
+      type: "layout/commReq",
+      payload: {
+        lang: this.props.store.lang,
+      },
+      url: API.announcements,
+    });
+    if (result.code == 200 && result.data) {
+      this.setState({
+        announcements: result.data,
+      });
+    }
+  };
   async chains() {
     const result = await this.props.dispatch({
       type: "layout/commReq",
@@ -395,6 +411,20 @@ class IndexRC extends React.Component {
       );
     }
   };
+  goto = () => {
+    this.props.dispatch(
+      routerRedux.push({
+        pathname: route_map.test_token,
+      })
+    );
+  };
+  remove = (n) => (e) => {
+    let data = this.state.announcements;
+    data.splice(n, 1);
+    this.setState({
+      announcements: data,
+    });
+  };
   render() {
     const { classes } = this.props;
     const address =
@@ -436,10 +466,15 @@ class IndexRC extends React.Component {
                     chain_choose: true,
                   });
                 }}
+                style={{
+                  height: 24,
+                  display: "inline-flex",
+                  alignItems: "center",
+                }}
               >
                 <em></em>
                 {this.props.store.chain[this.props.store.chain_index]["name"]}
-                <ExpandMoreIcon />
+                <Iconfont type="arrowdown21" />
               </span>
             </Grid>
 
@@ -497,7 +532,16 @@ class IndexRC extends React.Component {
             </Grid>
           </Grid>
           <div className={classes.userinfo}>
-            <span>{username}</span>
+            <p>
+              {this.props.intl.formatMessage({ id: "hello" })},{username}
+              {this.props.store.chain_index == 1 ? (
+                <span className="test_token" onClick={this.goto}>
+                  {this.props.intl.formatMessage({ id: "claim test token" })}
+                </span>
+              ) : (
+                ""
+              )}
+            </p>
             <strong>
               {this.props.store.unit == "usd" ? "$" : ""}
               {this.props.store.unit == "cny" ? "￥" : ""}
@@ -519,7 +563,8 @@ class IndexRC extends React.Component {
             ) : (
               <CopyToClipboard text={address} onCopy={this.copy(false)}>
                 <em>
-                  {this.filteraddress(address)} | <Iconfont type="copy" />
+                  {this.filteraddress(address)} |{" "}
+                  <Iconfont type="copy" size={20} />
                 </em>
               </CopyToClipboard>
             )}
@@ -738,15 +783,37 @@ class IndexRC extends React.Component {
             </Grid>
           </Grid>
         </div>
-        <div className={classes.message}>
-          <span>
-            <Iconfont type="announcement" />
-          </span>
-          <p>
-            <a>提示：测试网的HBC代币均为测试币无任何实际</a>
-          </p>
-          <Iconfont type="close" />
-        </div>
+        {this.state.announcements.length > 0 ? (
+          <div className={classes.message}>
+            {this.state.announcements.map((item, i) => {
+              return (
+                <div
+                  className={classnames(
+                    classes.message_node,
+                    classes["message_node" + item.type]
+                  )}
+                  key={"announcements" + i}
+                  onClick={() => {
+                    extension.tabs &&
+                      extension.tabs.create({
+                        url: item.jump_url,
+                      });
+                  }}
+                >
+                  <span>
+                    <Iconfont type="announcement" />
+                  </span>
+                  <p>
+                    <a>{item.text}</a>
+                  </p>
+                  <Iconfont type="close" onClick={this.remove(i)} />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          ""
+        )}
         <List component="nav">
           {this.state.chains.map((item, i) => {
             let amount = 0;
