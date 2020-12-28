@@ -47,8 +47,9 @@ class IndexRC extends React.Component {
       this.props.store.accounts && this.props.store.account_index > -1
         ? this.props.store.accounts[this.props.store.account_index]
         : {};
-    const token_info = this.props.tokens.find((item) => item.chain == token);
-    const chain = token_info.chain;
+    const token_info =
+      this.props.tokens.find((item) => item.chain == token) || {};
+    const chain = token_info ? token_info.chain : "";
 
     let chain_external_address = "";
     const address = this.props.store.accounts[this.props.store.account_index]
@@ -257,8 +258,7 @@ class IndexRC extends React.Component {
               )}
             </p>
             <p>
-              {this.state.token_info.collect_fee &&
-              Number(this.state.token_info.collect_fee)
+              {this.state.token_info.collect_fee
                 ? this.props.intl.formatMessage(
                     {
                       id: "external deposit {token}{value}",
@@ -270,8 +270,7 @@ class IndexRC extends React.Component {
                   )
                 : ""}
 
-              {this.state.token_info.collect_fee &&
-              Number(this.state.token_info.collect_fee) ? (
+              {this.state.token_info.collect_fee ? (
                 <Tooltip
                   title={
                     <strong>

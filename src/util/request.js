@@ -23,6 +23,7 @@ export default function request(url, options = { method: "GET" }) {
   // fheaders.append("X-Requested-With", "XMLHttpRequest");
   // if (!options.upload) {
   fheaders.append("Content-Type", "application/x-www-form-urlencoded");
+  // fheaders.append("Content-Type", "application/json");
   // }
   // //fheaders.append("Accept-Language", window.localStorage.lang);
   // if (options.headers) {
