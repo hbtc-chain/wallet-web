@@ -20,6 +20,7 @@ import API from "../../util/api";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import moment from "moment";
 import extension from "extensionizer";
+import message from "../public/message";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -259,6 +260,9 @@ class IndexRC extends React.Component {
                 item.ibc_status
               ];
             }
+            const token = this.props.tokens.find(
+              (it) => it.symbol == flow.symbol
+            );
             return (
               <Grid
                 container
@@ -289,7 +293,7 @@ class IndexRC extends React.Component {
                 </Grid>
                 <Grid item style={{ textAlign: "right" }}>
                   <strong style={{ fontSize: 14 }}>
-                    {flow.amount} {(flow.symbol || "").toUpperCase()}
+                    {flow.amount} {(token ? token.name : "").toUpperCase()}
                   </strong>
                   <br />
                   <span className={classes.grey500}>

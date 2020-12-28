@@ -204,6 +204,9 @@ export default (theme) => ({
       cursor: "pointer",
     },
   },
+  swipeView: {
+    poisition: "relative",
+  },
   userinfo: {
     textAlign: "center",
     padding: "20px 0 16px",
@@ -353,7 +356,7 @@ export default (theme) => ({
   },
   message: {
     margin: "10px 16px 0",
-    height: 32,
+    height: 40,
     overflow: "hidden",
   },
   message_node: {
@@ -361,11 +364,11 @@ export default (theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    height: 32,
-    borderRadius: 16,
+    height: 40,
+    borderRadius: 6,
     color: theme.palette.grey[700],
     padding: "0 10px 0 0",
-    background: helper.hex_to_rgba(theme.palette.secondary.main, 0.1),
+    background: "#F9F9FB",
     "& p": {
       flex: 1,
       padding: "0 10px",
@@ -380,14 +383,14 @@ export default (theme) => ({
       cursor: "pointer",
     },
     "& span": {
-      margin: "0 0 0 2px",
+      margin: "0 0 0 6px",
       display: "flex",
       width: 26,
       height: 26,
       borderRadius: 13,
       alignItems: "center",
       justifyContent: "center",
-      background: helper.hex_to_rgba(theme.palette.secondary.main, 0.15),
+      //background: helper.hex_to_rgba(theme.palette.secondary.main, 0.15),
       "& i": {
         color: theme.palette.secondary.main,
       },

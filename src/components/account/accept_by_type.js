@@ -112,6 +112,7 @@ class IndexRC extends React.Component {
       open: false,
       token_info,
       token: token_info.symbol,
+      deposit_threshold: token_info.deposit_threshold,
     });
     //this.get_data(symbol);
   };
@@ -198,9 +199,14 @@ class IndexRC extends React.Component {
             </Grid>
           </Grid>
           <Paper className="paper paper2">
-            <p>{this.props.intl.formatMessage({ id: "external address" })}</p>
+            <p style={{ padding: 0, margin: 0 }}>
+              {this.props.intl.formatMessage({ id: "external address" })}
+            </p>
             {this.state.chain_external_address ? (
-              <img src={this.state[this.state.chain_external_address]} />
+              <img
+                style={{ width: 200, height: 200 }}
+                src={this.state[this.state.chain_external_address]}
+              />
             ) : (
               ""
             )}

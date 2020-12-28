@@ -63,9 +63,9 @@ class IndexRC extends React.Component {
       return;
     }
     this.setState({
-      target_quantity: e.target.value,
+      target_quantity: v,
       target_quantity_msg: "",
-      issue_quantity: e.target.value,
+      issue_quantity: v,
       issue_quantity_msg: "",
     });
   };
@@ -160,16 +160,16 @@ class IndexRC extends React.Component {
       });
       return;
     }
-    if (
-      Number(this.state.target_quantity) > Number(balance_target.amount || 0)
-    ) {
-      this.setState({
-        target_quantity_msg: this.props.intl.formatMessage({
-          id: "max to amount",
-        }),
-      });
-      return;
-    }
+    // if (
+    //   Number(this.state.target_quantity) > Number(balance_target.amount || 0)
+    // ) {
+    //   this.setState({
+    //     target_quantity_msg: this.props.intl.formatMessage({
+    //       id: "max to amount",
+    //     }),
+    //   });
+    //   return;
+    // }
 
     if (Number(this.state.fee) > Number(balance_hbc.amount)) {
       this.setState({
@@ -321,7 +321,7 @@ class IndexRC extends React.Component {
               id: "hbtcchain/mapping/MsgMappingSwap success",
             })
           );
-          //this.props.dispatch(routerRedux.goBack());
+          this.props.dispatch(routerRedux.goBack());
         } else {
           message.error(
             result.data.error_message

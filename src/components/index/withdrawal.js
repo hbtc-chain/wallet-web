@@ -51,6 +51,16 @@ class IndexRC extends React.Component {
   componentDidMount() {
     this.init();
     this.setFee();
+    let symbols = [];
+    this.props.tokens.map((item) => {
+      symbols.push(item.symbol);
+    });
+    this.props.dispatch({
+      type: "layout/tokens",
+      payload: {
+        symbols: symbols.join(","),
+      },
+    });
   }
   componentDidUpdate(preProps) {
     if (!preProps.tokens.length && this.props.tokens.length) {
@@ -148,8 +158,8 @@ class IndexRC extends React.Component {
     const max =
       symbol == chain
         ? math
-            .chain(balance.amount)
-            .subtract(this.state.gas_fee)
+            .chain(math.bignumber(balance.amount || 0))
+            .subtract(math.bignumber(this.state.gas_fee || 0))
             .format({ notation: "fixed" })
             .done()
         : balance.amount;
@@ -175,7 +185,7 @@ class IndexRC extends React.Component {
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
           {
-            n: balance.amount,
+            n: Math.max(0, max),
           }
         ),
       });
@@ -196,7 +206,7 @@ class IndexRC extends React.Component {
       return;
     }
 
-    if (Number(this.state.fee) < Number(balance_hbc.amount)) {
+    if (Number(this.state.fee) > Number(balance_hbc.amount)) {
       this.setState({
         fee_msg: this.props.intl.formatMessage({ id: "fee not enough" }),
       });
@@ -257,7 +267,6 @@ class IndexRC extends React.Component {
             (item) => item.symbol == symbol
           ) || { amount: "" }
         : { amount: 0 };
-
     let d = {
       chain_id: this.props.store.chain[this.props.store.chain_index][
         "chain_id"
@@ -279,7 +288,6 @@ class IndexRC extends React.Component {
             from_cu: address,
             to_multi_sign_address: this.state.to_address,
             symbol,
-            // 转账的币 == 手续费币 && amount == 余额时， 需要减去手续费
             amount: this.decimals(this.state.amount, token.decimals),
             gas_fee: this.decimals(this.state.gas_fee, token_chain.decimals),
             order_id: v4(),
@@ -378,6 +386,8 @@ class IndexRC extends React.Component {
       symbol: v,
       token,
       anchorEl: null,
+      gas_fee: Number(token.withdrawal_fee),
+      gas_fee_min: Number(token.withdrawal_fee),
     });
   };
   handleClose = () => {
@@ -413,12 +423,11 @@ class IndexRC extends React.Component {
     const max =
       symbol == chain
         ? math
-            .chain(balance.amount)
-            .subtract(this.state.gas_fee)
+            .chain(math.bignumber(balance.amount || 0))
+            .subtract(math.bignumber(this.state.gas_fee || 0))
             .format({ notation: "fixed" })
             .done()
         : balance.amount;
-    console.log(this.props.tokens);
     return (
       <div className={classes.symbol}>
         <Grid

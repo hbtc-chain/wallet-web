@@ -201,7 +201,7 @@ export default {
             k[item.symbol] = 1;
           }
         });
-        console.log(newtokens);
+        console.log(tokens);
         yield put({
           type: "save",
           payload: {
@@ -348,18 +348,29 @@ export default {
   reducers: {
     save(state, action) {
       // 同步数据到background store
+      let tokens = state.tokens;
       const data = { ...state, ...action.payload };
       if (action.payload.store) {
         store.set(data.store);
       }
       if (action.payload.tokens) {
-        action.payload.tokens.sort((a, b) => {
+        tokens = tokens.concat(action.payload.tokens);
+        let newdata = [];
+        let k = {};
+        tokens.map((item) => {
+          if (!k[item.symbol]) {
+            newdata.push(item);
+            k[item.symbol] = 1;
+          }
+        });
+        newdata.sort((a, b) => {
           return a.symbol.toUpperCase() > b.symbol.toUpperCase() ? 1 : -1;
         });
         window.localStorage.setItem(
           "hbc_wallet_tokens",
-          JSON.stringify(action.payload.tokens)
+          JSON.stringify(newdata)
         );
+        data.tokens = newdata;
       }
       return data;
     },

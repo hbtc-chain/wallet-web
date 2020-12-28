@@ -83,7 +83,7 @@ class DelegateRC extends React.Component {
       const operator_address = this.props.match.params.operator_address;
       let available = "";
       result.data.map((item) => {
-        if (item.operator_address == operator_address) {
+        if (item.validator == operator_address) {
           available = item.bonded;
         }
       });
@@ -138,8 +138,8 @@ class DelegateRC extends React.Component {
       "address"
     ];
     const max = math
-      .chain(this.state.available)
-      .subtract(this.state.fee)
+      .chain(math.bignumber(this.state.available || 0))
+      .subtract(math.bignumber(this.state.fee || 0))
       .format({ notation: "fixed" })
       .done();
     if (
@@ -290,7 +290,7 @@ class DelegateRC extends React.Component {
           message.success(
             this.props.intl.formatMessage({ id: "undelegate success" })
           );
-          //this.props.dispatch(routerRedux.goBack());
+          this.props.dispatch(routerRedux.goBack());
         } else {
           message.error(
             result.data.error_message
@@ -408,8 +408,8 @@ class DelegateRC extends React.Component {
                           0,
                           Number(
                             math
-                              .chain(this.state.available)
-                              .subtract(this.state.fee)
+                              .chain(math.bignumber(this.state.available || 0))
+                              .subtract(math.bignumber(this.state.fee || 0.002))
                               .format({ notation: "fixed" })
                               .done()
                           )

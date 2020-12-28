@@ -124,8 +124,8 @@ class IndexRC extends React.Component {
     const max =
       symbol == "hbc"
         ? math
-            .chain(balance_hbc.amount)
-            .subtract(this.state.fee)
+            .chain(math.bignumber(balance_hbc.amount || 0))
+            .subtract(math.bignumber(this.state.fee || 0))
             .format({ notation: "fixed" })
             .done()
         : balance.amount;
@@ -154,7 +154,7 @@ class IndexRC extends React.Component {
         amount_msg: this.props.intl.formatMessage(
           { id: "amount rule" },
           {
-            n: max,
+            n: Math.max(0, max),
           }
         ),
       });
@@ -384,8 +384,8 @@ class IndexRC extends React.Component {
     const max =
       symbol == "hbc"
         ? math
-            .chain(balance.amount)
-            .subtract(this.state.fee)
+            .chain(math.bignumber(balance.amount || 0))
+            .subtract(math.bignumber(this.state.fee || 0))
             .format({ notation: "fixed" })
             .done()
         : balance.amount;

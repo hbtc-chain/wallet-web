@@ -141,8 +141,8 @@ const init_data = {
       name: "Test net",
       url: "http://swap.yym.plus", // api接口地址
       chain_id: "hbtc-testnet",
-      exc: "https://juswap.io", // 跳往web交易
-      explorer: "https://explorer.hbtcchain.io", // 浏览器地址
+      exc: "http://swap.yym.plus", // 跳往web交易
+      explorer: "http://hbtc.yym.plus", // 浏览器地址
     },
   ],
   chain_index: 1, // 0 = main chain , 1 = test chain

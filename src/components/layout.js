@@ -25,9 +25,19 @@ class LayoutRC extends React.Component {
       url: API.verified_tokens,
     });
     if (result.code == 200) {
+      let tokens = this.props.tokens.concat(result.data);
+      let newtokens = [];
+      let k = {};
+      tokens.map((item) => {
+        if (!k[item.symbol]) {
+          newtokens.push(item);
+          k[item.symbol] = 1;
+        }
+      });
       this.props.dispatch({
         type: "layout/save",
         payload: {
+          tokens: newtokens,
           verified_tokens: result.data,
         },
       });
@@ -55,7 +65,7 @@ class LayoutRC extends React.Component {
       this.props.dispatch({
         type: "layout/save",
         payload: {
-          tokens: this.props.tokens.length ? this.props.tokens : newtokens,
+          tokens: newtokens,
           default_tokens: result.data,
         },
       });

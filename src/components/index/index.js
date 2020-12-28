@@ -50,6 +50,9 @@ import route_map from "../../config/route_map";
 import message from "../public/message";
 import extension from "extensionizer";
 import classnames from "classnames";
+import SwipeableViews from "react-swipeable-views";
+import { autoPlay } from "react-swipeable-views-utils";
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 let timer = null;
 class IndexRC extends React.Component {
@@ -77,6 +80,7 @@ class IndexRC extends React.Component {
       chains: [],
       account_choose: false,
       announcements: [],
+      activeStep: 0,
     };
   }
   componentDidMount() {
@@ -423,6 +427,12 @@ class IndexRC extends React.Component {
     data.splice(n, 1);
     this.setState({
       announcements: data,
+      activeStep: Math.min(this.state.activeStep, data.length - 1),
+    });
+  };
+  handleStepChange = (n) => {
+    this.setState({
+      activeStep: n,
     });
   };
   render() {
@@ -785,31 +795,38 @@ class IndexRC extends React.Component {
         </div>
         {this.state.announcements.length > 0 ? (
           <div className={classes.message}>
-            {this.state.announcements.map((item, i) => {
-              return (
-                <div
-                  className={classnames(
-                    classes.message_node,
-                    classes["message_node" + item.type]
-                  )}
-                  key={"announcements" + i}
-                  onClick={() => {
-                    extension.tabs &&
-                      extension.tabs.create({
-                        url: item.jump_url,
-                      });
-                  }}
-                >
-                  <span>
-                    <Iconfont type="announcement" />
-                  </span>
-                  <p>
-                    <a>{item.text}</a>
-                  </p>
-                  <Iconfont type="close" onClick={this.remove(i)} />
-                </div>
-              );
-            })}
+            <AutoPlaySwipeableViews
+              axis={"y"}
+              className={classes.swipeView}
+              index={this.state.activeStep}
+              onChangeIndex={this.handleStepChange}
+              enableMouseEvents
+              containerStyle={{ height: 40 }}
+            >
+              {this.state.announcements.map((item, i) => {
+                return (
+                  <div
+                    className={classnames(classes.message_node)}
+                    key={"announcements" + i}
+                  >
+                    <span>
+                      <Iconfont type="announcement" />
+                    </span>
+                    <p
+                      onClick={() => {
+                        extension.tabs &&
+                          extension.tabs.create({
+                            url: item.jump_url,
+                          });
+                      }}
+                    >
+                      {item.text}
+                    </p>
+                    <Iconfont type="close" onClick={this.remove(i)} />
+                  </div>
+                );
+              })}
+            </AutoPlaySwipeableViews>
           </div>
         ) : (
           ""

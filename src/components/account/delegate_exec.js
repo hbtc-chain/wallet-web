@@ -116,8 +116,8 @@ class DelegateRC extends React.Component {
         : { amount: 0 };
     const max = Number(
       math
-        .chain(balance.amount)
-        .subtract(this.state.fee)
+        .chain(math.bignumber(balance.amount || 0))
+        .subtract(math.bignumber(this.state.fee || 0))
         .format({ notation: "fixed" })
         .done()
     );
@@ -269,7 +269,7 @@ class DelegateRC extends React.Component {
           message.success(
             this.props.intl.formatMessage({ id: "delegate success" })
           );
-          //this.props.dispatch(routerRedux.goBack());
+          this.props.dispatch(routerRedux.goBack());
         } else {
           message.error(
             result.data.error_message
@@ -386,8 +386,8 @@ class DelegateRC extends React.Component {
                           0,
                           Number(
                             math
-                              .chain(balance.amount)
-                              .subtract(this.state.fee)
+                              .chain(math.bignumber(balance.amount || 0))
+                              .subtract(math.bignumber(this.state.fee || 0.002))
                               .format({ notation: "fixed" })
                               .done()
                           )

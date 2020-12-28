@@ -395,8 +395,8 @@ class DelegateRC extends React.Component {
                   disabled={
                     !Boolean(
                       balance.unclaimed_reward &&
-                        Number(balance.unclaimed_reward) >=
-                          Number(this.state.fee || 0)
+                        Number(balance.unclaimed_reward || 0) >=
+                          Number(this.state.fee || 0.002)
                     )
                   }
                   style={{ height: 32, borderRadius: 16, color: "#fff" }}
