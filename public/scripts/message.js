@@ -500,8 +500,6 @@ export default class MessageManager {
   }
   // 发送数据到popup
   async sendMsgToPopup(data) {
-    console.log("send msg to popup");
-    console.log(data);
     // 仅sign, connect请求，且未有popup时，主动打开popup
     let haspopup = false;
     this.port.forEach((item) => {
@@ -513,8 +511,6 @@ export default class MessageManager {
       !haspopup &&
       (data.type == CONST.METHOD_SIGN || data.type == CONST.MEHTOD_CONNECT)
     ) {
-      console.log("open popup");
-      console.log(data);
       await this.openPopup();
     }
     setTimeout(() => {
