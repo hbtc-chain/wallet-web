@@ -60,6 +60,7 @@ export default {
   pwd_rule3:
     "An uppercase letter, a lowercase letter and a number must be included",
   pwd_rule4: "Wrong password",
+  pwd_rule5: "Insufficient password strength",
   next: "Next",
   "seed.new.title": "Please",
   "seed.new.desc1":
@@ -157,8 +158,8 @@ export default {
   "hbtcchain/MsgUndelegate": "Cancel the delegate",
   "hbtcchain/keygen/MsgKeyGen": "Cross-chain address generating",
   "hbtcchain/MsgWithdrawDelegationReward": "Withdraw rewards",
-  "hbtcchain/transfer/MsgDeposit": "Cross-chain deposit",
-  "hbtcchain/transfer/MsgWithdrawal": "Cross-chain withdrawal",
+  "hbtcchain/transfer/MsgDeposit": "Deposit",
+  "hbtcchain/transfer/MsgWithdrawal": "Withdrawal",
   "hbtcchain/gov/MsgSubmitProposal": "Initiate proposals",
   "hbtcchain/gov/MsgDeposit": "Governance proposals pledge",
   "hbtcchain/gov/MsgVote": "Governance proposals voting",

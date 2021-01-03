@@ -14,7 +14,31 @@ class LayoutRC extends React.Component {
   componentDidMount() {
     this.default_tokens();
     this.verified_tokens();
+    if (this.props.txhash) {
+      this.check(this.props.txhash);
+    }
   }
+  check = async (txhash) => {
+    try {
+      const result = await this.props.dispatch({
+        type: "layout/commReq",
+        payload: {},
+        url: API.txs + "/" + txhash,
+      });
+      if (result.code == 200) {
+        window.localStorage.removeItem("hbc_wallet_txhash");
+        this.props.dispatch({
+          type: "layout/save",
+          payload: {
+            txhash: "",
+          },
+        });
+        return;
+      }
+    } catch (e) {}
+    await util.delay(1000);
+    this.check(txhash);
+  };
   verified_tokens = async () => {
     if (this.props.verified_tokens.length) {
       return;

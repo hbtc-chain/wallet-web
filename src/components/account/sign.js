@@ -249,7 +249,7 @@ class IndexRC extends React.Component {
       );
       return;
     }
-    let pwd = helper.sha256(res.password);
+    let pwd = res.password;
     let index = this.props.store.accounts.map((item) => item.password == pwd);
     if (index == -1) {
       this.setState({
@@ -271,9 +271,9 @@ class IndexRC extends React.Component {
       sequence: this.state.trade.sequence,
     };
     let obj = helper.jsonSort(d);
-    let account = this.props.store.accounts[this.props.store.account_index];
-    let privateKey = account.privateKey;
-    let publicKey = account.publicKey;
+    //let account = this.props.store.accounts[this.props.store.account_index];
+    let privateKey = res.privateKey;
+    let publicKey = res.publicKey;
 
     privateKey = helper.aes_decrypt(privateKey, res.password);
     publicKey = helper.aes_decrypt(publicKey, res.password);

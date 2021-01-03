@@ -35,8 +35,17 @@ class IndexRC extends React.Component {
   componentDidUpdate(preProps) {
     // 密码有效期内
     if (this.props.logged && this.props.password && this.props.open) {
-      this.props.submit && this.props.submit({ password: this.props.password });
-      return;
+      const account = this.props.store.accounts[this.props.store.account_index];
+      helper
+        .decryptKeyStore(account.keyStore, this.state.password)
+        .then((res) => {
+          this.props.submit &&
+            this.props.submit({
+              password: this.props.password,
+              priviteKey: res.priviteKey,
+              publicKey: res.publicKey,
+            });
+        });
     }
   }
   savepwd = (e) => {
@@ -73,31 +82,28 @@ class IndexRC extends React.Component {
       });
       return;
     }
-    let pwd = helper.sha256(this.state.password);
-    if (
-      pwd !=
-      this.props.store.accounts[this.props.store.account_index]["password"]
-    ) {
-      this.setState({
-        password_msg: this.props.intl.formatMessage({
-          id: "password is wrong",
-        }),
+    const account = this.props.store.accounts[this.props.store.account_index];
+    await helper
+      .decryptKeyStore(account.keyStore, this.state.password)
+      .then((res) => {
+        this.props.submit &&
+          this.props.submit({
+            password: this.state.password,
+            priviteKey: res.priviteKey,
+            publicKey: res.publicKey,
+          });
+        this.setState({
+          password_msg: "",
+          password: "",
+        });
+      })
+      .catch((reject) => {
+        this.setState({
+          password_msg: this.props.intl.formatMessage({
+            id: "password is wrong",
+          }),
+        });
       });
-      return;
-    }
-    // 保存免密配置
-    // this.props.messageManager.sendMessage({
-    //   type: CONST.METHOD_SAVE_PASSWORD,
-    //   data: {
-    //     no_pwd: this.state.no_pwd,
-    //     password: this.state.password,
-    //   },
-    // });
-    this.props.submit && this.props.submit({ password: this.state.password });
-    this.setState({
-      password_msg: "",
-      password: "",
-    });
   };
   render() {
     const { classes } = this.props;

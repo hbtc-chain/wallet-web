@@ -298,8 +298,8 @@ class IndexRC extends React.Component {
     };
     let obj = helper.jsonSort(d);
     let account = this.props.store.accounts[this.props.store.account_index];
-    let privateKey = account.privateKey;
-    let publicKey = account.publicKey;
+    let privateKey = this.props.privateKey;
+    let publicKey = this.props.publicKey;
 
     privateKey = helper.aes_decrypt(privateKey, res.password);
     publicKey = helper.aes_decrypt(publicKey, res.password);
@@ -343,6 +343,13 @@ class IndexRC extends React.Component {
     });
     if (result.code == 200) {
       this.check(result.data.txhash);
+      this.props.dispatch({
+        type: "layout/save",
+        payload: {
+          txhash: result.data.txhash,
+        },
+      });
+      window.localStorage.hbc_wallet_txhash = result.data.txhash;
     } else {
       message.error(
         result.data && result.data.raw_log
@@ -658,7 +665,7 @@ class IndexRC extends React.Component {
           </p>
         </div>
         <div className={classes.submit}>
-          {this.state.loading ? (
+          {this.state.loading || this.props.txhash ? (
             <Button color="primary" variant="contained" fullWidth disabled>
               <CircularProgress color="primary" size={20} />
             </Button>

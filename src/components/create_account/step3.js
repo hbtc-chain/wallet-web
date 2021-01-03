@@ -13,6 +13,7 @@ import Nav from "./nav";
 import Cancel from "@material-ui/icons/Cancel";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 import classnames from "classnames";
+import zxcvbn from "zxcvbn";
 
 class IndexRC extends React.Component {
   constructor() {
@@ -36,6 +37,11 @@ class IndexRC extends React.Component {
     if (this.props.store.account_index > -1) {
       this.setState({
         password_msg_arr: ["pwd_rule4"],
+      });
+    }
+    if (this.props.store.accounts == 0) {
+      this.setState({
+        password_msg_arr: this.state.password_msg_arr.concat(["pwd_rule5"]),
       });
     }
   }
@@ -92,7 +98,7 @@ class IndexRC extends React.Component {
       })
     );
   };
-  verify = (key, v) => {
+  verify = async (key, v) => {
     const accounts = this.props.store.accounts;
     let arr1 = [],
       arr2 = [],
@@ -118,12 +124,28 @@ class IndexRC extends React.Component {
       ) {
         arr1.push(1);
       }
-      if (
-        this.props.store.account_index > -1 &&
-        helper.sha256(password) !== this.props.store.accounts[0]["password"]
-      ) {
-        arr1.push(2);
+      if (this.props.store.account_index > -1) {
+        try {
+          const res = await helper.decryptKeyStore(
+            this.props.store.accounts[this.props.store.account_index][
+              "keyStore"
+            ],
+            password
+          );
+          if (!res || !res.mnemonic) {
+            arr1.push(2);
+          }
+        } catch (e) {
+          arr1.push(2);
+        }
       }
+      if (this.props.store.accounts.length == 0) {
+        const r = zxcvbn(password);
+        if (r.feedback && r.feedback.warning) {
+          arr1.push(2);
+        }
+      }
+
       if (this.props.store.account_index == -1 && password != confirmpwd) {
         arr2.push(0);
       }
@@ -234,14 +256,7 @@ class IndexRC extends React.Component {
                 <div className="tip">
                   {this.state.account_msg_arr.map((item, i) => {
                     return (
-                      <p
-                        className={
-                          this.state.account_msg_i.indexOf(i) > -1
-                            ? classes.error
-                            : ""
-                        }
-                        key={i}
-                      >
+                      <p className={classes.error} key={i}>
                         {intl.formatMessage({ id: item })}
                       </p>
                     );

@@ -57,22 +57,31 @@ class IndexRC extends React.Component {
       password_msg: "",
     });
   };
-  submit = (e) => {
+  submit = async (e) => {
     const store = this.props.store;
-    const pwd = store.accounts[store.account_index]["password"];
-    if (helper.sha256(this.state.password) === pwd) {
-      this.goto();
-    } else {
-      this.setState({
-        password_msg: this.props.intl.formatMessage({
-          id: "password is wrong",
-        }),
+    const keyStore = store.accounts[store.account_index]["keyStore"];
+
+    await helper
+      .decryptKeyStore(keyStore, this.state.password)
+      .then((res) => {
+        this.goto();
+      })
+      .catch((reject) => {
+        console.log(reject);
+        this.setState({
+          password_msg: this.props.intl.formatMessage({
+            id: "password is wrong",
+          }),
+        });
       });
-    }
+    // if (helper.sha256(this.state.password) === pwd) {
+    //   this.goto();
+    // } else {
+
+    // }
   };
   render() {
     const { classes, intl, dispatch, store } = this.props;
-    const mnemonic = store.accounts[store.account_index]["mnemonic"];
     return (
       <div className={classes.export_list}>
         <Grid
@@ -94,20 +103,17 @@ class IndexRC extends React.Component {
           <Grid item xs={2}></Grid>
         </Grid>
         <List>
-          {mnemonic ? (
-            <ListItem onClick={this.openModal("seed")}>
-              <ListItemText
-                primary={intl.formatMessage({ id: "seed" })}
-              ></ListItemText>
-              <ListItemSecondaryAction>
-                <IconButton edge="end">
-                  <NavigateNext />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-          ) : (
-            ""
-          )}
+          <ListItem onClick={this.openModal("seed")}>
+            <ListItemText
+              primary={intl.formatMessage({ id: "seed" })}
+            ></ListItemText>
+            <ListItemSecondaryAction>
+              <IconButton edge="end">
+                <NavigateNext />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+
           <ListItem onClick={this.openModal("key")}>
             <ListItemText
               primary={intl.formatMessage({ id: "private key" })}

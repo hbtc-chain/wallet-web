@@ -33,26 +33,26 @@ class IndexRC extends React.Component {
       this.props.store.accounts[this.props.store.account_index]
         ? this.props.store.accounts[this.props.store.account_index]
         : "";
-
-    if (account.mnemonic && password) {
-      const seed = helper.aes_decrypt(account.mnemonic, password);
-      this.setState({
-        seeds: seed.split(" "),
-        seeds_sort: seed.split(" ").sort((a, b) => {
-          const r = Math.random();
-          if (r - 0.5 >= 0) {
-            return -1;
-          } else {
-            return 1;
-          }
-        }),
+    if (account) {
+      helper.decryptKeyStore(account.keyStore, password).then((res) => {
+        this.setState({
+          seeds: res.mnemonic.split(" "),
+          seeds_sort: res.mnemonic.split(" ").sort((a, b) => {
+            const r = Math.random();
+            if (r - 0.5 >= 0) {
+              return -1;
+            } else {
+              return 1;
+            }
+          }),
+        });
+        let seeds_select = this.state.seeds_select;
+        for (var i = 0; i < seeds_select.length; i++) {
+          seeds_select[i] = "";
+        }
+        this.setState({ seeds_select });
       });
     }
-    let seeds_select = this.state.seeds_select;
-    for (var i = 0; i < seeds_select.length; i++) {
-      seeds_select[i] = "";
-    }
-    this.setState({ seeds_select });
   }
   next = () => {
     this.setState({

@@ -46,16 +46,24 @@ class IndexRC extends React.Component {
       });
       return;
     }
-    const pwd = helper.sha256(this.state.password);
-    const index = this.props.store.accounts.findIndex(
-      (item) => item.password == pwd
-    );
-    if (index == -1) {
-      this.setState({
-        password_msg: this.props.intl.formatMessage({ id: "password failed" }),
+    const pwd = this.state.password;
+    const keyStore = this.props.store.accounts[this.props.store.account_index][
+      "keyStore"
+    ];
+    await helper
+      .decryptKeyStore(keyStore, pwd)
+      .then((res) => {
+        this.login_success(pwd, res);
+      })
+      .catch((reject) => {
+        this.setState({
+          password_msg: this.props.intl.formatMessage({
+            id: "password failed",
+          }),
+        });
       });
-      return;
-    }
+  };
+  login_success = async (pwd) => {
     if (this.props.messageManager) {
       await this.props.messageManager.sendMessage({
         type: CONST.METHOD_LOGIN,
@@ -70,7 +78,7 @@ class IndexRC extends React.Component {
       payload: {
         store: {
           ...this.props.store,
-          account_index: index,
+          account_index: 0,
         },
       },
     });

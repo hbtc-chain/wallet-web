@@ -59,13 +59,15 @@ function sha256(str) {
  * @param {string} privateKey
  * @param {string} address
  * @param {string} password
+ * @param {string} mnemonic
  * @param {function} progressCallback
  * @return {promise} promise, resolve({}) or reject('xxx')
  */
-function createKeystore(
+async function createKeystore(
   privateKey,
   address,
   password,
+  mnemonic,
   progressCallback = () => {}
 ) {
   if (!address || !privateKey || !password) {
@@ -73,48 +75,58 @@ function createKeystore(
     return Promise.reject("Missing parameters");
   }
   const pwd = Buffer.from(password);
-  const prikey = HexString2Bytes(privateKey); // arrayify(privateKey);
+  const prikey = aes.utils.hex.toBytes(privateKey); // arrayify(privateKey);
+  let mic = aes.utils.utf8.toBytes(mnemonic);
+
   const salt = crypto.randomBytes(32); // Buffer.randomBytes(32); // randomBytes(32);
   const iv = crypto.randomBytes(16); // Buffer.randomBytes(16); // randomBytes(16);
   const N = 1024,
     r = 8,
     p = 1;
-  return scrypt.scrypt(pwd, salt, N, r, p, 64, progressCallback).then((key) => {
-    const derivedKey = key.slice(0, 16);
-    const macPrefix = key.slice(16, 32);
+  return scrypt
+    .scrypt(pwd, salt, N, r, p, 64, progressCallback)
+    .then(async (key) => {
+      const derivedKey = key.slice(0, 16);
+      const macPrefix = key.slice(16, 32);
+      const menmPrefix = key.slice(32, 64);
 
-    // Encrypt the private key
-    const counter = new aes.Counter(iv);
-    const aesCtr = new aes.ModeOfOperation.ctr(derivedKey, counter);
-    const ciphertext = HexString2Bytes(
-      Buffer.from(aesCtr.encrypt(prikey)).toString("hex")
-    );
+      // Encrypt the private key
+      const counter = new aes.Counter(iv);
+      const aesCtr = new aes.ModeOfOperation.ctr(derivedKey, counter);
+      const ciphertext = aesCtr.encrypt(prikey);
 
-    // Compute the message authentication code, used to check the password
-    const mac = sha3.keccak_256([...macPrefix, ...ciphertext]);
-    const data = {
-      address: address.toLowerCase(),
-      id: v4().toUpperCase(),
-      version: 3,
-      Crypto: {
-        cipherparams: {
-          iv: Buffer.from(iv).toString("hex"), // hexlify(iv).substring(2),
+      // const ciphertext2 = HexString2Bytes(
+      //   Buffer.from(aesCtr_menm.encrypt(mic)).toString("hex")
+      // );
+      const aesOfb = new aes.ModeOfOperation.ofb(menmPrefix, derivedKey);
+      const ciphertext2 = aesOfb.encrypt(mic);
+
+      // Compute the message authentication code, used to check the password
+      const mac = sha3.keccak_256([...macPrefix, ...ciphertext]);
+      const data = {
+        address: address.toLowerCase(),
+        id: v4().toUpperCase(),
+        version: 3,
+        Crypto: {
+          cipherparams: {
+            iv: aes.utils.hex.fromBytes(iv), // Buffer.from(iv).toString("hex"),
+          },
+          ciphertext: aes.utils.hex.fromBytes(ciphertext), // Buffer.from(ciphertext).toString("hex"),
+          ciphertext2: aes.utils.hex.fromBytes(ciphertext2),
+          kdf: "scrypt",
+          kdfparams: {
+            salt: aes.utils.hex.fromBytes(salt), // Buffer.from(salt).toString("hex"),
+            n: N,
+            dklen: 32,
+            p: p,
+            r: r,
+          },
+          mac,
+          cipher: "aes-128-ctr",
         },
-        ciphertext: Buffer.from(ciphertext).toString("hex"), // hexlify(ciphertext).substring(2),
-        kdf: "scrypt",
-        kdfparams: {
-          salt: Buffer.from(salt).toString("hex"), // hexlify(salt).substring(2),
-          n: N,
-          dklen: 32,
-          p: p,
-          r: r,
-        },
-        mac,
-        cipher: "aes-128-ctr",
-      },
-    };
-    return data;
-  });
+      };
+      return data;
+    });
 }
 
 /**
@@ -134,7 +146,7 @@ async function decryptKeyStore(data, password) {
     p = parseInt(kdfparams.p),
     n = parseInt(kdfparams.n),
     dklen = parseInt(kdfparams.dklen),
-    salt = HexString2Bytes(kdfparams.salt); // Buffer.from(kdfparams.salt);
+    salt = aes.utils.hex.toBytes(kdfparams.salt); // Buffer.from(kdfparams.salt);
   if (!r || !p || !n || !dklen || !salt) {
     return Promise.reject("Missing kdfparams parameters");
   }
@@ -144,7 +156,8 @@ async function decryptKeyStore(data, password) {
   const pwd = Buffer.from(password); // new Uint8Array(HexString2Bytes(password.normalize("NFKC")));
 
   const key = await scrypt.scrypt(pwd, salt, n, r, p, 64);
-  const ciphertext = HexString2Bytes(json.Crypto.ciphertext);
+  const ciphertext = aes.utils.hex.toBytes(json.Crypto.ciphertext);
+  let ciphertext2 = aes.utils.hex.toBytes(json.Crypto.ciphertext2);
 
   const computedMAC = sha3.keccak_256([...key.slice(16, 32), ...ciphertext]);
 
@@ -152,6 +165,9 @@ async function decryptKeyStore(data, password) {
     return Promise.reject("invalid password");
   }
   const privateKey = _decrypt(json, key.slice(0, 16), ciphertext);
+  const mnemonic = aes.utils.utf8.fromBytes(
+    _decrypt(json, [key.slice(32, 64), key.slice(0, 16)], ciphertext2, 1)
+  );
   if (!privateKey) {
     return Promise.reject("unsupported cipher");
   }
@@ -164,16 +180,19 @@ async function decryptKeyStore(data, password) {
   return Promise.resolve({
     ...keys,
     address,
+    mnemonic: mnemonic,
   });
 }
 
-function _decrypt(data, key, ciphertext) {
+function _decrypt(data, key, ciphertext, ismnem) {
   const cipher = data.Crypto.cipher; // searchPath(data, "crypto/cipher");
   if (cipher === "aes-128-ctr") {
-    const iv = HexString2Bytes(data.Crypto.cipherparams.iv); // looseArrayify(searchPath(data, "crypto/cipherparams/iv"));
+    const iv = aes.utils.hex.toBytes(data.Crypto.cipherparams.iv); // looseArrayify(searchPath(data, "crypto/cipherparams/iv"));
     const counter = new aes.Counter(iv);
-    const aesCtr = new aes.ModeOfOperation.ctr(key, counter);
-    return Buffer.from(aesCtr.decrypt(ciphertext)).toString("hex");
+    const aesCtr = ismnem
+      ? new aes.ModeOfOperation.ofb(key[0], key[1])
+      : new aes.ModeOfOperation.ctr(key, counter);
+    return aesCtr.decrypt(ciphertext);
   }
   return null;
 }
@@ -194,6 +213,17 @@ function HexString2Bytes(str) {
     pos += 2;
   }
   return arrBytes;
+}
+
+// string to bytes
+function string_to_bytes(str) {
+  let d = new TextEncoder();
+  return d.encode(str);
+}
+
+function bytes_to_string(bytes) {
+  let d = new TextDecoder();
+  return d.decode(new Uint8Array(bytes));
 }
 
 /**
@@ -425,5 +455,7 @@ export default {
   jsonSort,
   sign,
   HexString2Bytes,
+  string_to_bytes,
+  bytes_to_string,
   rates,
 };

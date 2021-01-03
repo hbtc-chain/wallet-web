@@ -38,24 +38,44 @@ class IndexRC extends React.Component {
     };
   }
   componentDidMount() {
-    const params = querystring.parse(this.props.location.search || "");
     const store = this.props.store;
     const account = store.accounts[store.account_index];
     const password = this.props.location.state
       ? this.props.location.state.password
       : "";
-    if (params.way == "seed") {
-      this.getSeed(account, password);
-    }
-    if (params.way == "key") {
-      this.getKey(account, password);
-    }
-    if (params.way == "Keystore") {
-      this.getKeystore(account, password);
+    if (password) {
+      this.decryptKeyStore();
     }
   }
-  getSeed = async (account, password) => {
-    const mnemonic = helper.aes_decrypt(account["mnemonic"], password) || "";
+  decryptKeyStore = async () => {
+    const params = querystring.parse(this.props.location.search || "");
+    const password = this.props.location.state
+      ? this.props.location.state.password
+      : "";
+    const store = this.props.store;
+    const account = store.accounts[store.account_index];
+    if (password) {
+      await helper
+        .decryptKeyStore(account["keyStore"], password)
+        .then(async (res) => {
+          this.setState({
+            mnemonic: res.mnemonic,
+            privateKey: Buffer.from(res.privateKey).toString("hex"), // helper.bytes_to_string(res.privateKey),
+          });
+          if (params.way == "seed") {
+            this.getSeed(res.mnemonic);
+          }
+          if (params.way == "key") {
+            this.getKey(Buffer.from(res.privateKey).toString("hex"));
+          }
+          if (params.way == "Keystore") {
+            this.getKeystore(account["keyStore"]);
+          }
+        })
+        .catch((reject) => {});
+    }
+  };
+  getSeed = async (mnemonic) => {
     const img = mnemonic
       ? await Qrcode.toDataURL(mnemonic, { width: 520 })
       : "";
@@ -65,22 +85,16 @@ class IndexRC extends React.Component {
       img,
     });
   };
-  getKey = async (account, password) => {
-    const key = helper.aes_decrypt(account["privateKey"], password) || "";
-    const img = key ? await Qrcode.toDataURL(key, { width: 520 }) : "";
+  getKey = async (privateKey) => {
+    const img = privateKey
+      ? await Qrcode.toDataURL(privateKey, { width: 520 })
+      : "";
     this.setState({
-      copytext: key,
+      copytext: privateKey,
       img,
     });
   };
-  getKeystore = async (account, password) => {
-    const key = helper.aes_decrypt(account["privateKey"], password) || "";
-    let keystore = "";
-    await helper
-      .createKeystore(key, account["address"], password)
-      .then((res) => {
-        keystore = JSON.stringify(res);
-      });
+  getKeystore = async (keystore) => {
     const img = keystore
       ? await Qrcode.toDataURL(keystore, { width: 520 })
       : "";

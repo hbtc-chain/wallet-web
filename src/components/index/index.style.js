@@ -240,6 +240,7 @@ export default (theme) => ({
         borderRadius: 12,
         color: theme.palette.common.white,
         fontSize: 12,
+        padding: "0 10px",
         background: `${helper.hex_to_rgba(theme.palette.common.white, 0.3)}`,
         cursor: "pointer",
       },
@@ -358,6 +359,7 @@ export default (theme) => ({
     margin: "10px 16px 0",
     height: 40,
     overflow: "hidden",
+    width: "calc(100% - 32px)",
   },
   message_node: {
     cursor: "pointer",
@@ -368,17 +370,28 @@ export default (theme) => ({
     borderRadius: 6,
     color: theme.palette.grey[700],
     padding: "0 10px 0 0",
+    width: "100%",
+    overflow: "hidden",
     background: "#F9F9FB",
+
     "& p": {
-      flex: 1,
+      //flex: 1,
       padding: "0 10px",
       fontSize: 12,
+      //maxWidth: 266,
       overflow: "hidden",
       whiteSpace: "nowrap",
       "& a": {
         color: theme.palette.grey[700],
       },
+      "@media (max-width:360px)": {
+        width: 266,
+      },
+      "@media (min-width:700px)": {
+        width: 600,
+      },
     },
+
     "& i": {
       cursor: "pointer",
     },
@@ -396,6 +409,7 @@ export default (theme) => ({
       },
     },
   },
+
   token_item: {
     borderBottom: `1px solid ${theme.palette.grey[50]}`,
     "& div": {
@@ -410,6 +424,9 @@ export default (theme) => ({
       fontSize: 16,
       lineHeight: "18px",
       fontWeight: 500,
+      maxWidth: 200,
+      overflow: "hidden",
+      display: "block",
     },
     "& p": {
       color: theme.palette.grey[300],
@@ -419,7 +436,7 @@ export default (theme) => ({
     "& i": {
       display: "inline-block",
       padding: 2,
-      margin: "0 0 0 6px",
+      margin: "-2px 0 0 6px",
       lineHeight: "18px",
       fontSize: 12,
       color: theme.palette.grey[500],
@@ -578,6 +595,17 @@ export default (theme) => ({
       height: 40,
       fontSize: 14,
       fontWeight: 400,
+    },
+  },
+  btns2: {
+    width: "100%",
+    height: 40,
+    "& .MuiButton-root": {
+      height: 40,
+      fontSize: 14,
+      fontWeight: 400,
+      padding: "2px 2px",
+      fontSize: 12,
     },
   },
   btn_fixed: {

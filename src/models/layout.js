@@ -101,7 +101,6 @@ export default {
         return;
       }
       const mnemonic = payload.mnemonic || helper.createMnemonic();
-      const encrypt_mnemonic = helper.aes_encrypt(mnemonic, password);
       let keys = {};
       if (payload.way == "key") {
         // 根据私钥解公钥
@@ -112,18 +111,6 @@ export default {
         // 生成公钥秘钥
         keys = helper.createKey(mnemonic, CONST.HBC_PATH);
       }
-      const encrypt_privateKey = helper.aes_encrypt(
-        Buffer.from(keys.privateKey).toString("hex"),
-        password
-      );
-      const encrypt_publicKey = helper.aes_encrypt(
-        Buffer.from(keys.publicKey).toString("hex"),
-        password
-      );
-      // const encrypt_chainCode = helper.aes_encrypt(
-      //   Buffer.from(keys.chainCode).toString("hex"),
-      //   password
-      // );
 
       // 根据公钥计算address
       const address =
@@ -131,19 +118,24 @@ export default {
           ? keys.address
           : helper.createAddress(keys.publicKey);
 
-      // 保存加密后密码，12词，秘钥
+      // 创建keystore
+      const result = yield helper.createKeystore(
+        Buffer.from(keys.privateKey).toString("hex"),
+        address,
+        password,
+        mnemonic
+      );
+
       let store = yield select((state) => state.layout.store);
+      let keyStore = JSON.stringify(result);
+      // 保存keystore
       let accounts = store.accounts;
       const data = {
         address,
         username:
           payload.account ||
           "Account" + (accounts && accounts.length ? accounts.length + 1 : 1),
-        password: helper.sha256(password),
-        mnemonic: payload.key ? "" : encrypt_mnemonic,
-        privateKey: encrypt_privateKey,
-        publicKey: encrypt_publicKey,
-        // chainCode: encrypt_chainCode,
+        keyStore,
       };
       if (accounts && accounts.length) {
         accounts.push(data);

@@ -53,6 +53,7 @@ export default {
   pwd_rule2: "确认密码与密码不一致",
   pwd_rule3: "需包含大写字母、小写字母及数字",
   pwd_rule4: "密码错误",
+  pwd_rule5: "密码强度不足",
   next: "下一步",
   "seed.new.title": "请务必",
   "seed.new.desc1": "牢记并妥善保管这12个单词,一旦遗失，您的资产将无法找回",

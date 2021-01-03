@@ -244,8 +244,8 @@ class IndexRC extends React.Component {
     };
     let obj = helper.jsonSort(d);
     let account = this.props.store.accounts[this.props.store.account_index];
-    let privateKey = account.privateKey;
-    let publicKey = account.publicKey;
+    let privateKey = this.props.privateKey;
+    let publicKey = this.props.publicKey;
 
     privateKey = helper.aes_decrypt(privateKey, res.password);
     publicKey = helper.aes_decrypt(publicKey, res.password);

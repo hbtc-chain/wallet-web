@@ -122,10 +122,10 @@ const initStore = async () => {
           },
           {
             name: "Test net",
-            url: "http://swap.yym.plus",
+            url: "https://explorer.hbtcchain.io", // api接口地址
             chain_id: "hbtc-testnet",
-            exc: "https://juswap.io/",
-            explorer: "https://explorer.hbtcchain.io/",
+            exc: "https://dex.hbtcchain.io", // 跳往web交易
+            explorer: "https://explorer.hbtcchain.io", // 浏览器地址
           },
         ],
         chain_index: 1,
@@ -150,6 +150,10 @@ const initStore = async () => {
         langs: ["zh-cn", "en-us"],
         messageManager: null,
         logged: window.location.href.indexOf("localhost") > -1 ? true : false,
+        txhash:
+          window.localStorage.hbc_wallet_txhash === undefined
+            ? ""
+            : window.localStorage.hbc_wallet_txhash,
       },
     },
     res ? res.lang : "en-us"

@@ -309,24 +309,27 @@ class IndexRC extends React.Component {
                     )}
                   </Grid>
                   <Grid item style={{ flex: 1, margin: "0 0 0 12px" }}>
-                    <strong>{item.name.toUpperCase()}</strong>
-                    {item.symbol != "hbc" ? (
-                      item.is_verified ? (
-                        <i className={item.is_native ? "native" : ""}>
-                          {this.props.intl.formatMessage({
-                            id: item.is_native ? "native" : "not native",
-                          })}
-                        </i>
+                    <strong>
+                      {item.name.toUpperCase()}
+                      {item.symbol != "hbc" ? (
+                        item.is_verified ? (
+                          <i className={item.is_native ? "native" : ""}>
+                            {this.props.intl.formatMessage({
+                              id: item.is_native ? "native" : "not native",
+                            })}
+                          </i>
+                        ) : (
+                          <i className={"verified"}>
+                            {this.props.intl.formatMessage({
+                              id: "not verified",
+                            })}
+                          </i>
+                        )
                       ) : (
-                        <i className={"verified"}>
-                          {this.props.intl.formatMessage({
-                            id: "not verified",
-                          })}
-                        </i>
-                      )
-                    ) : (
-                      ""
-                    )}
+                        ""
+                      )}
+                    </strong>
+
                     <p>
                       {rates[2]}
                       {rates2[0]}
@@ -348,7 +351,9 @@ class IndexRC extends React.Component {
               container
               justify="space-around"
               alignItems="center"
-              className={classes.btns}
+              className={
+                this.props.store.lang == "en-us" ? classes.btns2 : classes.btns
+              }
             >
               <Grid item style={{ flex: 3 }}>
                 <Button

@@ -7,27 +7,13 @@ import {
   Button,
   Grid,
   TextField,
-  Slider,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   MenuItem,
 } from "@material-ui/core";
-import route_map from "../../config/route_map";
-import helper from "../../util/helper";
 import { routerRedux } from "dva/router";
-import CONST from "../../util/const";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import { v4 } from "uuid";
-import util from "../../util/util";
 import API from "../../util/api";
-import math from "../../util/mathjs";
 import message from "../public/message";
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import VisibilityIcon from "@material-ui/icons/Visibility";
-import PasswordRC from "../public/password";
 
 class IndexRC extends React.Component {
   constructor() {

@@ -565,7 +565,11 @@ export default (theme) => ({
       "& span": {
         fontSize: 12,
         color: theme.palette.common.white,
+        whiteSpace: "nowrap",
       },
+    },
+    "& .MuiButton-root": {
+      padding: 6,
     },
     "& em": {
       fontSize: 14,
@@ -586,7 +590,7 @@ export default (theme) => ({
       alignItems: "center",
       lineHeight: "30px",
       cursor: "pointer",
-      margin: "0 32px 0 0",
+      margin: "0 18px 0 0",
       color: theme.palette.grey[500],
       "& i": {
         width: 16,

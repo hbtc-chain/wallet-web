@@ -168,64 +168,6 @@ class IndexRC extends React.Component {
             </span>
             {token && token.logo ? <img src={token.logo} /> : ""}
           </div>
-          {symbol == "hbc" ? (
-            <div style={{ padding: "10px 0 8px" }}>
-              <Grid
-                container
-                justify="space-between"
-                className={classes.symbol_amount_item}
-              >
-                <Grid item>
-                  {this.props.intl.formatMessage({ id: "available" })}
-                </Grid>
-                <Grid item>{balance.amount || "--"}</Grid>
-              </Grid>
-              <Grid
-                container
-                justify="space-between"
-                className={classes.symbol_amount_item}
-              >
-                <Grid item>
-                  {this.props.intl.formatMessage({ id: "bonded" })}
-                </Grid>
-                <Grid item>
-                  {this.props.balance && this.props.balance[address]
-                    ? this.props.balance[address].bonded
-                    : "--"}
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                justify="space-between"
-                className={classes.symbol_amount_item}
-              >
-                <Grid item>
-                  {this.props.intl.formatMessage({ id: "unbonding" })}
-                </Grid>
-                <Grid item>
-                  {this.props.balance && this.props.balance[address]
-                    ? this.props.balance[address].unbonding
-                    : "--"}
-                </Grid>
-              </Grid>
-              <Grid
-                container
-                justify="space-between"
-                className={classes.symbol_amount_item}
-              >
-                <Grid item>
-                  {this.props.intl.formatMessage({ id: "claimed_reward" })}
-                </Grid>
-                <Grid item>
-                  {this.props.balance && this.props.balance[address]
-                    ? this.props.balance[address].claimed_reward
-                    : "--"}
-                </Grid>
-              </Grid>
-            </div>
-          ) : (
-            ""
-          )}
         </Paper>
         <div className={classes.token_list} style={{ paddingBottom: 90 }}>
           {this.state.data.map((item) => {
@@ -281,12 +223,13 @@ class IndexRC extends React.Component {
                           ? item.activities[0]["type"]
                           : "other",
                     })}
+                    <i className={item.success ? "native" : ""}>
+                      {this.props.intl.formatMessage({
+                        id: status,
+                      })}
+                    </i>
                   </strong>
-                  <i className={item.success ? "native" : ""}>
-                    {this.props.intl.formatMessage({
-                      id: status,
-                    })}
-                  </i>
+
                   <p>
                     {moment(item.time * 1000).format("YYYY-MM-DD HH:mm:ss")}
                   </p>
