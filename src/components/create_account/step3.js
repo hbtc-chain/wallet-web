@@ -328,14 +328,7 @@ class IndexRC extends React.Component {
                 <div className="tip">
                   {this.state.password_msg_arr.map((item, i) => {
                     return (
-                      <p
-                        className={
-                          this.state.password_msg_i.indexOf(i) > -1
-                            ? classes.error
-                            : ""
-                        }
-                        key={i}
-                      >
+                      <p className={classes.error} key={i}>
                         {intl.formatMessage({ id: item })}
                       </p>
                     );

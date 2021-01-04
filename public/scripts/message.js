@@ -7,6 +7,7 @@ import request from "./request";
 import API from "../../src/util/api";
 import Sign from "../../src/util/sign";
 import { v4 } from "uuid";
+import helper from "../../src/util/helper";
 
 const AUTO_LOGOUT_TIME = 6 * 60 * 60 * 1000;
 
@@ -580,28 +581,31 @@ export default class MessageManager {
       });
       return;
     }
-    const index = accounts.findIndex((item) => item.password == pwd);
-    if (index == -1) {
-      this.sendMsgToPopup({
-        ...obj,
-        data: { code: 400, msg: "Wrong password" },
-      });
-      return;
-    }
-    this.logged = true;
-    this.password = obj.data.password_source;
-    datas.account_index = index;
-    await store.set(datas);
+    const keyStore = accounts[0]["keyStore"];
+    let res = null;
+    try {
+      res = await helper.decryptKeyStore(keyStore, obj.data.password_source);
+      if (res.mnemonic) {
+        this.logged = true;
+        this.password = obj.data.password_source;
+        datas.account_index = 0;
+        await store.set(datas);
+        this.sendMsgToPopup({
+          ...obj,
+          data: { code: 200, msg: "OK" },
+        });
+        // 6小时后登陆失效
+        clearTimeout(this.logout_timer);
+        this.logout_timer = setTimeout(() => {
+          this.logout();
+        }, AUTO_LOGOUT_TIME);
+        return;
+      }
+    } catch (e) {}
     this.sendMsgToPopup({
       ...obj,
-      data: { code: 200, msg: "OK" },
+      data: { code: 400, msg: "Wrong password" },
     });
-
-    // 6小时后登陆失效
-    clearTimeout(this.logout_timer);
-    this.logout_timer = setTimeout(() => {
-      this.logout();
-    }, AUTO_LOGOUT_TIME);
   }
   /**
    * logout

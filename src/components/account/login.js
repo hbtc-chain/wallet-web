@@ -53,6 +53,7 @@ class IndexRC extends React.Component {
     await helper
       .decryptKeyStore(keyStore, pwd)
       .then((res) => {
+        console.log(res);
         this.login_success(pwd, res);
       })
       .catch((reject) => {
